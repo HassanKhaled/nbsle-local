@@ -12,7 +12,14 @@
                                     <li>{!! \Session::get('success') !!}</li>
                                 </ul>
                             </div>
-                            @endif</div>
+                        @elseif(\Session::has('error'))
+                            <div class="alert alert-danger">
+                                <ul>
+                                    <li>{!! \Session::get('error') !!}</li>
+                                </ul>
+                            </div>
+                        @endif
+                        </div>
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">

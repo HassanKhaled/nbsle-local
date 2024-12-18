@@ -973,11 +973,20 @@ class ExpAndImpController extends Controller
     public function import(Request $request, string $item){
         abort_unless(Gate::allows('import'),'403');
         if($item == 'labs') {
-            $request['fac_id'] ?
-            Excel::import(new LabsImport($request['fac_id']), request()->file('importfile')) :
-                Excel::import(new LabsImport(Auth()->user()->fac_id), request()->file('importfile'));
-            ;
-            return back()->with('success','Labs imported successfully');
+            try {
+                $filePath = request()->file('importfile');
+                $rows = Excel::toArray(new LabsImport($request['fac_id']), $filePath);
+        
+                if (empty($rows) || count($rows[0]) === 0) {
+                    return back()->with('error', 'The file contains no rows to import.');
+                }
+                $request['fac_id'] ?
+                    Excel::import(new LabsImport($request['fac_id']), $filePath) :
+                    Excel::import(new LabsImport(Auth()->user()->fac_id), $filePath);
+                return back()->with('success', 'Labs imported successfully');
+            } catch (\Exception $e) {
+                return back()->with('error', 'There was a problem: ' . $e->getMessage());
+            }
         }
         elseif ($item == 'devices')
         {
@@ -986,10 +995,20 @@ class ExpAndImpController extends Controller
                 $ImageName = $photo->getClientOriginalName();
                 $photo->move(public_path('images/universities/'.auth()->user()->uni_id),$ImageName);
             }
-            $request['fac_id']?
-            Excel::import(new DevicesImport($request['fac_id']), request()->file('importfile')) :
-                Excel::import(new DevicesImport(Auth()->user()->fac_id), request()->file('importfile'));
-            return back()->with('success','Devices imported successfully');
+            try {
+                $filePath = request()->file('importfile');
+                $rows = Excel::toArray(new DevicesImport($request['fac_id']), $filePath);
+        
+                if (empty($rows) || count($rows[0]) === 0) {
+                    return back()->with('error', 'The file contains no rows to import.');
+                }
+                $request['fac_id']?
+                    Excel::import(new DevicesImport($request['fac_id']), $filePath) :
+                    Excel::import(new DevicesImport(Auth()->user()->fac_id), $filePath);
+                return back()->with('success','Devices imported successfully');
+            } catch(\Exception $e) {
+                return back()->with('error', 'There was a problem: ' . $e->getMessage());
+            }
 
         }
     }
