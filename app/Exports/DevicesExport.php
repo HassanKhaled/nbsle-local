@@ -8,6 +8,7 @@ use App\Models\labs;
 use App\Models\UniDevices;
 use App\Models\UniLabs;
 use App\Models\universitys;
+use App\Models\departments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +64,8 @@ protected $request;
             $central_labs = UniLabs::all();
             $central_devices = UniDevices::all();
             $all_faculties = fac_uni::all();
-            return compact('user','universities','all_faculties','labs','devices','central_labs','central_devices');
+            $all_departments= departments::all();
+            return compact('user','universities','all_faculties','labs','devices','central_labs','central_devices','all_departments');
         }
         elseif ($user->hasRole('university'))
         {
@@ -97,6 +99,7 @@ protected $request;
         $start_date = $this->request->start_date;
         $end_date = $this->request->end_date;
         $price = $this->request->price;
+
         if ($this->exportwhat=='everything'){
             if ($stables['user']->hasRole('admin')) {
                 $central_dev='';
@@ -114,16 +117,23 @@ protected $request;
                 if (($start_date == null and $end_date == null) and $selected_uni != null and $selected_fac == null)
                     //DONE  //devices in a university at all time
                 {
+                    // dd('ok1');
                     $dev = devices::join('labs', 'devices.lab_id', '=', 'labs.id')
                         ->join('universitys', 'labs.uni_id', '=', 'universitys.id')
                         ->join('fac_uni','labs.fac_id','=','fac_uni.fac_id')
-                        ->select('universitys.name as University Name','fac_uni.name as FacultyName','labs.name as Lab Name', 'devices.name','devices.model'
+                        ->leftJoin('departments', 'labs.dept_id', '=', 'departments.id') 
+                        ->select('universitys.name as University Name','fac_uni.name as FacultyName','labs.name as Lab Name',
+                            DB::raw("CASE 
+                            WHEN labs.dept_id IS NULL OR labs.dept_id = 0 THEN 'no department' 
+                            ELSE departments.name 
+                            END as DepartmentName")
+                            ,'devices.name','devices.model'
                             ,'devices.num_units','devices.services','devices.cost','devices.state','devices.price','devices.description'
                             ,'devices.AdditionalInfo','devices.manufacturer','devices.ManufactureYear','devices.ManufactureCountry'
                             ,'devices.ManufactureWebsite','devices.entry_date')
                         ->where('labs.uni_id', $selected_uni)
                         ->get();
-
+                    //  dd($dev);
                     $central_dev = UniDevices::join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                         ->join('universitys', 'uni_labs.uni_id', '=', 'universitys.id')
                         ->select('universitys.name as University Name', DB::raw("'Central Lab' as FacultyName"),'uni_labs.name as Lab Name','uni_devices.name','uni_devices.model'
@@ -132,9 +142,9 @@ protected $request;
                             ,'uni_devices.ManufactureCountry','uni_devices.ManufactureWebsite','uni_devices.entry_date')
                         ->where('uni_labs.uni_id',$selected_uni)
                         ->get();
-//                    dd($dev[0],$central_dev);
+                         //dd($dev[0],$central_dev);
                     $dev=$central_dev->concat($dev);
-
+                        // dd($dev);
                 }
                 elseif (($start_date == null and $end_date == null) and $selected_uni == null and $selectedtype != null)
                     // DONE // devices in a type all university at all time
@@ -143,22 +153,29 @@ protected $request;
                         ->join('labs',function ($join){
                             $join->on('fac_uni.fac_id','=','labs.fac_id');
                             $join->on('fac_uni.uni_id','=','labs.uni_id');
-                        })->join('devices','labs.id','devices.lab_id')
-                        ->select('universitys.name as University Name','fac_uni.name as FacultyName','labs.name as Lab Name','devices.name'
-                            ,'devices.model','devices.num_units','devices.services','devices.cost','devices.state','devices.price','devices.description'
-                            ,'devices.AdditionalInfo','devices.manufacturer','devices.ManufactureYear','devices.ManufactureCountry'
-                            ,'devices.ManufactureWebsite','devices.entry_date')
-                        ->get();
-
+                        })
+                            ->join('devices','labs.id','devices.lab_id')
+                            ->leftJoin('departments', 'labs.dept_id', '=', 'departments.id') 
+                            ->select('universitys.name as University Name', 'fac_uni.name as FacultyName',
+                                DB::raw("CASE 
+                                WHEN labs.dept_id IS NULL OR labs.dept_id = 0 THEN 'no department' 
+                                ELSE departments.name 
+                                END as DepartmentName"),
+                                'labs.name as Lab Name','devices.name'
+                                ,'devices.model','devices.num_units','devices.services','devices.cost','devices.state','devices.price','devices.description'
+                                ,'devices.AdditionalInfo','devices.manufacturer','devices.ManufactureYear','devices.ManufactureCountry'
+                                ,'devices.ManufactureWebsite','devices.entry_date')
+                            ->get();
+                        //  dd($dev);
                     $central_dev = UniDevices::join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                         ->join('universitys', 'uni_labs.uni_id', '=', 'universitys.id')
-                        ->select('universitys.name as University Name',DB::raw("'Central Lab' as FacultyName"),'uni_labs.name as Lab Name'
+                        ->select('universitys.name as University Name',DB::raw("'Central Lab' as FacultyName"),DB::raw("'no department' as DepartmentName"), 'uni_labs.name as Lab Name'
                             ,'uni_devices.name','uni_devices.model','uni_devices.num_units','uni_devices.services','uni_devices.cost','uni_devices.state'
                             ,'uni_devices.price','uni_devices.description','uni_devices.AdditionalInfo','uni_devices.manufacturer','uni_devices.ManufactureYear'
                             ,'uni_devices.ManufactureCountry','uni_devices.ManufactureWebsite','uni_devices.entry_date')
                         ->get();
                     $dev=$central_dev->concat($dev);
-//                    dd($dev[0]);
+                    //  dd($dev);
 
                 }
                 elseif (($start_date != null or $end_date != null) and $selected_uni == null and $selectedtype != null)
@@ -172,15 +189,21 @@ protected $request;
                             $join->on('fac_uni.fac_id','=','labs.fac_id');
                             $join->on('fac_uni.uni_id','=','labs.uni_id');
                         })->join('devices','labs.id','devices.lab_id')->whereBetween('devices.entry_date',[$start_date,$end_date])
-                        ->select('universitys.name as University Name','fac_uni.name as FacultyName','labs.name as Lab Name','devices.name'
+                        ->leftJoin('departments', 'labs.dept_id', '=', 'departments.id') 
+                        ->select('universitys.name as University Name','fac_uni.name as FacultyName',
+                            DB::raw("CASE 
+                            WHEN labs.dept_id IS NULL OR labs.dept_id = 0 THEN 'no department' 
+                            ELSE departments.name 
+                            END as DepartmentName"),
+                            'labs.name as Lab Name','devices.name'
                             ,'devices.model','devices.num_units','devices.services','devices.cost','devices.state','devices.price','devices.description'
                             ,'devices.AdditionalInfo','devices.manufacturer','devices.ManufactureYear','devices.ManufactureCountry'
                             ,'devices.ManufactureWebsite','devices.entry_date')
                         ->get();
-
+                       
                     $central_dev = UniDevices::join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                         ->join('universitys', 'uni_labs.uni_id', '=', 'universitys.id')
-                        ->select('universitys.name as University Name',DB::raw("'Central Lab' as FacultyName"),'uni_labs.name as Lab Name'
+                        ->select('universitys.name as University Name',DB::raw("'Central Lab' as FacultyName"),DB::raw("'no department' as DepartmentName"),'uni_labs.name as Lab Name'
                             , 'uni_devices.name','uni_devices.model','uni_devices.num_units','uni_devices.services','uni_devices.cost','uni_devices.state'
                             ,'uni_devices.price','uni_devices.description','uni_devices.AdditionalInfo','uni_devices.manufacturer','uni_devices.ManufactureYear'
                             ,'uni_devices.ManufactureCountry','uni_devices.ManufactureWebsite','uni_devices.entry_date')
@@ -188,7 +211,7 @@ protected $request;
                         ->whereBetween('uni_devices.entry_date',[$start_date,$end_date])
                         ->get();
                     $dev=$central_dev->concat($dev);
-
+                    // dd($dev);
                 }
                 elseif (($start_date != null or $end_date != null) and $selected_uni != null and $selected_fac == null)
                     // DONE // devices in a university in certain time
@@ -199,17 +222,23 @@ protected $request;
 
                     $dev = devices::join('labs', 'devices.lab_id', '=', 'labs.id')->join('fac_uni','labs.fac_id','=','fac_uni.id')
                         ->join('universitys','fac_uni.uni_id','universitys.id')
-                        ->select('universitys.name as University Name','fac_uni.name as FacultyName','labs.name as Lab Name','devices.name','devices.model','devices.num_units'
+                        ->leftJoin('departments', 'labs.dept_id', '=', 'departments.id') 
+                        ->select('universitys.name as University Name','fac_uni.name as FacultyName',
+                            DB::raw("CASE 
+                            WHEN labs.dept_id IS NULL OR labs.dept_id = 0 THEN 'no department' 
+                            ELSE departments.name 
+                            END as DepartmentName"),
+                            'labs.name as Lab Name','devices.name','devices.model','devices.num_units'
                             ,'devices.services','devices.cost','devices.state','devices.price','devices.description'
                             ,'devices.AdditionalInfo','devices.manufacturer','devices.ManufactureYear','devices.ManufactureCountry'
                             ,'devices.ManufactureWebsite','devices.entry_date')
                         ->where('fac_uni.uni_id',$selected_uni)
                         ->whereBetween('devices.entry_date',[$start_date,$end_date])
                         ->get();
-
+                       
                     $central_dev = UniDevices::join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                         ->join('universitys', 'uni_labs.uni_id', '=', 'universitys.id')
-                        ->select('universitys.name as University Name',DB::raw("'Central Lab' as FacultyName"),'uni_labs.name as Lab Name'
+                        ->select('universitys.name as University Name',DB::raw("'Central Lab' as FacultyName"),DB::raw("'no department' as DepartmentName"),'uni_labs.name as Lab Name'
                             ,'uni_devices.name','uni_devices.model','uni_devices.num_units','uni_devices.services','uni_devices.cost','uni_devices.state'
                             ,'uni_devices.price','uni_devices.description','uni_devices.AdditionalInfo','uni_devices.manufacturer','uni_devices.ManufactureYear'
                             ,'uni_devices.ManufactureCountry','uni_devices.ManufactureWebsite','uni_devices.entry_date')
@@ -217,56 +246,70 @@ protected $request;
                         ->whereBetween('uni_devices.entry_date',[$start_date,$end_date])
                         ->get();
                     $dev=$central_dev->concat($dev);
-
                 }
                 elseif (($start_date == null and $end_date == null) and $selected_uni != null and $selected_fac != null)
                     //devices in a faculty at all time
                 {
                     $dev = devices::join('labs', 'devices.lab_id', '=', 'labs.id')
                         ->join('universitys', 'labs.uni_id', '=', 'universitys.id')
+                        ->leftJoin('departments', 'labs.dept_id', '=', 'departments.id')
                         ->where('labs.uni_id', $selected_uni)
                         ->where('labs.fac_id', $selected_fac)
-                        ->select('universitys.name as University Name','labs.name as Lab Name', 'devices.name', 'devices.model', 'devices.num_units', 'devices.services', 'devices.cost'
+                        ->select('universitys.name as University Name',
+                            DB::raw("CASE 
+                                WHEN labs.dept_id IS NULL OR labs.dept_id = 0 THEN 'no department' 
+                                ELSE departments.name 
+                                END as DepartmentName"),
+                            'labs.name as Lab Name', 'devices.name', 'devices.model', 'devices.num_units', 'devices.services', 'devices.cost'
                             , 'devices.state', 'devices.price', 'devices.description', 'devices.AdditionalInfo', 'devices.manufacturer'
                             , 'devices.ManufactureYear', 'devices.ManufactureCountry', 'devices.ManufactureWebsite', 'devices.entry_date')
                         ->get();
+                        // dd($dev);
                     $selected_name = fac_uni::where('uni_id',$selected_uni)->where('fac_id', $selected_fac);
                     foreach ($dev as $device) {$device->FacultyName = $selected_name->pluck('name')->first();}
-//                    dd($dev);
+                    // dd($dev[0]);
                 }
                 elseif (($start_date != null or $end_date != null) and $selected_uni != null and $selected_fac != null)
                     // devices in a faculty in certain time
                 {
+                    
                     $start_date = ($this->request->start_date == null) ? date('Y-m-d', mktime(0, 0, 0, 01, 01, 2016)) : $this->request->start_date;
                     $end_date = ($this->request->end_date == null) ? date('Y-m-d') : $this->request->end_date;
                     $dev = devices::join('labs', 'devices.lab_id', '=', 'labs.id')
                         ->join('universitys', 'labs.uni_id', '=', 'universitys.id')
+                        ->leftJoin('departments', 'labs.dept_id', '=', 'departments.id')
                         ->where('labs.uni_id', $selected_uni)
                         ->where('labs.fac_id', $selected_fac)
-                        ->select('universitys.name as University Name','labs.name as Lab Name', 'devices.name', 'devices.model', 'devices.num_units', 'devices.services', 'devices.cost'
+                        ->select('universitys.name as University Name',
+                            DB::raw("CASE 
+                            WHEN labs.dept_id IS NULL OR labs.dept_id = 0 THEN 'no department' 
+                            ELSE departments.name 
+                            END as DepartmentName"),
+                            'labs.name as Lab Name', 'devices.name', 'devices.model', 'devices.num_units', 'devices.services', 'devices.cost'
                             , 'devices.state', 'devices.price', 'devices.description', 'devices.AdditionalInfo', 'devices.manufacturer'
                             , 'devices.ManufactureYear', 'devices.ManufactureCountry', 'devices.ManufactureWebsite', 'devices.entry_date')
                         ->whereBetween('devices.entry_date', [$start_date, $end_date])
                         ->get();
+                       
                     $selected_name = fac_uni::where('uni_id',$selected_uni)->where('fac_id', $selected_fac);
                     foreach ($dev as $device) {$device->FacultyName = $selected_name->pluck('name')->first();}
                 }
 
-//                if ($central_dev!=''){
-//                    $dev = $dev->toArray();
-//                    $central_dev = $central_dev->toArray();
-//                    $merged_dev = array_merge($dev,$central_dev);
-//                    $dev = collect($merged_dev);
-//                }
+                    //                if ($central_dev!=''){
+                    //                    $dev = $dev->toArray();
+                    //                    $central_dev = $central_dev->toArray();
+                    //                    $merged_dev = array_merge($dev,$central_dev);
+                    //                    $dev = collect($merged_dev);
+                    //                }
 
                 $dev->transform(function($item,$key) {
                     return $item->only($this->request->columns);
                 });
-//                dd($dev);
+                //dd($dev);
                 return collect($dev);
             }
             if ($stables['user']->hasRole('university')) {
-//                dd($selectedID,$this->request);
+                //dd($selectedID,$this->request);
                 if ($selectedID == 'Central Labs'){
                     if ($start_date == null and $end_date == null){
                         $dev = UniDevices::join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
@@ -305,7 +348,7 @@ protected $request;
                             ->get();
                         $selected_name = fac_uni::where('uni_id', $stables['user']->uni_id)->where('fac_id', $selectedID);
                         foreach ($dev as $device) $device->FacultyName = $selected_name->pluck('name')->first();
-//                    dd($dev);
+                        // dd($dev);
                     }
                     elseif (($start_date != null or $end_date != null) and $selectedID == null)
                         // number of devices in all faculties in certain time
@@ -320,7 +363,7 @@ protected $request;
                                 , 'devices.manufacturer', 'devices.ManufactureYear', 'devices.ManufactureCountry', 'devices.ManufactureWebsite', 'devices.entry_date')
                             ->whereBetween('devices.entry_date', [$start_date, $end_date])
                             ->distinct()->get();
-//
+                         //
                         $central_dev = UniDevices::join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                             ->join('universitys', 'uni_labs.uni_id', '=', 'universitys.id')
                             ->select(DB::raw("'Central Lab' as FacultyName"), 'uni_labs.name as Lab Name', 'uni_devices.name'
@@ -347,7 +390,7 @@ protected $request;
                                 , 'devices.manufacturer', 'devices.ManufactureYear', 'devices.ManufactureCountry', 'devices.ManufactureWebsite', 'devices.entry_date')
                             ->whereBetween('devices.entry_date', [$start_date, $end_date])
                             ->get();
-//                    dd($dev);
+                          //                    dd($dev);
 
                         $selected_name = fac_uni::where('uni_id', $stables['user']->uni_id)->where('fac_id', $selectedID);
                         foreach ($dev as $device) $device->FacultyName = $selected_name->pluck('name')->first();
@@ -360,7 +403,7 @@ protected $request;
                                 , 'devices.services', 'devices.cost', 'devices.state', 'devices.price', 'devices.description', 'devices.AdditionalInfo', 'devices.manufacturer'
                                 , 'devices.ManufactureYear', 'devices.ManufactureCountry', 'devices.ManufactureWebsite', 'devices.entry_date')
                             ->distinct()->get();
-//
+                            //
                         $central_dev = UniDevices::join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                             ->join('universitys', 'uni_labs.uni_id', '=', 'universitys.id')
                             ->select(DB::raw("'Central Lab' as FacultyName"), 'uni_labs.name as Lab Name', 'uni_devices.name'
@@ -389,18 +432,18 @@ protected $request;
                         ,'devices.ManufactureCountry','devices.ManufactureWebsite','devices.entry_date')
                     ->whereBetween('devices.entry_date', [$start_date, $end_date])
                     ->get();
-//                $dev = DB::table('devices')
-//                    ->join('labs', 'devices.lab_id', '=', 'labs.id')
-//                    ->select('labs.name as Lab name','devices.name','devices.model','devices.num_units','devices.services','devices.cost'
-//                        ,'devices.state','devices.description','devices.AdditionalInfo','devices.manufacturer','devices.ManufactureYear','devices.ManufactureCountry'
-//                        ,'devices.ManufactureWebsite','devices.entry_date')
-//                    ->where('labs.uni_id', $stables['user']->uni_id)
-//                    ->where('labs.fac_id', $stables['user']->fac_id)
-//                    ->whereBetween('devices.entry_date', [$start_date, $end_date])
-//                    ->get();
+                        //                $dev = DB::table('devices')
+                        //                    ->join('labs', 'devices.lab_id', '=', 'labs.id')
+                        //                    ->select('labs.name as Lab name','devices.name','devices.model','devices.num_units','devices.services','devices.cost'
+                        //                        ,'devices.state','devices.description','devices.AdditionalInfo','devices.manufacturer','devices.ManufactureYear','devices.ManufactureCountry'
+                        //                        ,'devices.ManufactureWebsite','devices.entry_date')
+                        //                    ->where('labs.uni_id', $stables['user']->uni_id)
+                        //                    ->where('labs.fac_id', $stables['user']->fac_id)
+                        //                    ->whereBetween('devices.entry_date', [$start_date, $end_date])
+                        //                    ->get();
 
-//                $dev->toArray();
-//                dd($dev,$this->request->columns);
+                        //                $dev->toArray();
+                        //                dd($dev,$this->request->columns);
                 $dev->transform(function($item,$key) {
                     return $item->only($this->request->columns);
                 });
@@ -448,7 +491,7 @@ protected $request;
                         $dev = DB::table('devices')
                             ->join('labs', 'devices.lab_id', '=', 'labs.id')
                         ->select('labs.fac_id', DB::raw('sum(devices.num_units) as total'))
-//                            ->select('labs.fac_id', DB::raw('count(devices.id) as total'))
+                          // ->select('labs.fac_id', DB::raw('count(devices.id) as total'))
                             ->where('labs.uni_id', $selected_uni)
                             ->when($price, function ($query, $price) {
                                 if ($price == 'less100k')
@@ -461,7 +504,7 @@ protected $request;
                         $central_dev = DB::table('uni_devices')
                             ->join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                         ->select(DB::raw('sum(uni_devices.num_units) as total'))
-//                            ->select(DB::raw('count(uni_devices.id) as total'))
+                          // ->select(DB::raw('count(uni_devices.id) as total'))
                             ->where('uni_labs.uni_id',$selected_uni)
                             ->when($price, function ($query, $price) {
                                 if ($price == 'less100k')
@@ -489,7 +532,7 @@ protected $request;
                             ->join('labs', 'devices.lab_id', '=', 'labs.id')
                             ->join('universitys', 'labs.uni_id', '=', 'universitys.id')
                         ->select('universitys.id', 'universitys.type', DB::raw('sum(devices.num_units) as total'))
-//                            ->select('universitys.id', 'universitys.type', DB::raw('count(devices.id) as total'))
+                            //->select('universitys.id', 'universitys.type', DB::raw('count(devices.id) as total'))
                             ->groupBy('universitys.id', 'universitys.type')
                             ->where('universitys.type', $selectedtype)
                             ->when($price, function ($query, $price) {
@@ -503,7 +546,7 @@ protected $request;
                             ->join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                             ->join('universitys','uni_labs.uni_id','=','universitys.id')
                         ->select('universitys.id','universitys.type',DB::raw('sum(uni_devices.num_units) as total'))
-//                            ->select('universitys.id','universitys.type',DB::raw('count(uni_devices.id) as total'))
+                           //->select('universitys.id','universitys.type',DB::raw('count(uni_devices.id) as total'))
                             ->groupBy('universitys.id','universitys.type')
                             ->where('universitys.type',$selectedtype)
                             ->when($price, function ($query, $price) {
@@ -535,7 +578,7 @@ protected $request;
                             ->join('labs', 'devices.lab_id', '=', 'labs.id')
                             ->join('universitys', 'labs.uni_id', '=', 'universitys.id')
                         ->select('universitys.id', 'universitys.type', DB::raw('sum(devices.num_units) as total'))
-//                            ->select('universitys.id', 'universitys.type', DB::raw('count(devices.id) as total'))
+                            //->select('universitys.id', 'universitys.type', DB::raw('count(devices.id) as total'))
                             ->groupBy('universitys.id', 'universitys.type')
                             ->where('universitys.type', $selectedtype)
                             ->when($price, function ($query, $price) {
@@ -550,7 +593,7 @@ protected $request;
                             ->join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                             ->join('universitys','uni_labs.uni_id','=','universitys.id')
                         ->select('universitys.id','universitys.type',DB::raw('sum(uni_devices.num_units) as total'))
-//                            ->select('universitys.id','universitys.type',DB::raw('count(uni_devices.id) as total'))
+                           //->select('universitys.id','universitys.type',DB::raw('count(uni_devices.id) as total'))
                             ->groupBy('universitys.id','universitys.type')
                             ->where('universitys.type',$selectedtype)
                             ->when($price, function ($query, $price) {
@@ -582,7 +625,7 @@ protected $request;
                         $dev = DB::table('devices')
                             ->join('labs', 'devices.lab_id', '=', 'labs.id')
                         ->select('labs.fac_id', DB::raw('sum(devices.num_units) as total'))
-//                            ->select('labs.fac_id', DB::raw('count(devices.id) as total'))
+                         // ->select('labs.fac_id', DB::raw('count(devices.id) as total'))
                             ->where('labs.uni_id', $selected_uni)
                             ->whereBetween('devices.entry_date', [$start_date, $end_date])
                             ->when($price, function ($query, $price) {
@@ -595,7 +638,7 @@ protected $request;
                         $central_dev = DB::table('uni_devices')
                             ->join('uni_labs', 'uni_devices.lab_id', '=', 'uni_labs.id')
                         ->select(DB::raw('sum(uni_devices.num_units) as total'))
-//                            ->select(DB::raw('count(uni_devices.id) as total'))
+                           // ->select(DB::raw('count(uni_devices.id) as total'))
                             ->where('uni_labs.uni_id',$selected_uni)
                             ->whereBetween('uni_devices.entry_date',[$start_date,$end_date])
                             ->when($price, function ($query, $price) {
@@ -615,7 +658,7 @@ protected $request;
                         array_push($dev_fac,$central_dev[0]);
                         array_push($x,'Central Labs');
                         $y = array_values($dev_fac);
-//                    dd($dev_fac);
+                        //dd($dev_fac);
                     }
                     elseif (($start_date == null and $end_date == null) and $selected_uni != null and $selected_fac != null )
                         // Devices in a faculty at all time

@@ -65,6 +65,7 @@
                                                 <div data-toggle="buttons">
                                                     <label class="btn btn-outline-info"><input type="checkbox" value="University Name"        name="columns[]" id="university name" autocomplete="off"> University Name</label>
                                                     <label class="btn btn-outline-info"><input type="checkbox" value="FacultyName"        name="columns[]" id="faculty name" autocomplete="off"> Faculty Name</label>
+                                                    <label class="btn btn-outline-info"><input type="checkbox" value="DepartmentName"        name="columns[]" id="department name" autocomplete="off"> Department Name</label>
                                                     <label class="btn btn-outline-info"><input type="checkbox" value="Lab Name"           name="columns[]" id="lab name" autocomplete="off"> Lab Name</label>
                                                     <label class="btn btn-outline-info"><input type="checkbox" value="name"               name="columns[]" id="device name" autocomplete="off"> Device Name</label>
                                                     <label class="btn btn-outline-info"><input type="checkbox" value="model"              name="columns[]" id="model" autocomplete="off"> Model</label>
