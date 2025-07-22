@@ -5,7 +5,6 @@
     <!-- ======= Our Portfolio Section ======= -->
     <section class="breadcrumbs">
       <div class="container">
-      @include('templ.flash-message')
           <div class="d-flex justify-content-between align-items-center">
               <h2>{{$dev->name!=null?$dev->name:$dev->Arabicname}}</h2>
               <ol>
@@ -76,14 +75,6 @@
                         <li class="row" hidden>
                             <div class="col-6"><strong>Total Cost</strong></div>
                             <div style="color:red;"><strong>{{array_sum($cost)}}</strong></div>
-                        </li>
-
-                        <li class="row">
-                            <div class="col-md-12 bg-light text-right">
-                                <a href="{{route('reservation',[$dev->id,$dev->lab_id,$central,$uni_id,$uniname])}}"><input type="button" name="booking" id="booking" value="Booking" class="btn btn-round btn-warning" /> </a>
-                                <!--<a hidden href="{{route('user-reservations',[$dev->id,$dev->lab_id,$central,$uni_id,$uniname])}}"><input type="button" name="cancel" id="cancel" value="Cancel" class="btn btn-round btn-success" /> </a>-->
-                             </div>
-                           
                         </li>
 
                         @if($dev->AdditionalInfo!=null)

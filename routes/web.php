@@ -140,7 +140,22 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('UniLab',UniversityLabsController::class);
     Route::resource('UniDevice',UniversityDevicesController::class);
 
+
+    // Booking (Reservation) Devices ==> User
+
     Route::get('/booking/{dev_id}/{lab_id}/{central}/{uni_id}/{uniname}/{facID?}/{facName?}',[ReservationController::class,'getReservation'])->name('reservation');
     //Route::resource('/booking',ReservationController::class);
     Route::post('/booking/store',[ReservationController::class,'store']);
+
+   // Route::get('/userReservation/{dev_id}/{lab_id}/{central}/{uni_id}/{uniname}/{facID?}/{facName?}',[ReservationController::class,'userReservation'])->name('user-reservations');
+   Route::get('/userReservation',[ReservationController::class,'userReservation'])->name('user-reservations');
+   Route::delete('/userReservation/{id}',[ReservationController::class,'destroy']);
+   Route::get('/userReservation/edit/{id}', [ReservationController::class, 'edit']);
+   Route::post('/userReservation/update/{id}', [ReservationController::class, 'update']);
+
+
+   // Reservation Of Admin Faculty
+
+   Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
+   Route::post('/adminReservation/{id}/confirm', [ReservationController::class, 'confirm'])->name('confirm');
 });

@@ -1,16 +1,7 @@
 @extends('templ.head')
 @section('tmplt-contnt')
 
-@if ($errors->any())
-        <div class="alert alert-danger">
-            There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+
 
   <main id="main">
 
@@ -37,85 +28,120 @@
 
     <!-- Reservation -->
 
-    <div class="ie-panel"></div>
-    <div class="preloader">
-      <div class="preloader-body">
-        <div class="cssload-container">
-          <div class="cssload-speeding-wheel"></div>
-        </div>
-        <p>Loading...</p>
-      </div>
-    </div>
-    <div class="page">
-      
-    
-        <!-- Swiper-->
-        <section class="section section-lg section-main-bunner section-main-bunner-filter text-center">
-          <div class="main-bunner-img" style="background-image: url('{{asset($dev->ImagePath)}}'); background-repeat: no-repeat; background-size: 100% 100%;">
-           
-          </div>
-     
-        </section>
-        <div class="bg-gray-1">
-          <section class="section-transform-top">
-            <div class="container">
-              <div class="box-booking">
 
-                <form class="booking-form" method="post" action="{{url('/booking/store')}}" enctype="multipart/form-data">
-                    @csrf
-                    <div class="form-wrap" hidden>
-                      <input class="form-input" id="device_id" type="bigint" value="{{$dev->id}}" name="device_id" hidden>
-                      
-                    </div>  
-                  <div>
-                    <p class="booking-title">Name</p>
-                    <div class="form-wrap">
-                      <input class="form-input" id="booking-name" type="text" name="visitor_name" data-constraints="@Required">
-                      <label class="form-label" for="booking-name">Your name</label>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <div class="container">
+      @include('templ.flash-message')
+            <section class="login">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header text-center fw-bold text-light fs-4">Reservation</div>
+                            <div class="card-body">
+                                <form method="POST" action="{{url('/booking/store')}}" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="form-wrap" hidden>
+                                      <input class="form-input" id="device_id" type="bigint" value="{{$dev->id}}" name="device_id" hidden>
+                                      <input class="form-input" id="user_id"   type="bigint" value="{{Auth()->user()->id}}" name="user_id" hidden>
+                                      <input class="form-input" id="device_id" type="bigint" value="{{$lab->id}}" name="lab_id" hidden>
+                                      <input class="form-input" id="device_id" type="bigint" value="{{$facID}}"  name="fac_id" hidden>
+                                      <input class="form-input" id="device_id" type="bigint" value="{{$uni_id}}" name="uni_id" hidden>
+                                    </div> 
+
+                                    <div class="form-group row">
+                                        <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
+
+                                        <div class="col-md-6">
+                                            <input id="name" type="text" class="form-control user" name="name" value="{{Auth()->user()->username}}" disabled autocomplete="name" autofocus>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="booking-phone" class="col-md-4 col-form-label text-md-right">Phone</label>
+
+                                        <div class="col-md-6">
+                                            <input id="booking-phone" type="text" class="form-control" name="visitor_phone" data-constraints="@Numeric" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="date" class="col-md-4 col-form-label text-md-right">Date</label>
+                                        <div class="col-md-6">
+                                            <input class="form-control" id="booking-date" type="text" name="date" data-constraints="@Required" data-time-picker="date" autofocus>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="time" class="col-md-4 col-form-label text-md-right">Time</label>
+                                        <div class="col-md-6">
+                                        <select class="form-control border" name="time">
+                                            <option>Select Time</option>
+                                            <option value='09:00:00'>09:00:00 AM</option>
+                                            <option value='10:00:00'>10:00:00 AM</option>
+                                            <option value='11:00:00'>11:00:00 AM</option>
+                                            <option value='12:00:00'>12:00:00 PM</option>
+                                            <option value='01:00:00'>01:00:00 PM</option>
+                                            <option value='02:00:00'>02:00:00 PM</option>
+                                            <option value='03:00:00'>03:00:00 PM</option>
+                                        </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="services" class="col-md-4 col-form-label text-md-right">Services</label>
+                                        <div class="col-md-6">
+                                        <select class="form-control" id="booking-service" name="service_id" data-placeholder="">
+                                          <!-- <option value="" disabled selected>Select Services</option>-->
+                                          <option label="Select Service"></option>
+                                            @foreach($services as $service)
+                                                <option value="{{$service->id}}"> {{$service->service_name}} </option>
+                                            @endforeach
+                                        </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="samples" class="col-md-4 col-form-label text-md-right">Samples</label>
+                                        <div class="col-md-6">
+                                        <input class="form-input" id="booking-sample" type="number" name="samples" data-constraints="@Numeric">
+                                        </div>
+                                    </div>
+                
+                               
+
+                                    <div class="form-group row mb-0">
+                                        <div class="col-md-6 offset-md-4">
+                                        <button class="button button-lg button-gray-600" type="submit">Book</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div>
-                    <p class="booking-title">Phone</p>
-                    <div class="form-wrap">
-                      <input class="form-input" id="booking-phone" type="text" name="visitor_phone" data-constraints="@Numeric">
-                      <label class="form-label" for="booking-phone">Your phone number</label>
-                    </div>
-                  </div>
-                  <div>
-                    <p class="booking-title">Date</p>
-                    <div class="form-wrap form-wrap-icon">
-                      <!--<span class="icon mdi mdi-calendar-text"></span> -->
-                     <!-- <input  class="form-input" id="booking-date" type="text" name="date" data-constraints="@Required" data-time-picker="date"> -->
-                     <input  class="form-input" id="booking-date" type="date" name="date" data-constraints="@Required">
-                    </div>
-                  </div>
-                  <div>
-                    <p class="booking-title">Time</p>
-                    <div class="form-wrap">
-                      <select name="time" data-placeholder="00:00">
-                        <option label="placeholder"></option>
-                        <option value='09:00'>09:00</option>
-                        <option value='10:00'>10:00</option>
-                        <option value='11:00'>11:00</option>
-                        <option value='12:00'>12:00</option>
-                        <option value='01:00'>01:00</option>
-                        <option value='02:00'>02:00</option>
-                        <option value='03:00'>03:00</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div>
-                    <button class="button button-lg button-gray-600" type="submit">Book</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </section>
-  
-        </div>
-      
-  
+                </div>
+            </section>
       </div>
+   
+
+
+
+
+
+
+
+
+
+
+    
 
 
   
