@@ -109,25 +109,35 @@ class ReservationController extends Controller
 
        if ($user->hasRole('faculty')) {
 
-     
+            $facultyId = auth()->user()->fac_id;  
+            $universityId = $user->uni_id;   
+            //dd($universityId);
 
-            //  $reservations = Reservation::where('user_id',$user->id)->get()->keyBy('id');
+            $reservations = Reservation::where('fac_id', $facultyId)
+                    ->where('uni_id', $universityId)
+                    ->with(['user', 'service', 'device'])->get();
+           // dd($reservations);
+        } elseif ($user->hasRole('university')) {
+        // University sees all reservations for their university
+        $universityId = $user->uni_id;
 
+        $reservations = Reservation::where('uni_id', $universityId)
+            // ->with(['user.university', 'user.faculty', 'service', 'device.lab'])
+               ->with(['user', 'university', 'faculty', 'lab', 'service', 'device'])
+            ->get();
 
-           $reservations = Reservation::join('devices','devices.id','reservations.device_id')
-                                            ->join('users','users.id','reservations.user_id')
-                                            ->join('universitys','universitys.id','reservations.uni_id')
-                                            ->join('facultys','facultys.id','reservations.fac_id')
-                                            ->join('labs','labs.id','reservations.lab_id')
-                                            ->join('services','services.id','reservations.service_id')
-                                            ->select('devices.name as devname','users.username as username','universitys.name as uniname','facultys.name as facname','labs.name as labname','services.service_name as servname','reservations.*')
-                                            ->orderBy('reservations.date', 'ASC')
-                                            ->get();
-
+    } elseif ($user->hasRole('admin')) {
+        // Admin sees all reservations
+        $reservations = Reservation::with(['user', 'university', 'faculty', 'lab', 'service', 'device'])->get();
+    } else {
+            // Admins or other roles see all reservations
+           // $reservations = Reservation::with(['user', 'service', 'device', 'university', 'faculty', 'lab'])->get();
+           $reservations = collect();
+        }  
             return view('Reservations/index',compact('reservations'));
 
            
-       }     
+      // }     
 
    }
 

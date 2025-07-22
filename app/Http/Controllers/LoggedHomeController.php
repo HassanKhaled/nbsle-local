@@ -210,7 +210,8 @@ public function index_homepage()
 
     public function index()
     {
-        if (auth()->user()->hasRole('visitor')){  return redirect()->route('home');}
+        // if (auth()->user()->hasRole('visitor')){  return redirect()->route('home');}
+        if (auth()->user()->hasRole('visitor')){  return redirect()->route('user-reservations');}
         $stables = $this->stables();
         if ($stables['user']->hasRole('admin')){
             $university_names = $stables['universities']->pluck('name','id');

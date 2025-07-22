@@ -60,17 +60,17 @@
                                                 @foreach($reservations as $reservation)
                                                 <tr>
                                                
-                                                    <td>{{$reservation->username}}</td>
-                                                    <td>{{$reservation->devname}}</td>
-                                                    <td>{{$reservation->uniname}}</td>
-                                                    <td>{{$reservation->facname}}</td>
-                                                    <td>{{$reservation->labname}}</td>
-                                                    <td>{{$reservation->servname}}</td>
-                                                    <td>{{$reservation->samples}}</td>
-                                                    <td>{{$reservation->date}}</td>
-                                                    <td>{{$reservation->time}}</td>
+                                                    <td>{{ $reservation->user->username ?? '—' }}</td>
+                                                    <td>{{ $reservation->device->name ?? '—' }}</td>
+                                                    <td>{{ $reservation->university->name ?? '—' }}</td>
+                                                    <td>{{ $reservation->faculty->name ?? '—' }}</td>
+                                                    <td>{{ $reservation->lab->name ?? '—' }}</td>
+                                                    <td>{{ $reservation->service->service_name ?? '—' }}</td>
+                                                    <td>{{ $reservation->samples ?? '—' }}</td>
+                                                    <td>{{ $reservation->date ?? '—' }}</td>
+                                                    <td>{{ $reservation->time ?? '—' }}</td>
 
-                                                @role('faculty') 
+                                                @hasanyrole('faculty|university|admin') 
                                                     <td>
                                                         
                                                         <form action="{{ route('confirm', ['id' => $reservation->id]) }}" method="POST">
@@ -83,7 +83,7 @@
                                                         </form>
                                                         
                                                     </td>
-                                                @endrole     
+                                                @endhasanyrole     
 
                                                 @role('visitor')
                                                 

@@ -24,4 +24,10 @@ class facultys extends Model
     function department (){
         return $this->belongsToMany(departments::class,dept_fac::class);
     }
+
+    
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'fac_id');
+    }
 }

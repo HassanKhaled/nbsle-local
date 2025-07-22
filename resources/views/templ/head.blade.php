@@ -30,6 +30,8 @@
     <link href="{{asset('assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
 
     <!-- Template Main CSS File -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style2.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('assets/css/bootstrap.css')}}">
@@ -92,6 +94,7 @@
                 @hasrole('visitor')
                     <li class="dropdown"><a href="#" style="color: #A7DA30">{{Auth()->user()->username}} <i class="bi bi-chevron-down"></i></a>
                         <ul>
+                            <li><a href="/uniHome">Reservations</a></li>
                             <li><a href="{{route('logout')}}">Logout</a></li>
                         </ul>
                     </li>

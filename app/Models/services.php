@@ -20,4 +20,8 @@ class services extends Model
         'central',
     ];
 
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'service_id');
+    }
 }

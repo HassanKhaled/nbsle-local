@@ -31,6 +31,33 @@ class Reservation extends Model
  
     protected $hidden = ['created_at', 'updated_at'];
 
+        public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(services::class, 'service_id');
+    }
+
+    public function device()
+    {
+        return $this->belongsTo(devices::class, 'device_id');
+    }
+    public function university()
+    {
+        return $this->belongsTo(universitys::class, 'uni_id');
+    }
+    public function faculty()
+    {
+        return $this->belongsTo(facultys::class, 'fac_id');
+    }
+
+    public function lab()
+    {
+        return $this->belongsTo(labs::class, 'lab_id');
+    }
 /*
     public function setStatusAttribute()
     {

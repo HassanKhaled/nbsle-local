@@ -32,5 +32,10 @@ class universitys extends Model
         return $this->hasMany(UniLabs::class,'uni_id');
     }
 
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'uni_id');
+    }
+
 }
 

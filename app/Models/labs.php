@@ -23,6 +23,12 @@ class labs extends Model
         'accredited_date',
 
     ];
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'lab_id');
+    }
+
     public function devices()
     {
         return $this->belongsToMany(devices::class, 'device_lab')->using(device_lab::class);

@@ -42,4 +42,9 @@ class devices extends Model
     {
         return $this->belongsToMany(labs::class, 'device_lab')->using(device_lab::class);
     }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'device_id');
+    }
 }
