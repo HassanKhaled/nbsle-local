@@ -13,7 +13,7 @@
           <div class="d-flex justify-content-between align-items-center">
               <h2>{{$dev->name!=null?$dev->name:$dev->Arabicname}}</h2>
               <ol>
-{{--                  <li><a href="/">Home</a></li>--}}
+                {{--                  <li><a href="/">Home</a></li>--}}
                   <li><a href="{{route('browseuniversity',[$uni_id,$uniname])}}">{{$uniname}}</a></li>
                   @if($facName != null)
                       <li><a href="{{route('browsefaculty',[$uni_id, $uniname, $facID,$facName])}}">{{$facName}}</a></li>
@@ -30,106 +30,84 @@
 
 
 
+<section class="position-relative py-5">
+  <!-- Background Overlay -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(71, 204, 38, 0.15); z-index: 0;"></div>
 
+  <div class="container position-relative" style="z-index: 1;">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-header bg-success text-white text-center rounded-top-4">
+            <h5 class="mb-0 py-2">Reservation</h5>
+          </div>
+          <div class="card-body p-4">
+            @include('templ.flash-message')
 
+            <form method="POST" action="{{ url('/booking/store') }}" enctype="multipart/form-data">
+              @csrf
 
+              <!-- Hidden Fields -->
+              <input type="hidden" name="device_id" value="{{ $dev->id }}">
+              <input type="hidden" name="user_id" value="{{ Auth()->user()->id }}">
+              <input type="hidden" name="lab_id" value="{{ $lab->id }}">
+              <input type="hidden" name="fac_id" value="{{ $facID }}">
+              <input type="hidden" name="uni_id" value="{{ $uni_id }}">
 
-
-
-
-
-
-
-
-
-
-      <div class="container">
-      @include('templ.flash-message')
-            <section class="login">
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header text-center fw-bold text-light fs-4">Reservation</div>
-                            <div class="card-body">
-                                <form method="POST" action="{{url('/booking/store')}}" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="form-wrap" hidden>
-                                      <input class="form-input" id="device_id" type="bigint" value="{{$dev->id}}" name="device_id" hidden>
-                                      <input class="form-input" id="user_id"   type="bigint" value="{{Auth()->user()->id}}" name="user_id" hidden>
-                                      <input class="form-input" id="device_id" type="bigint" value="{{$lab->id}}" name="lab_id" hidden>
-                                      <input class="form-input" id="device_id" type="bigint" value="{{$facID}}"  name="fac_id" hidden>
-                                      <input class="form-input" id="device_id" type="bigint" value="{{$uni_id}}" name="uni_id" hidden>
-                                    </div> 
-
-                                    <div class="form-group row">
-                                        <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
-
-                                        <div class="col-md-6">
-                                            <input id="name" type="text" class="form-control user" name="name" value="{{Auth()->user()->username}}" disabled autocomplete="name" autofocus>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="booking-phone" class="col-md-4 col-form-label text-md-right">Phone</label>
-
-                                        <div class="col-md-6">
-                                            <input id="booking-phone" type="text" class="form-control" name="visitor_phone" data-constraints="@Numeric" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="date" class="col-md-4 col-form-label text-md-right">Date</label>
-                                        <div class="col-md-6">
-                                            <input class="form-control" id="booking-date" type="text" name="date" data-constraints="@Required" data-time-picker="date" autofocus>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="time" class="col-md-4 col-form-label text-md-right">Time</label>
-                                        <div class="col-md-6">
-                                        <select class="form-control border" name="time">
-                                            <option>Select Time</option>
-                                            <option value='09:00:00'>09:00:00 AM</option>
-                                            <option value='10:00:00'>10:00:00 AM</option>
-                                            <option value='11:00:00'>11:00:00 AM</option>
-                                            <option value='12:00:00'>12:00:00 PM</option>
-                                            <option value='01:00:00'>01:00:00 PM</option>
-                                            <option value='02:00:00'>02:00:00 PM</option>
-                                            <option value='03:00:00'>03:00:00 PM</option>
-                                        </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="services" class="col-md-4 col-form-label text-md-right">Services</label>
-                                        <div class="col-md-6">
-                                        <select class="form-control" id="booking-service" name="service_id" data-placeholder="">
-                                          <!-- <option value="" disabled selected>Select Services</option>-->
-                                          <option label="Select Service"></option>
-                                            @foreach($services as $service)
-                                                <option value="{{$service->id}}"> {{$service->service_name}} </option>
-                                            @endforeach
-                                        </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="samples" class="col-md-4 col-form-label text-md-right">Samples</label>
-                                        <div class="col-md-6">
-                                        <input class="form-input" id="booking-sample" type="number" name="samples" data-constraints="@Numeric">
-                                        </div>
-                                    </div>
-                
-                               
-
-                                    <div class="form-group row mb-0">
-                                        <div class="col-md-6 offset-md-4">
-                                        <button class="button button-lg button-gray-600" type="submit">Book</button>
-                                        </div>
-                                    </div>
-
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+              <!-- Name & Phone -->
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label">Your Name</label>
+                  <input type="text" class="form-control" value="{{ Auth()->user()->username }}" disabled>
                 </div>
-            </section>
+                <div class="col-md-6">
+                  <label for="booking-phone" class="form-label">Phone</label>
+                  <input type="text" id="booking-phone" name="visitor_phone" class="form-control" required>
+                </div>
+              </div>
+
+              <!-- Date & Time -->
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label for="booking-date" class="form-label">Reservation Date</label>
+                  <input type="text" id="booking-date" name="date" class="form-control" placeholder="Select date" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="booking-time" class="form-label">Reservation Time</label>
+                  <input type="text" id="booking-time" name="time" class="form-control" placeholder="Select time" required>
+                </div>
+              </div>
+
+              <!-- Services & Samples -->
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label for="booking-service" class="form-label">Service</label>
+                  <select id="booking-service" name="service_id" class="form-select" required>
+                    <option value="">Select Service</option>
+                    @foreach($services as $service)
+                      <option value="{{ $service->id }}">{{ $service->service_name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="booking-sample" class="form-label">Number of Samples</label>
+                  <input type="number" id="booking-sample" name="samples" class="form-control" min="1" required>
+                </div>
+              </div>
+
+              <!-- Submit -->
+              <div class="d-grid">
+                <button type="submit" class="btn btn-success btn-lg rounded-pill">Book Reservation</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
+</section>
+
    
 
 
@@ -148,15 +126,35 @@
 
   </main><!-- End #main -->
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+  flatpickr("#booking-date", {
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    disableMobile: true
+  });
+
+  flatpickr("#booking-time", {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i:S",
+    time_24hr: false,
+    disableMobile: true
+  });
+</script>
+
   <!-- Vendor JS Files -->
-  <script src="{{asset('assets/vendor/aos/aos.js')}}"></script>
+  <!-- <script src="{{asset('assets/vendor/aos/aos.js')}}"></script>
   <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
   <script src="{{asset('assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
   <script src="{{asset('assets/vendor/isotope-layout/isotope.pkgd.min.js')}}'"></script>
   <script src="{{asset('assets/vendor/php-email-form/validate.js')}}"></script>
   <script src="{{asset('assets/vendor/purecounter/purecounter.js')}}'"></script>
   <script src="{{asset('assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
-  <script src="{{asset('assets/vendor/waypoints/noframework.waypoints.js')}}'"></script>
+  <script src="{{asset('assets/vendor/waypoints/noframework.waypoints.js')}}'"></script> -->
 
   <!-- Template Main JS File -->
   <script src="{{asset('assets/js/main.js')}}"></script>
