@@ -1,5 +1,6 @@
 @extends('templ.head')
 @section('tmplt-contnt')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <main id="main">
 
     <!-- ======= Our Portfolio Section ======= -->
@@ -135,7 +136,307 @@
         </div>
 
       </div>
-    </section><!-- End Portfolio Details Section -->
+    </section>
+<section id="portfolio-details" class="portfolio-details py-5">
+    <div class="container">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="display-6 fw-bold text-primary mb-2">Laboratory Equipment Details</h2>
+                <p class="lead text-muted">Complete information about this device</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Device Image -->
+            <div class="col-lg-4 h-25">
+                <div class="card shadow-lg border-0 h-100">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-camera me-2"></i>Device Gallery
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="position-relative">
+                            <img src="{{asset($dev->ImagePath)}}" alt="{{$dev->name}}" 
+                                 class="img-fluid w-100 rounded-bottom" style="min-height: 300px; object-fit: cover;">
+                            <div class="text-center p-3">
+                                <span class="badge bg-{{$dev->state=='available'?'success':'danger'}} fs-6 px-3 py-2">
+                                    <i class="fas fa-{{$dev->state=='available'?'check-circle':'times-circle'}} me-1"></i>
+                                    {{ucfirst($dev->state)}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device Information -->
+            <div class="col-lg-8">
+                <!-- Basic Information Card -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-success text-white py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-info-circle me-2"></i>Device Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Basic Details Row 1 -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small mb-1">
+                                        <i class="fas fa-tag text-primary me-1"></i>Device Name
+                                    </div>
+                                    <div class="fw-bold text-dark">{{$dev->name}}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small mb-1">
+                                        <i class="fas fa-cog text-primary me-1"></i>Model
+                                    </div>
+                                    <div class="fw-bold text-dark">{{$dev->model ?? '---'}}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small mb-1">
+                                        <i class="fas fa-calculator text-primary me-1"></i>Units Available
+                                    </div>
+                                    <div class="fw-bold text-dark">{{$dev->num_units}}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Basic Details Row 2 -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small mb-1">
+                                        <i class="fas fa-calendar-alt text-primary me-1"></i>Manufacture Year
+                                    </div>
+                                    <div class="fw-bold text-dark">{{$dev->ManufactureYear}}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="border rounded p-3 h-100 bg-light">
+                                    <div class="text-muted small mb-1">
+                                        <i class="fas fa-external-link-alt text-primary me-1"></i>Manufacturer Website
+                                    </div>
+                                    <div class="fw-bold">
+                                        <a href="{{$dev->ManufactureWebsite}}" target="_blank" 
+                                           class="text-primary text-decoration-none">
+                                            <i class="fas fa-link me-1"></i>Visit Website
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <div class="border rounded p-3 bg-light">
+                                <div class="text-muted small mb-2">
+                                    <i class="fas fa-file-alt text-primary me-1"></i>Description
+                                </div>
+                                <div class="text-dark">{{$dev->description}}</div>
+                            </div>
+                        </div>
+
+                        <!-- Services & Costs Table -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-success mb-3">
+                                <i class="fas fa-list-ul me-2"></i>Services & Pricing
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered align-middle">
+                                    <thead class="table-success">
+                                        <tr>
+                                            <th class="fw-bold">
+                                                <i class="fas fa-cogs me-1"></i>Service
+                                            </th>
+                                            <th class="fw-bold text-end">
+                                                <i class="fas fa-dollar-sign me-1"></i>Cost
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($services as $key=>$service)
+                                        <tr>
+                                            <td class="fw-medium">{{$service ?? '-'}}</td>
+                                            <td class="text-end">
+                                                @if($cost[$key])
+                                                    <span class="badge bg-info fs-6 px-3 py-2">
+                                                        ${{$cost[$key]}}
+                                                    </span>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Additional Info -->
+                        @if($dev->AdditionalInfo)
+                        <div class="mb-4">
+                            <div class="alert alert-info border-0">
+                                <h6 class="alert-heading fw-bold">
+                                    <i class="fas fa-plus-circle me-2"></i>Additional Information
+                                </h6>
+                                <p class="mb-0">{{$dev->AdditionalInfo}}</p>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- Booking Button -->
+                        <div class="text-center">
+                            <a href="{{route('reservation',[$dev->id,$dev->lab_id,$central,$uni_id,$uniname])}}" 
+                               class="btn btn-warning btn-lg px-5 py-3 rounded-pill shadow-sm">
+                                <i class="fas fa-calendar-plus me-2"></i>
+                                <span class="fw-bold">BOOK NOW</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information Card -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-info text-white py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-address-book me-2"></i>Contact Information & Reservations
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Lab Staff/Person -->
+                        @foreach($coords as $coord)
+                        <div class="mb-4">
+                            <div class="bg-success text-white text-center py-2 rounded-top mb-3">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="fas fa-{{$coord->staff ? 'user-md' : 'user'}} me-2"></i>
+                                    {{$coord->staff ? 'Lab Staff' : 'Lab Person'}}
+                                </h6>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-user text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold text-dark">{{$coord->name}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-envelope text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold">
+                                            <a href="mailto:{{$coord->mail}}" class="text-decoration-none text-dark">
+                                                {{$coord->mail}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-phone text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold">
+                                            <a href="tel:{{$coord->telephone}}" class="text-decoration-none text-dark">
+                                                {{$coord->telephone}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+
+                        <!-- Faculty Coordinator -->
+                        @if(count($fac_coor)>=1 && $fac_coor[0]->name)
+                        <div class="mb-4">
+                            <div class="bg-success text-white text-center py-2 rounded-top mb-3">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="fas fa-graduation-cap me-2"></i>Faculty Coordinator
+                                </h6>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-user text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold text-dark">{{$fac_coor[0]->name}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-envelope text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold" style="font-size: 12px;">
+                                            <a href="mailto:{{$fac_coor[0]->email}}" class="text-decoration-none text-dark">
+                                                {{$fac_coor[0]->email}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-phone text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold">
+                                            <a href="tel:0{{$fac_coor[0]->phone}}" class="text-decoration-none text-dark">
+                                                0{{$fac_coor[0]->phone}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        <!-- University Coordinator -->
+                        @if(count($uni_coor)>=1)
+                        <div class="mb-0">
+                            <div class="bg-success text-white text-center py-2 rounded-top mb-3">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="fas fa-university me-2"></i>University Coordinator
+                                </h6>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-user text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold text-dark">{{$uni_coor[0]->name}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-envelope text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold" style="font-size: 12px;">
+                                            <a href="mailto:{{$uni_coor[0]->email}}" class="text-decoration-none text-dark">
+                                                {{$uni_coor[0]->email}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i class="fas fa-phone text-success fs-4 mb-2"></i>
+                                        <div class="fw-bold">
+                                            <a href="tel:0{{$uni_coor[0]->phone}}" class="text-decoration-none text-dark">
+                                                0{{$uni_coor[0]->phone}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
   </main><!-- End #main -->
 

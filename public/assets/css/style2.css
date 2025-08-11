@@ -3238,12 +3238,12 @@ textarea.form-input {
 }
 
 .form-label {
-	position: absolute;
+	/* position: absolute;
 	top: 30px;
 	left: 0;
 	right: 0;
 	padding-left: 25px;
-	padding-right: 25px;
+	padding-right: 25px; */
 	font-size: 15px;
 	font-weight: 300;
 	line-height: 26px;
