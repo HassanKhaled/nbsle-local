@@ -46,7 +46,7 @@
             <div class="container">
 
                 <div  class="card shadow-sm border-0">
-                    <div class="card-header bg-primary text-white text-center py-3">
+                    <div class="card-header text-white text-center py-3" style="background-color: #107869;">
                         <h5 class="mb-0 fw-bold">
                             <i class="fas fa-filter me-2"></i>Filter by Laboratory
                         </h5>
@@ -54,7 +54,7 @@
                     <div class="card-body p-4">
                         <div id="myBtnContainer" class="row g-3 justify-content-center">
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <button class="btn btn-outline-primary btn-lg w-100 shadow-sm rounded-pill text-wrap" 
+                                <button class="btn btn-outline-success btn-lg w-100 shadow-sm rounded-pill text-wrap"
                                         onclick="filterSelection('all')">
                                     <i class="fas fa-th-large me-2"></i>Show all
                                 </button>
@@ -63,7 +63,7 @@
                             <!-- Lab Filter Buttons -->
                             @foreach($labss as $lab)
                             <div class="col-lg-3 col-md-4 col-sm-6">
-                                <button class="btn btn-outline-primary btn-lg w-100 shadow-sm rounded-pill text-wrap" 
+                                <button class="btn btn-outline-success btn-lg w-100 shadow-sm rounded-pill text-wrap"  
                                         onclick="filterSelection('l{{$lab->id}}')">
                                     <i class="fas fa-flask me-2"></i>
                                     <small class="d-block">{{$lab->name ?? $lab->Arabicname}}</small>
@@ -121,7 +121,7 @@
                                 <!-- Action Buttons -->
                                 <div class="d-grid gap-2">
                                     <a href="{{route('browsedevice',[$device->id,$lab->id,'0',$uni_id, $uniname,$facID, $facName])}}" 
-                                       class="btn btn-primary btn-sm rounded-pill">
+                                       class="btn btn-success btn-sm rounded-pill">
                                         <i class="fas fa-info-circle me-1"></i>
                                         View Details
                                     </a>
