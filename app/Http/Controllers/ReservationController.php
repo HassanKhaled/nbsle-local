@@ -221,9 +221,8 @@ class ReservationController extends Controller
         }  
     
        // Session::flash('message', 'Reservation Is Created');
-    
-       return back()->with('success','Reservation Is Created');
-
+    return redirect()->route('ratings.create');
+    //    return back()->with('success','Reservation Is Created');
 
     }
 

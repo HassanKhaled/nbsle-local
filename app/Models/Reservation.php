@@ -58,6 +58,10 @@ class Reservation extends Model
     {
         return $this->belongsTo(labs::class, 'lab_id');
     }
+    public function rating()
+    {
+        return $this->hasOne(DeviceRating::class);
+    }
 /*
     public function setStatusAttribute()
     {

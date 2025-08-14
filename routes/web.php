@@ -18,7 +18,7 @@ use App\Http\Controllers\FacUniController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\ReservationController;
 use App\Models\User;
-
+use App\Http\Controllers\DeviceRatingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -153,7 +153,9 @@ Route::group(['middleware' => ['auth']], function() {
    Route::get('/userReservation/edit/{id}', [ReservationController::class, 'edit']);
    Route::post('/userReservation/update/{id}', [ReservationController::class, 'update']);
 
-
+    Route::get('/ratings/create', [DeviceRatingController::class, 'create'])->name('ratings.create');
+    Route::post('/ratings', [DeviceRatingController::class, 'store'])->name('ratings.store');
+    Route::put('/ratings/{rating}', [DeviceRatingController::class, 'update'])->name('ratings.update');
    // Reservation Of Admin Faculty
 
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
