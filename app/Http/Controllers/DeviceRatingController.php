@@ -17,7 +17,6 @@ class DeviceRatingController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
         $rules = [
             'reservation_id' => 'required|exists:reservations,id',
             'service_quality' => 'required|integer|min:1|max:5',
