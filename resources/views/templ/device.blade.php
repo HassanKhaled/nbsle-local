@@ -34,7 +34,7 @@
 
         <div class="row g-4">
             <!-- Device Image -->
-            <div class="col-lg-4 h-25">
+            <div class="col-lg-5 h-25">
                 <div class="card shadow-lg border-0 h-100">
                     <div class="card-header bg-dark text-white text-center py-3">
                         <h5 class="mb-0 fw-bold">
@@ -50,14 +50,77 @@
                                     <i class="fas fa-{{$dev->state=='available'?'check-circle':'times-circle'}} me-1"></i>
                                     {{ucfirst($dev->state)}}
                                 </span>
+                                <span></span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="card shadow-lg border-0 rounded-3 mt-4">
+                    <div class="card-body">
+                       <div class="d-flex justify-content-center gap-4 mb-4">
+    <!-- Reservations Card -->
+    <div class="text-center p-3">
+        <i class="fas fa-calendar-check text-primary fs-3 mb-2"></i>
+        <h6 class="mb-0">Reservations</h6>
+        <strong class="fs-5 text-dark">{{ $reservationCount }}</strong>
+    </div>
+
+    <!-- Views Card -->
+    <div class="text-center p-3">
+        <i class="fas fa-eye text-success fs-3 mb-2"></i>
+        <h6 class="mb-0">Views</h6>
+        <strong class="fs-5 text-dark">{{ $dev->views }}</strong>
+    </div>
+</div>
+                        {{-- Main overall rating (service_quality) --}}
+                        <div class="text-center mb-5">
+                            <h5 class="fw-bold">{{ __("ratings.service_quality") }}</h5>
+                            <div class="d-flex justify-content-center align-items-center mt-2">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= floor($averages['service_quality']))
+                                        <i class="bi bi-star-fill text-warning fs-4"></i>
+                                    @elseif ($i - $averages['service_quality'] < 1)
+                                        <i class="bi bi-star-half text-warning fs-4"></i>
+                                    @else
+                                        <i class="bi bi-star text-warning fs-4"></i>
+                                    @endif
+                                @endfor
+                                <span class="ms-2 fs-5 text-muted">{{ $averages['service_quality'] }}/5</span>
+                            </div>
+                        </div>
+
+                        {{-- Remaining ratings --}}
+                        <div class="row">
+                            @foreach ($averages as $field => $value)
+                                @if ($field !== 'service_quality')
+                                    <div class="col-md-6 mb-3">
+                                        <div class="p-3 border rounded bg-light">
+                                            <strong>{{ __("ratings.$field") }}</strong>
+                                            <div class="d-flex align-items-center mt-2">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    @if ($i <= floor($value))
+                                                        <i class="bi bi-star-fill text-warning"></i>
+                                                    @elseif ($i - $value < 1)
+                                                        <i class="bi bi-star-half text-warning"></i>
+                                                    @else
+                                                        <i class="bi bi-star text-warning"></i>
+                                                    @endif
+                                                @endfor
+                                                <span class="ms-2 text-muted">{{ $value }}/5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Device Information -->
-            <div class="col-lg-8">
+            <div class="col-lg-7">
                 <!-- Basic Information Card -->
                 <div class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-success text-white py-3">

@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use function Complex\add;
 use function PHPUnit\Framework\isNull;
-
+use App\Models\DeviceRating;
 class DeviceLabController extends Controller
 {
     // Get device details for guests
@@ -56,11 +56,31 @@ class DeviceLabController extends Controller
             $facName = $fac->name;
         }
       
-            // Check if reservations of this user are exist
-           // $exists = Reservation::where('user_id', $user->id)->exists();
-            //$exists == true? $ex=1:$ex=0;
+        $ratings = DeviceRating::where('device_id', $dev_id)->get();
 
-        return view('templ/device',compact('dev','cost','services','coords','uni_id','uniname','facID','facName','lab','fac_coor','uni_coor','central'));
+        // Calculate averages for each field
+        $averages = [
+            'service_quality'         => round($ratings->avg('service_quality'), 1),
+            'device_info_clarity'     => round($ratings->avg('device_info_clarity'), 1),
+            'search_interface'        => round($ratings->avg('search_interface'), 1),
+            'request_steps_clarity'   => round($ratings->avg('request_steps_clarity'), 1),
+            'device_condition'        => round($ratings->avg('device_condition'), 1),
+            'research_results_quality'=> round($ratings->avg('research_results_quality'), 1),
+            'device_availability'     => round($ratings->avg('device_availability'), 1),
+            'response_speed'          => round($ratings->avg('response_speed'), 1),
+            'technical_support'       => round($ratings->avg('technical_support'), 1),
+            'research_success'        => round($ratings->avg('research_success'), 1),
+            'recommend_service'       => round($ratings->avg('recommend_service'), 1),
+        ];
+
+    // Count reservations for this device
+      $reservationCount = Reservation::where('device_id', $dev_id)->count();
+
+       $dev->increment('views');
+       $dev->save();
+
+        return view('templ/device',compact('dev','cost','services','coords','uni_id','uniname','facID','facName','lab','fac_coor','uni_coor','central',
+            'lab_id','ratings','averages','reservationCount'));
     }
     /*** Display a listing of the resource.*/
     public function index()
