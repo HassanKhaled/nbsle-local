@@ -45,8 +45,8 @@
         <!-- ======= Statistics Section ======= -->
         <section class="services">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up">
                         <div class="icon-box icon-box-pink">
                             <div class="icon"><i class="bx bxs-bank"></i></div>
                            
@@ -57,7 +57,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
                         <div class="icon-box icon-box-blue">
                             <div class="icon"><i class="bx bxs-school"></i></div>
                             <h4 class="title">{{$institutes}}</h4>
@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
                         <div class="icon-box icon-box-cyan">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$labs}} </h4>
@@ -75,7 +75,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="250">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="250">
                         <div class="icon-box icon-box-green">
                             <div class="icon"><i class="bx bx-plug"></i></div>
                             <h4 class="title">{{$devices}} </h4>
@@ -89,16 +89,4 @@
     </main><!-- End #main -->
 
     <!-- Vendor JS Files -->
-
-    <script src="assets/vendor/aos/aos.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-    <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-    <script src="assets/vendor/php-email-form/validate.js"></script>
-    <script src="assets/vendor/purecounter/purecounter.js"></script>
-    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-    <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
-
-    <!-- Template Main JS File -->
-    <script src="assets/js/main.js"></script>
 @endsection

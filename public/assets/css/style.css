@@ -70,7 +70,7 @@ h1, h2, h3, h4, h5, h6, .font-primary {
 # Header
 --------------------------------------------------------------*/
 #header {
-  height: 100px;
+  /* height: 100px; */
   transition: all 0.5s;
   z-index: 997;
   transition: all 0.5s;
@@ -124,13 +124,13 @@ h1, h2, h3, h4, h5, h6, .font-primary {
   padding: 0;
 }
 
-.navbar ul {
+/* .navbar ul {
   margin: 0;
   padding: 0;
   display: flex;
   list-style: none;
   align-items: center;
-}
+} */
 
 .navbar li {
   position: relative;
@@ -164,7 +164,7 @@ h1, h2, h3, h4, h5, h6, .font-primary {
 }
 
 .navbar .dropdown ul {
-  display: block;
+  /* display: block;
   position: absolute;
   left: 14px;
   top: calc(100% + 30px);
@@ -172,8 +172,8 @@ h1, h2, h3, h4, h5, h6, .font-primary {
   padding: 10px 0;
   z-index: 99;
   opacity: 0;
-  visibility: hidden;
-  /*background: #fff;*/
+  visibility: hidden; */
+  /* background: #fff; */
     background: #1e4356;
     box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
   transition: 0.3s;
@@ -187,7 +187,7 @@ h1, h2, h3, h4, h5, h6, .font-primary {
   padding: 10px 20px;
   font-size: 14px;
   text-transform: none;
-  /*color: #1c3745;*/
+  /* color: #1c3745; */
     color: #fff;
 }
 
@@ -200,7 +200,7 @@ h1, h2, h3, h4, h5, h6, .font-primary {
     color: #CEF046;
 }
 
-.navbar .dropdown:hover > ul {
+/* .navbar .dropdown:hover > ul {
   opacity: 1;
   top: 100%;
   visibility: visible;
@@ -217,16 +217,16 @@ h1, h2, h3, h4, h5, h6, .font-primary {
   top: 0;
   left: 100%;
   visibility: visible;
-}
+} */
 
-@media (max-width: 1366px) {
+/* @media (max-width: 1366px) {
   .navbar .dropdown .dropdown ul {
     left: -90%;
   }
   .navbar .dropdown .dropdown:hover > ul {
     left: -100%;
-  }
-}
+  } 
+}*/
 
 /**
 * Mobile Navigation
@@ -244,8 +244,15 @@ h1, h2, h3, h4, h5, h6, .font-primary {
   .mobile-nav-toggle {
     display: block;
   }
-  .navbar ul {
+  /* .navbar ul {
     display: none;
+  } */
+   .navbar .dropdown ul {
+    background-color: #fff;
+  }
+  .navbar .dropdown ul a {
+    color: #111111;
+    width: 50%;
   }
 }
 
