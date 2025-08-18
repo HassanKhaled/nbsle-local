@@ -3,7 +3,7 @@
     <main id="main">
 
         <!-- ======= Our Portfolio Section ======= -->
-        <section class="breadcrumbs">
+        <section class="breadcrumbs bg-white shadow-lg">
             <div class="container">
 
                 <div class="d-flex justify-content-between align-items-center">
@@ -14,22 +14,43 @@
         </section><!-- End Our Portfolio Section -->
 
         <!-- ======= Portfolio Section ======= -->
-        <section class="portfolio">
-            <div class="container">
-                <div class="row portfolio-container" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
-                    @foreach($unis as $u => $uni)
-                        <div class="col-lg-3 col-md-6 portfolio-wrap p-5">
-                            <div class="portfolio-item" style="background-color: white">
-                                <a href="{{route('browseuniversity',[$uni->id,$uni->name])}}">
-                                    <img src="{{asset($uni->ImagePath)}}" class="img-fluid" style="width:200px;height:200px;" alt="{{asset($uni->ImagePath)}}">
+       <section class="portfolio py-5">
+    <div class="container">
+        <div class="row g-4" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
+            @foreach($unis as $u => $uni)
+                <div class="col-lg-3 col-md-6">
+                    <div class="card shadow-sm border-0 h-100 text-center p-3 hover-card">
+                        <a href="{{ route('browseuniversity', [$uni->id, $uni->name]) }}">
+                            <img src="{{ asset($uni->ImagePath) }}" 
+                                 class="card-img-top img-fluid mx-auto d-block rounded" 
+                                 style="width: 180px; height: 180px; object-fit: cover;" 
+                                 alt="{{ $uni->name }}">
+                        </a>
+                        <div class="card-body">
+                            <h6 class="card-title mb-0">
+                                <a href="{{ route('browseuniversity', [$uni->id, $uni->name]) }}" 
+                                   class="text-decoration-none text-dark">
+                                   {{ $uni->name }}
                                 </a>
-                                <h6 href="{{route('browseuniversity',[$uni->id, $uni->name])}}" style="text-decoration: none;color: black"><h6 class="text-center">{{$uni->name}}</h6>
-                            </div>
+                            </h6>
                         </div>
-                    @endforeach
+                    </div>
                 </div>
-            </div>
-        </section><!-- End Portfolio Section -->
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Optional hover effect */
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+</style><!-- End Portfolio Section -->
     </main>
 
     <!-- Vendor JS Files -->

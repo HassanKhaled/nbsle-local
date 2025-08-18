@@ -532,6 +532,9 @@ a[href*='tel'], a[href*='mailto'] {
 	.block-decorate-img {
 		padding-bottom: 70px;
 	}
+	.navbar-brand img {
+		height: 72px;
+    }
 }
 
 .block-decorate-img.block-decorate-img-modern {

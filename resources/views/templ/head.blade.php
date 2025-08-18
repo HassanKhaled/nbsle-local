@@ -39,8 +39,38 @@
     @if(Route::currentRouteName() === 'home' or Route::currentRouteName() === 'homepage')
     <script defer src="{{asset('js/counter.js')}}"></script>
     @endif
-</head>
+    <style>
 
+
+/* Mobile Screen */
+@media (max-width: 768px) {
+    .nav-logo {
+         height: 70px;     /* smaller in mobile */
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .nav-logo {
+        height: 70px;
+    }
+
+
+/* Navbar background & spacing improvements */
+
+
+.navbar-nav .nav-link {
+    padding: 10px 15px;
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #A7DA30; /* your highlight color */
+}
+
+}
+</style>
+</head>
 <body>
 <!-- ======= Header ======= -->
 
@@ -49,7 +79,7 @@
         <nav class="navbar navbar-expand-lg w-100">
             <!-- Left Logo -->
             <a class="navbar-brand" href="/">
-                <img src="{{ asset('2.png') }}" alt="" height="40">
+                <img src="{{ asset('2.png') }}" alt="" class="nav-logo">
             </a>
 
             <!-- Toggle Button (Mobile) -->
@@ -132,8 +162,8 @@
             </div>
 
             <!-- Right Logo -->
-            <a class="navbar-brand ms-3">
-                <img src="{{ asset('scu.png') }}" alt="" height="40">
+            <a class="navbar-brand ms-3 scu">
+                <img src="{{ asset('scu.png') }}" alt="" class="nav-logo">
             </a>
         </nav>
     </div>
