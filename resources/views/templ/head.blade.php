@@ -34,6 +34,7 @@
     <!-- <link rel="stylesheet" href="{{asset('assets/css/bootstrap.css')}}"> -->
     <link rel="stylesheet" href="{{asset('assets/css/fonts.css')}}">
    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
 {{--Visitor count--}}
     @if(Route::currentRouteName() === 'home' or Route::currentRouteName() === 'homepage')
@@ -67,7 +68,9 @@
 .navbar-nav .nav-link:hover {
     color: #A7DA30; /* your highlight color */
 }
-
+.navbar-toggler:hover{
+    border: white;
+}
 }
 </style>
 </head>
@@ -172,7 +175,7 @@
 @yield('tmplt-contnt')
 
 <!-- ======= Footer ======= -->
-<footer id="footer" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
+<footer id="footer">
 
     <div class="footer-top">
         <div class="container">

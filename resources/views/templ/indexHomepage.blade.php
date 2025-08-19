@@ -47,7 +47,7 @@
             <div class="container">
                 <div class="row">
                 @if(Auth()->user()->hasRole('university'))    
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up">
+                    <div class="col-md-6 col-lg-3 " data-aos="fade-up">
                         <div class="icon-box icon-box-pink">
                             <div class="icon"><i class="bx bxs-school"></i></div>
                             <h4 class="title">{{$stables['faculties']->count()}} </h4>
@@ -57,7 +57,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-md-6 col-lg-3 " data-aos="fade-up" data-aos-delay="100">
                         <div class="icon-box icon-box-blue">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$stables['labs']->count()}}</h4>
@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+                    <div class="col-md-6 col-lg-3 " data-aos="fade-up" data-aos-delay="200">
                         <div class="icon-box icon-box-cyan">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$stables['central_labs']->count()}} </h4>
@@ -75,7 +75,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
                         <div class="icon-box icon-box-cyan">
                             <div class="icon"><i class="bx bxs-plug"></i></div>
                             <h4 class="title">{{$stables['devices']->count()}} </h4>
@@ -84,7 +84,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="250">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="250">
                         <div class="icon-box icon-box-green">
                             <div class="icon"><i class="bx bx-plug"></i></div>
                             <h4 class="title">{{$stables['central_devices']->count()}} </h4>
@@ -95,7 +95,7 @@
                 @endif
                 @if(Auth()->user()->hasRole('faculty'))
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up">
                         <div class="icon-box icon-box-pink">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$stables['labs']->count()}}</h4>
@@ -105,7 +105,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
                         <div class="icon-box icon-box-blue">
                             <div class="icon"><i class="bx bxs-plug"></i></div>
                             <h4 class="title">{{$stables['devices']->count()}}</h4>
@@ -119,7 +119,7 @@
 
                 @if(Auth()->user()->hasRole('department'))
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up">
                         <div class="icon-box icon-box-pink">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$stables['labs']->count()}}</h4>
@@ -129,7 +129,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
                         <div class="icon-box icon-box-blue">
                             <div class="icon"><i class="bx bxs-plug"></i></div>
                             <h4 class="title">{{$stables['devices']->count()}}</h4>

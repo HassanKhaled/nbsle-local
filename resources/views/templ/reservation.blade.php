@@ -247,41 +247,6 @@
 
   </main><!-- End #main -->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Flatpickr JS -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-<script>
-  flatpickr("#booking-date", {
-    dateFormat: "Y-m-d",
-    minDate: "today",
-    disableMobile: true
-  });
-
-  flatpickr("#booking-time", {
-    enableTime: true,
-    noCalendar: true,
-    dateFormat: "H:i:S",
-    time_24hr: false,
-    disableMobile: true
-  });
-</script>
-
-  <!-- Vendor JS Files -->
-  <!-- <script src="{{asset('assets/vendor/aos/aos.js')}}"></script>
-  <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-  <script src="{{asset('assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
-  <script src="{{asset('assets/vendor/isotope-layout/isotope.pkgd.min.js')}}'"></script>
-  <script src="{{asset('assets/vendor/php-email-form/validate.js')}}"></script>
-  <script src="{{asset('assets/vendor/purecounter/purecounter.js')}}'"></script>
-  <script src="{{asset('assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
-  <script src="{{asset('assets/vendor/waypoints/noframework.waypoints.js')}}'"></script> -->
-
-  <!-- Template Main JS File -->
-  <script src="{{asset('assets/js/main.js')}}"></script>
-  
-  <script src="{{asset('assets/js/core.min.js')}}"></script>
-  <!-- <script src="{{asset('assets/js/script.js')}}"></script> -->
 
 
 @endsection
