@@ -95,17 +95,17 @@
             <div class="collapse navbar-collapse " id="mainNavbar">
                 <ul class="navbar-nav ms-auto text-white">
                     @guest
-                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                        <li class="nav-item"><a class="nav-link fw-bold" href="/">Home</a></li>
                     @endguest
                     @if (Route::has('register'))
                         @auth
-                            <li class="nav-item"><a class="nav-link" href="/indexHomepage">Home</a></li>
+                            <li class="nav-item"><a class="nav-link fw-bold" href="/indexHomepage">Home</a></li>
                         @endauth
                     @endif
 
                     <!-- Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="/about" id="aboutDropdown" role="button"
+                        <a class="nav-link dropdown-toggle fw-bold" href="/about" id="aboutDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             About Us
                         </a>
@@ -118,13 +118,13 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item"><a class="nav-link" href="{{ route('browse') }}">Universities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('institutions') }}">Institutes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('browse') }}">Universities</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('institutions') }}">Institutes</a></li>
+                    <li class="nav-item"><a class="nav-link fw-bold" href="/contact">Contact Us</a></li>
 
                     @guest
-                        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Register</a></li>
+                        <li class="nav-item"><a class="nav-link fw-bold" href="/login">Login</a></li>
+                        <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('register') }}">Register</a></li>
                     @endguest
 
                     @auth
@@ -154,7 +154,7 @@
                     @endauth
 
                     <!-- Search -->
-                    <li class="nav-item ms-3">
+                    <li class="nav-item ms-3 mb-3">
                         <form action="{{ route('university.search', 'All') }}" method="get" class="d-flex">
                             @csrf
                             <input class="form-control me-2" type="text" name="search" placeholder="Search"
@@ -165,7 +165,7 @@
             </div>
 
             <!-- Right Logo -->
-            <a class="navbar-brand ms-3 scu">
+            <a class="navbar-brand ms-3 scu d-none d-md-block">
                 <img src="{{ asset('scu.png') }}" alt="" class="nav-logo">
             </a>
         </nav>
