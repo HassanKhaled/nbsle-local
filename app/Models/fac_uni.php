@@ -32,4 +32,14 @@ class fac_uni extends Model
 //    function user(){
 //        return $this->belongsTo(User::class);
 //    }
+
+    public function university()
+    {
+        return $this->belongsTo(University::class, 'uni_id');
+    }
+
+    public function facultys()
+    {
+        return $this->hasMany(facultys::class, 'fac_id');
+    }
 }

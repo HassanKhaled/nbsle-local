@@ -37,5 +37,12 @@ class universitys extends Model
         return $this->hasMany(Reservation::class, 'uni_id');
     }
 
+
+    public function faculties()
+    {
+        return $this->hasMany(Faculty::class, 'uni_id');
+    }
+
+   
 }
 
