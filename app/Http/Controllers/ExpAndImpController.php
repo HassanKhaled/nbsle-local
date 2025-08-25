@@ -6,6 +6,7 @@ use App\Exports\DevicesExport;
 use App\Exports\templates;
 use App\Imports\DevicesImport;
 use App\Imports\LabsImport;
+use App\Imports\ServicesImport;
 use App\Models\devices;
 use App\Models\fac_uni;
 use App\Models\labs;
@@ -967,7 +968,15 @@ class ExpAndImpController extends Controller
     }
 
     public function downloadTemplate($template){
-        return Excel::download(new templates($template), $template=='labs'?'labsImportTemplate.xlsx':'devicesImportTemplate.xlsx');
+       // return Excel::download(new templates($template), $template=='labs'?'labsImportTemplate.xlsx':'devicesImportTemplate.xlsx');
+       //Edit
+        if ($template == 'labs') {
+            return Excel::download(new templates($template), 'labsImportTemplate.xlsx');
+        } elseif ($template == 'devices') {
+            return Excel::download(new templates($template), 'devicesImportTemplate.xlsx');
+        } elseif ($template == 'services') {
+            return Excel::download(new templates($template), 'servicesImportTemplate.xlsx');
+        }
     }
 
     public function import(Request $request, string $item){
@@ -1011,6 +1020,25 @@ class ExpAndImpController extends Controller
             }
 
         }
+        elseif ($item == 'services') {
+            try {
+                $filePath = request()->file('importfile');
+                $rows = \Maatwebsite\Excel\Facades\Excel::toArray(new \App\Imports\ServicesImport($request['fac_id']), $filePath);
+
+                if (empty($rows) || count($rows[0]) === 0) {
+                    return back()->with('error', 'The file contains no rows to import.');
+                }
+
+                $request['fac_id'] ?
+                    \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\ServicesImport($request['fac_id']), $filePath) :
+                    \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\ServicesImport(Auth()->user()->fac_id), $filePath);
+
+                return back()->with('success', 'Services imported successfully');
+            } catch (\Exception $e) {
+                return back()->with('error', 'There was a problem: ' . $e->getMessage());
+            }
+        }
+
     }
 
 }

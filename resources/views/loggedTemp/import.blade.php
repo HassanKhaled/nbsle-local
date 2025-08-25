@@ -68,7 +68,6 @@
                                 <div class="card-block">
                                     <a href="{{route('downloadTemplate','devices')}}" class="d-flex flex-row">
                                          <h5>Must follow this Template </h5>
-{{--                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(54, 89, 148, 1);"><path d="M3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2zm7 2h8v2h-8V7zm0 4h8v2h-8v-2zm0 4h8v2h-8v-2zM6 7h2v2H6V7zm0 4h2v2H6v-2zm0 4h2v2H6v-2z"></path></svg>--}}
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(68, 138, 255, 1);transform: ;msFilter:;"><path d="M18 22a2 2 0 0 0 2-2V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12zM13 4l5 5h-5V4zM7 8h3v2H7V8zm0 4h10v2H7v-2zm0 4h10v2H7v-2z"></path></svg>
                                     </a><br>
                                     <p>Select devices' photos and refer to them in the excel file with the extension ex: photo.png</p>
@@ -102,6 +101,37 @@
                                         </div>
                                         <br>
                                         <button class="btn btn-primary btn-round">Import <i class="fa fa-upload"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                 
+
+
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Import Services</h5>
+                                </div>
+                                <div class="card-block  align-items-center">
+                                    <a href="{{ route('downloadTemplate', ['labs' => 'services']) }}" class="d-flex flex-row">
+                                        <h5>Must follow this Template </h5>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(68, 138, 255, 1);transform: ;msFilter:;"><path d="M18 22a2 2 0 0 0 2-2V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12zM13 4l5 5h-5V4zM7 8h3v2H7V8zm0 4h10v2H7v-2zm0 4h10v2H7v-2z"></path></svg>
+                                    </a>
+                                </div>
+                                <div class="card-body">
+                                    <form action="{{ route('importthat', ['item' => 'services']) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="d-flex justify-content-evenly">
+                                            <div class="ml-2">
+                                                <h6>Excel file <span class="text-c-red">*</span></h6>
+                                                <input type="file" name="importfile" accept=".xlsx, .xls" style="width: 200px" required>
+                                            </div>
+                                        </div>
+                                        <br><br>
+                                        <input type="hidden" name="fac_id" value="{{ auth()->user()->fac_id }}">
+                                     
+                                        <button type="submit" class="btn btn-primary btn-round">Import <i class="fa fa-upload"></i></button>
                                     </form>
                                 </div>
                             </div>
