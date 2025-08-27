@@ -52,7 +52,7 @@ class Reportcontroller extends Controller
                 'devices as available_devices_count' => fn($q) => $q->where('state', 'available'),
             ])
             ->withMax('devices as last_entry_date', 'entry_date') // آخر تاريخ دخول جهاز
-            ->get();
+            ->paginate(10);
 
         foreach ($labs as $lab) {
             $devicesCount = max($lab->devices_count, 1); 
@@ -78,62 +78,73 @@ class Reportcontroller extends Controller
 
             $percentage = 100 - ($zeros / $total) * 100;
             $lab->data_completeness_full = $percentage;
-            $lab->kpi_update = 0; // default
-            if ($lab->last_entry_date) {
-                $year = \Carbon\Carbon::parse($lab->last_entry_date)->year;
 
-                $pointsMap = [
-                    2025 => 100,
-                    2024 => 90,
-                    2023 => 70,
-                    2022 => 40,
-                    2021 => 30,
-                    2020 => 20,
-                    2019 => 15,
-                    2018 => 12,
-                    2017 => 11,
-                    2016 => 10,
-                ];
+           // ✅ New KPI update based on each device's updated_at
+                 $devices = $lab->devices;
+                $pointsSum = 0;
+                $devicesCount = $devices->count();
+                $currentYear = now()->year;
+                foreach ($devices as $device) {
+                    // نحدد أي تاريخ هنستخدم
+                    $date = $device->updated_at ?? $device->entry_date;
 
-                // لو السنة موجودة في الجدول
-                if (isset($pointsMap[$year])) {
-                    $lab->kpi_update = $pointsMap[$year];
-                } else {
-                    // أي سنة أقدم من 2016 تأخذ 5 نقاط
-                    $lab->kpi_update = ($year < 2016) ? 5 : 0;
+                    if ($date) {
+                        $year = \Carbon\Carbon::parse($date)->year;
+                        $diff = $currentYear - $year;
+                        $score = max(0, 100 - ($diff * 10)); // ينقص 10 كل سنة
+                        $pointsSum += $score;
+                    } else {
+                        $pointsSum += 0; // لا يوجد تاريخ نهائياً
+                    }
                 }
+
+                $lab->kpi_update = $devicesCount > 0 ? $pointsSum / $devicesCount : 0;
+
                 $lab->data_quality_index = (0.5 * $lab->data_completeness_full) + (0.2 * $lab->image_upload_indicator) + (0.3 * $lab->kpi_update);
 
                 if ($lab->data_quality_index > 90) {
                     $lab->data_quality="excellent";
                     $lab->data_quality_description = "البيانات دقيقة، كاملة، ومحدثة باستمرار. تعكس مستوى عالٍ من الاحترافية والموثوقية.";
-                    
-                } elseif ($lab->data_quality_index > 80) {
+                    $lab->Proposed_proposal = "استدامة الجودة: الحفاظ على الآليات الحالية للتدقيق والتحديث، ومتابعة آراء المستخدمين.";
+
+                } elseif ($lab->data_quality_index > 89 && $lab->data_quality_index <= 80) {
                     $lab->data_quality="very good";
                     $lab->data_quality_description = "البيانات جيدة بشكل عام، لكن قد توجد بعض النواقص الطفيفة في الاكتمال أو الحداثة.";
-                } elseif ($lab->data_quality_index > 70) {
-                    $lab->data_quality="good";
-                    $lab->data_quality_description = "البيانات جيدة، ولكن هناك بعض المجالات التي تحتاج إلى تحسين.";
-                } elseif ($lab->data_quality_index > 60) {
+                    $lab->Proposed_proposal = "تحسين مستمر: التركيز على معالجة النواقص البسيطة، مثل إدخال الصور أو تحديث البيانات القديمة.";
+
+                } elseif ($lab->data_quality_index > 79 && $lab->data_quality_index <= 60) {
                     $lab->data_quality="acceptable";
                     $lab->data_quality_description = "البيانات مقبولة، لكنها تحتاج إلى مجهود كبير لتحسينها. توجد ثغرات واضحة في الاكتمال أو الحداثة.";
+                    $lab->Proposed_proposal = "خطة تحسين فورية: وضع خطة عمل محددة لمعالجة نقاط الضعف الرئيسية، مع توفير الموارد اللازمة.";
                 } else {
                     $lab->data_quality="poor";
                     $lab->data_quality_description ="البيانات غير موثوقة إلى حد كبير، وربما تكون قديمة أو غير مكتملة. لا يمكن الاعتماد عليها بشكل كامل.";
+                    $lab->Proposed_proposal = "إعادة هيكلة شاملة: تتطلب الموقف تدخلاً جذرياً لإعادة جمع وتحديث البيانات من البداية، مع مراجعة شاملة لآليات الإدخال والتدقيق.";
                 }
-            }
+            
         }
         $universities = universitys::all();
         $faculties = $universityId
             ? fac_uni::where('uni_id', $universityId)->get()
             : fac_uni::all();
 
+
+        $totalDevices = $labs->sum('devices_count');   
+        $totalLabs    = $labs->count();   
+        $totalDevicesName = ($labs->sum('devices_with_name_count')/$totalDevices)*100;   
+        $imageIndicator = ($labs->sum('image_upload_indicator')/$totalLabs); 
+        $dataCompleteness = ($labs->sum('data_completeness_full')/$totalLabs); 
         return view('loggedTemp.reports', compact(
             'labs',
             'universities',
             'faculties',
             'universityId',
-            'facultyId'
+            'facultyId',
+            'totalDevices',
+            'totalLabs',
+            'totalDevicesName',
+            'imageIndicator',
+            'dataCompleteness'
         ));
     }
 
