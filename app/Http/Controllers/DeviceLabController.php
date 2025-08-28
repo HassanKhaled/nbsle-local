@@ -78,7 +78,7 @@ class DeviceLabController extends Controller
 
        $dev->increment('views');
        $dev->save();
-
+       
         return view('templ/device',compact('dev','cost','services','coords','uni_id','uniname','facID','facName','lab','fac_coor','uni_coor','central',
             'lab_id','ratings','averages','reservationCount'));
     }
