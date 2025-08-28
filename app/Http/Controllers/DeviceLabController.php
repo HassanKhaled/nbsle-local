@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Gate;
 use function Complex\add;
 use function PHPUnit\Framework\isNull;
 use App\Models\DeviceRating;
+use App\Models\DeviceRatingUniLab;
+use App\Models\ReservationUniLab;
 class DeviceLabController extends Controller
 {
     // Get device details for guests
@@ -31,10 +33,16 @@ class DeviceLabController extends Controller
         if ($central=='1'){
             $lab = UniLabs::find($lab_id);
             $dev = UniDevices::find($dev_id);
+            $ratings = DeviceRatingUniLab::where('device_id', $dev_id)->get();
+            $reservationCount = ReservationUniLab::where('device_id', $dev_id)->count();
+
         }
         else {
             $lab = labs::find($lab_id);
             $dev = devices::find($dev_id);
+            $ratings = DeviceRating::where('device_id', $dev_id)->get();
+            $reservationCount = Reservation::where('device_id', $dev_id)->count();
+
 
             // services of services table belong to this device
            // $services = services::select('service_name')->where('device_id',$dev_id)->get();
@@ -56,7 +64,6 @@ class DeviceLabController extends Controller
             $facName = $fac->name;
         }
       
-        $ratings = DeviceRating::where('device_id', $dev_id)->get();
 
         // Calculate averages for each field
         $averages = [
@@ -74,11 +81,10 @@ class DeviceLabController extends Controller
         ];
 
     // Count reservations for this device
-      $reservationCount = Reservation::where('device_id', $dev_id)->count();
 
        $dev->increment('views');
        $dev->save();
-       
+
         return view('templ/device',compact('dev','cost','services','coords','uni_id','uniname','facID','facName','lab','fac_coor','uni_coor','central',
             'lab_id','ratings','averages','reservationCount'));
     }

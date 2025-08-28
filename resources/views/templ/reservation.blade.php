@@ -128,6 +128,7 @@
                                 <input type="hidden" name="lab_id" value="{{ $lab->id }}">
                                 <input type="hidden" name="fac_id" value="{{ $facID }}">
                                 <input type="hidden" name="uni_id" value="{{ $uni_id }}">
+                                <input type="hidden" name="central" value="{{ $central }}">
 
                                 <!-- Personal Information -->
                                 <div class="mb-5">
