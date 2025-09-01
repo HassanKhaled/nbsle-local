@@ -20,7 +20,7 @@ class UniLabs extends Model
     ///////////   Relations don't work    ////////////////
 
     // one to many relation to UniDevices table
-    public function unidevices()
+    public function devices()
     {
         return $this->hasMany(UniDevices::class,'lab_id');
     }

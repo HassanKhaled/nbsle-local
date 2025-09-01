@@ -20,7 +20,7 @@
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">University</label>
                     <select name="university_id" class="form-control" onchange="this.form.submit()">
-                        <option value="">-- All Universities --</option>
+                        <option value="all" {{ $universityId == 'all' ? 'selected' : '' }}>-- All Universities --</option>
                         @foreach($universities as $uni)
                             <option value="{{ $uni->id }}" {{ $universityId == $uni->id ? 'selected' : '' }}>
                                 {{ $uni->name }}
@@ -31,33 +31,81 @@
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Faculty</label>
                     <select name="faculty_id" class="form-control" onchange="this.form.submit()">
-                        <option value="">-- All Faculties --</option>
+                        <option value="all" {{ $facultyId == 'all' ? 'selected' : '' }}>-- All Faculties --</option>
                         @foreach($faculties as $fac)
                             <option value="{{ $fac->fac_id }}" {{ $facultyId == $fac->fac_id ? 'selected' : '' }}>
                                 {{ $fac->name }}
                             </option>
+
                         @endforeach
+                        @if($faculties->isEmpty())
+                            <option value="central" {{ $facultyId == 'central' ? 'selected' : '' }}>
+                                Central
+                            </option>
+                        @endif
                     </select>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- Count --}}
-   <div class="d-flex flex-wrap">
-     <h5 class="mb-3 ml-3">
-        <span class="badge bg-primary fs-6">Total Devices: {{ $totalDevices }}</span>
-    </h5>
-    <h5 class="mb-3 ml-3">
-        <span class="badge bg-primary fs-6">Total Devices with Name: {{ $totalDevicesName }}</span>
-    </h5>
-    <h5 class="mb-3 ml-3">
-        <span class="badge bg-primary fs-6">Image Upload Indicator: {{ $imageIndicator }}</span>
-    </h5>
-    <h5 class="mb-3 ml-3">
-        <span class="badge bg-primary fs-6">Data Completeness: {{ $dataCompleteness }}</span>
-    </h5>
-   </div>
+@if($stats)
+    <div class=" table-responsive mt-4">
+        <h4 class="mb-3">Statistics</h4>
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Total Devices</th>
+                    <th>Total Labs</th>
+                    <th>Devices With Name (%)</th>
+                    <th>Devices With Image (%)</th>
+                    <th>Devices With Model (%)</th>
+                    <th>Devices With Price (%)</th>
+                    <th>Devices With Cost (%)</th>
+                    <th>Devices With Services (%)</th>
+                    <th>Devices With Description (%)</th>
+                    <th>Devices With Manufacturer (%)</th>
+                    <th>Devices With Manufacture Year (%)</th>
+                    <th>Devices With Maintenance Contract (%)</th>
+                    <th>Devices With Manufacture Country (%)</th>
+                    <th>Devices With Manufacture Website (%)</th>
+                    <th>Available Devices (%)</th>
+                    <th>Image Upload Indicator (%)</th>
+                    <th>Data Completeness (%)</th>
+                    <th>Total KPI Update (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ $stats['totalDevices'] }}</td>
+                    <td>{{ $stats['totalLabs'] }}</td>
+                    <td>{{ number_format($stats['totalDevicesName'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesImage'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesModel'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesPrice'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesCost'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesServices'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesDescription'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesManufacturer'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesManufactureYear'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesMaintenanceContract'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesManufactureCountry'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDevicesManufactureWebsite'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalAvailableDevicesCount'], 2) }}%</td>
+                    <td>{{ number_format($stats['imageIndicator'], 2) }}%</td>
+                    <td>{{ number_format($stats['dataCompleteness'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalKPIUpdate'], 2) }}%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@else
+    <div class="alert alert-warning mt-4">
+        No data found for this university/faculty.
+    </div>
+@endif
+
+
     {{-- Table --}}
     <div class="table-responsive" style="max-height: 600px; overflow-y:auto;">
         <table class="table table-hover table-bordered align-middle">
