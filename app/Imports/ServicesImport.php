@@ -42,22 +42,25 @@ class ServicesImport implements ToModel, WithHeadingRow, SkipsEmptyRows, WithEve
         if (!$this->hasRows) {
             return null;
         }
+        $deviceId = null;
+      
+        // $device = devices::where('name', $row['device_name'])->first();
 
-        // find device by name in this university
-        // $device = devices::where('name', $row['device_name'])
-        //     ->where('uni_id', Auth::user()->uni_id)
-        //     ->first();
+        // if (!$device) {
+        //     // skip if device not found
+        //     return null;
+        // }
+            // Only try to find the device if a device_name was provided
+        if (!empty($row['device_name'])) {
+            $device = devices::where('name', $row['device_name'])->first();
 
-        $device = devices::where('name', $row['device_name'])->first();
-
-        if (!$device) {
-            // skip if device not found
-            return null;
+            if ($device) {
+                $deviceId = $device->id;
+            }
         }
-        
 
         return services::create([
-            'device_id'    => $device->id,
+            'device_id'    => $deviceId,
             'service_name' => $row['service_name'],
             'cost'         => $row['cost'],
             'service_arabic' => $row['service_arabic'],

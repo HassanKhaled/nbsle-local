@@ -38,7 +38,9 @@ class UniDevices extends Model
     ];
     public function lab()
     {
-        return $this->belongsTo(UniLabs::class);
+        //edit
+       // return $this->belongsToMany(UniLabs::class, 'uni_device_lab', 'device_id', 'lab_id');
+         return $this->belongsTo(UniLabs::class);
     }
 
 

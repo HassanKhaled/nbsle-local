@@ -54,7 +54,7 @@ class templates implements FromArray, WithHeadings, ShouldAutoSize, WithStyles
 
         // Services headers
         $this->ServiceArray = [[
-            'device_name', 'service_name', 'cost', 'service_arabic', 'cost_arabic', 'desc_service'
+            'device_name (optional)', 'service_name', 'cost', 'service_arabic', 'cost_arabic', 'desc_service'
         ]];
     }
 

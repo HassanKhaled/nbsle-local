@@ -39,7 +39,10 @@ class devices extends Model
     ];
     public function lab()
     {
-        return $this->belongsToMany(labs::class, 'lab_id');
+        //edit
+     
+         //return $this->belongsToMany(labs::class, 'lab_id');
+          return $this->belongsTo(Labs::class, 'lab_id');
     }
 
     public function reservations()

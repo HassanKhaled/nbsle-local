@@ -100,6 +100,11 @@ Route::get('/facbrowse/{uni_id}/{uniname}',[FacultyBrowseController::class,'cent
 
 Route::get('/device/{dev_id}/{lab_id}/{central}/{uni_id}/{uniname}/{facID?}/{facName?}',[DeviceLabController::class,'getDevice']) ->name('browsedevice');
 
+//Edit
+// all devices
+Route::get('/all-devices', [DeviceLabController::class, 'getAllDevices'])->name('allDevices');
+
+
 Auth::routes(['register' => true]);
 Auth::routes();
 Route::get('logout', function ()
