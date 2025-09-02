@@ -285,28 +285,50 @@ class Reportcontroller extends Controller
        
 
       $labCount = max(count($labs), 1); // avoid division by zero
-$totalDevicesCount = max($labs->sum('devices_count'), 1);
+        $totalDevicesCount = max($labs->sum('devices_count'), 1);
 
-$stats = [
-    'totalDevices' => $labs->sum('devices_count'),
-    'totalLabs' => $labs->count(),
-    'totalDevicesName' => ($labs->sum('devices_with_name_count') / $totalDevicesCount) * 100,
-    'totalDevicesImage' => ($labs->sum('devices_with_image_count') / $totalDevicesCount) * 100,
-    'totalDevicesModel' => ($labs->sum('devices_with_model_count') / $totalDevicesCount) * 100,
-    'totalDevicesPrice' => ($labs->sum('devices_with_price_count') / $totalDevicesCount) * 100,
-    'totalDevicesCost' => ($labs->sum('devices_with_cost_count') / $totalDevicesCount) * 100,
-    'totalDevicesServices' => ($labs->sum('devices_with_services_count') / $totalDevicesCount) * 100,
-    'totalDevicesDescription' => ($labs->sum('devices_with_description_count') / $totalDevicesCount) * 100,
-    'totalDevicesManufacturer' => ($labs->sum('devices_with_manufacturer_count') / $totalDevicesCount) * 100,
-    'totalDevicesManufactureYear' => ($labs->sum('devices_with_manufacture_year_count') / $totalDevicesCount) * 100,
-    'totalDevicesMaintenanceContract' => ($labs->sum('devices_with_maintenance_contract_count') / $totalDevicesCount) * 100,
-    'totalDevicesManufactureCountry' => ($labs->sum('devices_with_manufacture_country_count') / $totalDevicesCount) * 100,
-    'totalDevicesManufactureWebsite' => ($labs->sum('devices_with_manufacture_website_count') / $totalDevicesCount) * 100,
-    'totalAvailableDevicesCount' => ($labs->sum('available_devices_count') / $totalDevicesCount) * 100,
-    'imageIndicator' => ($labs->sum('image_upload_indicator') / $labCount),
-    'dataCompleteness' => ($labs->sum('data_completeness_full') / $labCount),
-    'totalKPIUpdate' => ($labs->sum('kpi_update') / $labCount), // ✅ fix field name
-];
+        $stats = [
+            'totalDevices' => $labs->sum('devices_count'),
+            'totalLabs' => $labs->count(),
+            'totalDevicesName' => ($labs->sum('devices_with_name_count') / $totalDevicesCount) * 100,
+            'totalDevicesImage' => ($labs->sum('devices_with_image_count') / $totalDevicesCount) * 100,
+            'totalDevicesModel' => ($labs->sum('devices_with_model_count') / $totalDevicesCount) * 100,
+            'totalDevicesPrice' => ($labs->sum('devices_with_price_count') / $totalDevicesCount) * 100,
+            'totalDevicesCost' => ($labs->sum('devices_with_cost_count') / $totalDevicesCount) * 100,
+            'totalDevicesServices' => ($labs->sum('devices_with_services_count') / $totalDevicesCount) * 100,
+            'totalDevicesDescription' => ($labs->sum('devices_with_description_count') / $totalDevicesCount) * 100,
+            'totalDevicesManufacturer' => ($labs->sum('devices_with_manufacturer_count') / $totalDevicesCount) * 100,
+            'totalDevicesManufactureYear' => ($labs->sum('devices_with_manufacture_year_count') / $totalDevicesCount) * 100,
+            'totalDevicesMaintenanceContract' => ($labs->sum('devices_with_maintenance_contract_count') / $totalDevicesCount) * 100,
+            'totalDevicesManufactureCountry' => ($labs->sum('devices_with_manufacture_country_count') / $totalDevicesCount) * 100,
+            'totalDevicesManufactureWebsite' => ($labs->sum('devices_with_manufacture_website_count') / $totalDevicesCount) * 100,
+            'totalAvailableDevicesCount' => ($labs->sum('available_devices_count') / $totalDevicesCount) * 100,
+            'imageIndicator' => ($labs->sum('image_upload_indicator') / $labCount),
+            'dataCompleteness' => ($labs->sum('data_completeness_full') / $labCount),
+            'totalKPIUpdate' => ($labs->sum('kpi_update') / $labCount), // ✅ fix field name
+            'totalDataQualityIndex' => (0.5 * $labs->sum('data_completeness_full') / $labCount) + (0.2 * $labs->sum('image_upload_indicator') / $labCount) + (0.3 * $labs->sum('kpi_update') / $labCount)
+
+        ];
+            if ($stats['totalDataQualityIndex'] > 90) {
+                $stats['totalDataQuality']="excellent";
+                $stats['totalDataQuality_description'] = "البيانات دقيقة، كاملة، ومحدثة باستمرار. تعكس مستوى عالٍ من الاحترافية والموثوقية.";
+                $stats['Proposed_proposal'] = "استدامة الجودة: الحفاظ على الآليات الحالية للتدقيق والتحديث، ومتابعة آراء المستخدمين.";
+
+                } elseif ($stats['totalDataQualityIndex'] < 90 && $stats['totalDataQualityIndex'] <= 80) {
+                    $stats['totalDataQuality']="very good";
+                    $stats['totalDataQuality_description'] = "البيانات جيدة بشكل عام، لكن قد توجد بعض النواقص الطفيفة في الاكتمال أو الحداثة.";
+                    $stats['Proposed_proposal'] = "تحسين مستمر: التركيز على معالجة النواقص البسيطة، مثل إدخال الصور أو تحديث البيانات القديمة.";
+
+                } elseif ($stats['totalDataQualityIndex'] > 79 && $stats['totalDataQualityIndex'] <= 60) {
+                    $stats['data_quality']="acceptable";
+                    $stats['totalDataQuality']="acceptable";
+                    $stats['totalDataQuality_description'] = "البيانات مقبولة، لكنها تحتاج إلى مجهود كبير لتحسينها. توجد ثغرات واضحة في الاكتمال أو الحداثة.";
+                    $stats['Proposed_proposal'] = "خطة تحسين فورية: وضع خطة عمل محددة لمعالجة نقاط الضعف الرئيسية، مع توفير الموارد اللازمة.";
+                } else {
+                    $stats['totalDataQuality']="poor";
+                    $stats['totalDataQuality_description'] ="البيانات غير موثوقة إلى حد كبير، وربما تكون قديمة أو غير مكتملة. لا يمكن الاعتماد عليها بشكل كامل.";
+                    $stats['Proposed_proposal'] = "إعادة هيكلة شاملة: تتطلب الموقف تدخلاً جذرياً لإعادة جمع وتحديث البيانات من البداية، مع مراجعة شاملة لآليات الإدخال والتدقيق.";
+                }
         return view('loggedTemp.reports', compact(
             'labs',
             'universities',

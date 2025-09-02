@@ -73,6 +73,10 @@
                     <th>Image Upload Indicator (%)</th>
                     <th>Data Completeness (%)</th>
                     <th>Total KPI Update (%)</th>
+                    <th>Total Data Quality Index (%)</th>
+                    <th>Total Data Quality (%)</th>
+                    <th>Total Data Quality Description</th>
+                    <th>Proposed Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,6 +99,30 @@
                     <td>{{ number_format($stats['imageIndicator'], 2) }}%</td>
                     <td>{{ number_format($stats['dataCompleteness'], 2) }}%</td>
                     <td>{{ number_format($stats['totalKPIUpdate'], 2) }}%</td>
+                    <td>{{ number_format($stats['totalDataQualityIndex'], 2) }}%</td>
+                    <td>
+                         @php
+                                $icon = '';
+                                $color = '';
+                                switch(strtolower($stats['totalDataQuality'])) {
+                                    case 'excellent':
+                                        $icon = '🥇';  
+                                        break;
+                                    case 'very good':
+                                        $icon = '👍';
+                                        break;
+                                    case 'acceptable':
+                                        $icon = '✔️';
+                                        break;
+                                    case 'poor':
+                                        $icon = '⚠️';
+                                        break;
+                                }
+                            @endphp
+
+                            <span style="font-size: 1.5em;">{{ $icon }}</span>{{ $stats['totalDataQuality'] }}</td>
+                    <td>{{ $stats['totalDataQuality_description'] }}</td>
+                    <td>{{ $stats['Proposed_proposal'] }}</td>
                 </tr>
             </tbody>
         </table>
