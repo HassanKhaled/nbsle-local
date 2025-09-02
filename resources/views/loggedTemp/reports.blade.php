@@ -105,16 +105,16 @@
                                 $icon = '';
                                 $color = '';
                                 switch(strtolower($stats['totalDataQuality'])) {
-                                    case 'excellent':
-                                        $icon = '🥇';  
+                                    case 'ممتاز':
+                                        $icon = '🥇';
                                         break;
-                                    case 'very good':
+                                    case 'جيد جداً':
                                         $icon = '👍';
                                         break;
-                                    case 'acceptable':
-                                        $icon = '✔️';
+                                    case 'مقبول':
+                                        $icon = '✍️';
                                         break;
-                                    case 'poor':
+                                    case 'ضعيف':
                                         $icon = '⚠️';
                                         break;
                                 }
@@ -168,16 +168,16 @@
                     @php
                         $rowClass = '';
                         switch(strtolower($lab->data_quality)) {
-                            case 'excellent':
+                            case 'ممتاز':
                                 $rowClass = 'table-success'; // green
                                 break;
-                            case 'very good':
+                            case 'جيد جداً':
                                 $rowClass = 'table-warning'; // yellow
                                 break;
-                            case 'poor':
+                            case 'ضعيف':
                                 $rowClass = 'table-danger'; // red
                                 break;
-                            case 'acceptable':
+                            case 'مقبول':
                                 $rowClass = 'table-secondary'; // gray
                                 break;
 
@@ -194,16 +194,16 @@
                                 $icon = '';
                                 $color = '';
                                 switch(strtolower($lab->data_quality)) {
-                                    case 'excellent':
-                                        $icon = '🥇';  
+                                    case 'ممتاز':
+                                        $icon = '🥇';
                                         break;
-                                    case 'very good':
+                                    case 'جيد جداً':
                                         $icon = '👍';
                                         break;
-                                    case 'acceptable':
-                                        $icon = '✔️';
+                                    case 'مقبول':
+                                        $icon = '✍️';
                                         break;
-                                    case 'poor':
+                                    case 'ضعيف':
                                         $icon = '⚠️';
                                         break;
                                 }
