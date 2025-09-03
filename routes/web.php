@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FacUniController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\ReservationController;
+ use App\Http\Controllers\NewsController;
 use App\Models\User;
 use App\Http\Controllers\DeviceRatingController;
 use App\Http\Controllers\Reportcontroller;
@@ -164,8 +165,18 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/ratings/create', [DeviceRatingController::class, 'create'])->name('ratings.create');
     Route::post('/ratings', [DeviceRatingController::class, 'store'])->name('ratings.store');
     Route::put('/ratings/{rating}', [DeviceRatingController::class, 'update'])->name('ratings.update');
-   // Reservation Of Admin Faculty
+//edit
+//News 
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
+Route::post('/news', [NewsController::class, 'store'])->name('news.store');
+Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->name('news.edit');
+Route::put('/news/{news}', [NewsController::class, 'update'])->name('news.update');
+Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
 
+    
+
+   // Reservation Of Admin Faculty
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
    Route::post('/adminReservation/{id}/confirm', [ReservationController::class, 'confirm'])->name('confirm');
 });
