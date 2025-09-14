@@ -20,7 +20,7 @@ class Reportcontroller extends Controller
         $user = auth()->user();
         if ($user->role_id == 2) {
             $universityId = $user->uni_id;  
-            $facultyId = 'all';  
+            $facultyId    = $request->input('faculty_id', 'all');
             $universities = universitys::where('id', $user->uni_id)->get();
         } else {
             $universityId = $request->input('university_id', 'all');
