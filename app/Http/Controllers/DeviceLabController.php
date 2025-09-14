@@ -80,10 +80,10 @@ class DeviceLabController extends Controller
             'recommend_service'       => round($ratings->avg('recommend_service'), 1),
         ];
 
-    // Count reservations for this device
-
-       $dev->increment('views');
-       $dev->save();
+        // Count reservations for this device
+        $dev->timestamps = false;   
+        $dev->increment('views');
+        $dev->timestamps = true;
 
         return view('templ/device',compact('dev','cost','services','coords','uni_id','uniname','facID','facName','lab','fac_coor','uni_coor','central',
             'lab_id','ratings','averages','reservationCount'));

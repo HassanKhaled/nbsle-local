@@ -10,19 +10,27 @@ use App\Models\UniLabs;
 use App\Models\universitys;
 use Hamcrest\Description;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class Reportcontroller extends Controller
 {
 
     public function index(Request $request)
     {
-        $universityId = $request->input('university_id', 'all'); 
-        $facultyId    = $request->input('faculty_id', 'all');   
-
-        $universities = universitys::all();
+        $user = auth()->user();
+        if ($user->role_id == 2) {
+            $universityId = $user->uni_id;  
+            $facultyId = 'all';  
+            $universities = universitys::where('id', $user->uni_id)->get();
+        } else {
+            $universityId = $request->input('university_id', 'all');
+            $facultyId    = $request->input('faculty_id', 'all');
+            $universities = universitys::all();
+          
+        }
         $faculties = $universityId !== 'all'
-        ? fac_uni::where('uni_id', $universityId)->get()
-        : fac_uni::all();
+                    ? fac_uni::where('uni_id', $universityId)->get()
+                    : fac_uni::all();
 
             if ($universityId === 'all' && $facultyId === 'all') {
                 // لو مختار "الكل" نرجع من الجدولين
@@ -246,7 +254,6 @@ class Reportcontroller extends Controller
                 foreach ($devices as $device) {
                     // نحدد أي تاريخ هنستخدم
                     $date = $device->updated_at ?? $device->entry_date;
-
                     if ($date) {
                         $year = \Carbon\Carbon::parse($date)->year;
                         $diff = $currentYear - $year;
@@ -255,6 +262,7 @@ class Reportcontroller extends Controller
                     } else {
                         $pointsSum += 0; // لا يوجد تاريخ نهائياً
                     }
+
                 }
 
                 $lab->kpi_update = $devicesCount > 0 ? $pointsSum / $devicesCount : 0;

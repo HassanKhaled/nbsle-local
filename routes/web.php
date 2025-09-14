@@ -131,7 +131,6 @@ Route::any('/generateSheet',[ExpAndImpController::class,'generateSheet'])->name(
 Route::any('/exporttoExcel/{what}',[ExpAndImpController::class,'exporttoExcel'])->name('exporttoExcel');
 Route::any('/downloadTemplate/{labs}',[ExpAndImpController::class,'downloadTemplate'])->name('downloadTemplate');
 Route::any('/importthat/{item}',[ExpAndImpController::class,'import'])->name('importthat');
-Route::get('/reports', [Reportcontroller::class, 'index'])->name('reports.index');
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles', RoleController::class);
     Route::resource('Users', UserController::class);
@@ -142,6 +141,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('DeviceLab',DeviceLabController::class);
     Route::resource('UniLab',UniversityLabsController::class);
     Route::resource('UniDevice',UniversityDevicesController::class);
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
 
     // Booking (Reservation) Devices ==> User
@@ -163,4 +163,5 @@ Route::group(['middleware' => ['auth']], function() {
 
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
    Route::post('/adminReservation/{id}/confirm', [ReservationController::class, 'confirm'])->name('confirm');
+
 });
