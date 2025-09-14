@@ -31,6 +31,8 @@ class labs extends Model
 
     public function devices()
     {
+        //edit
+       // return $this->belongsToMany(devices::class, 'device_lab', 'lab_id', 'device_id');
         return $this->hasMany(devices::class, 'lab_id');
     }
     public function whereDept($dept){

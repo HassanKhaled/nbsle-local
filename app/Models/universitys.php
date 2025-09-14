@@ -40,9 +40,12 @@ class universitys extends Model
 
     public function faculties()
     {
-        return $this->hasMany(Faculty::class, 'uni_id');
+        return $this->hasMany(facultys::class, 'uni_id');
     }
 
-   
+    public function news()
+    {
+        return $this->hasMany(News::class, 'university_id');
+    }
 }
 
