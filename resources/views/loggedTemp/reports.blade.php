@@ -72,7 +72,7 @@
                     <th>Available Devices (%)</th>
                     <th>Image Upload Indicator (%)</th>
                     <th>Data Completeness (%)</th>
-                    <th>Total KPI Update (%)</th>
+                    <th>Total Data Update (%)</th>
                     <th>Total Data Quality Index (%)</th>
                     <th>Total Data Quality (%)</th>
                     <th>Total Data Quality Description</th>
