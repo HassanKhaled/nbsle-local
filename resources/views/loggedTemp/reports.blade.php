@@ -104,7 +104,7 @@
                          @php
                                 $icon = '';
                                 $color = '';
-                                switch(strtolower($stats['totalDataQuality'])) {
+                                switch($stats['totalDataQuality']) {
                                     case 'ممتاز':
                                         $icon = '🥇';
                                         break;
@@ -167,7 +167,7 @@
                 @forelse($labs as $lab)
                     @php
                         $rowClass = '';
-                        switch(strtolower($lab->data_quality)) {
+                        switch($lab->data_quality) {
                             case 'ممتاز':
                                 $rowClass = 'table-success'; // green
                                 break;
@@ -183,6 +183,7 @@
 
                         }
                     @endphp
+                    
                     <tr class="{{ $rowClass }}">
                         <td class="fw-semibold">{{ $lab->name }}</td>
                         <td class="text-end">{{ number_format($lab->image_upload_indicator, 2) }}%</td>
@@ -193,7 +194,7 @@
                             @php
                                 $icon = '';
                                 $color = '';
-                                switch(strtolower($lab->data_quality)) {
+                                switch($lab->data_quality) {
                                     case 'ممتاز':
                                         $icon = '🥇';
                                         break;
@@ -209,7 +210,7 @@
                                 }
                             @endphp
 
-                            <span style="font-size: 1.5em;">{{ $icon }}</span>
+                            <span style="font-size: 1.5em;">{{ $icon }}</span> 
                             {{ $lab->data_quality }}
                         </td>
                         <td>{{ $lab->data_quality_description }}</td>
