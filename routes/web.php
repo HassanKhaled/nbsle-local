@@ -78,8 +78,10 @@ Route::get('/', function () {
     $labs = \App\Models\labs::all()->count()+\App\Models\UniLabs::all()->count();
     $devices = \App\Models\devices::all()->count()+ \App\Models\UniDevices::all()->count();
 //    $devices = \App\Models\devices::sum('num_units')+ \App\Models\UniDevices::sum('num_units');
-    return view('templ/index',compact('universitys','institutes','labs','devices'));
-    
+    $news = \App\Models\News::get();
+
+    return view('templ/index',compact('universitys','institutes','labs','devices','news'));
+
 })->name('homepage');
 Route::get('/home',function (){
     $uniqueUnis = \App\Models\labs::select('uni_id')->distinct()->get();
