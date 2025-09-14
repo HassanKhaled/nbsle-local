@@ -87,8 +87,10 @@ Route::get('/home',function (){
     $institutes =\App\Models\universitys::whereIn('id',$uniqueUnis)->where('type','Institution')->count() ;
     $labs = \App\Models\labs::all()->count()+\App\Models\UniLabs::all()->count();
     $devices = \App\Models\devices::all()->count()+ \App\Models\UniDevices::all()->count();
+    $news = \App\Models\News::get();
+
 //    $devices = \App\Models\devices::sum('num_units')+ \App\Models\UniDevices::sum('num_units');
-    return view('templ/index',compact('universitys','institutes','labs','devices'));
+    return view('templ/index',compact('universitys','institutes','labs','devices','news'));
 })->name('home');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -100,7 +102,7 @@ Route::get('/facbrowse/{uni_id}/{uniname}/{facID}/{facName}',[FacultyBrowseContr
 Route::get('/facbrowse/{uni_id}/{uniname}',[FacultyBrowseController::class,'centralLabs']) ->name('browsecentrallab'); // browse central labs in a uni
 
 Route::get('/device/{dev_id}/{lab_id}/{central}/{uni_id}/{uniname}/{facID?}/{facName?}',[DeviceLabController::class,'getDevice']) ->name('browsedevice');
-
+Route::get('/news/public/details/{id}', [NewsController::class, 'publicDetails'])->name('news.public.details');
 //Edit
 // all devices
 Route::get('/all-devices', [DeviceLabController::class, 'getAllDevices'])->name('allDevices');

@@ -93,4 +93,10 @@ class NewsController extends Controller
             ->with('success', 'News and its image deleted successfully.');
     }
 
+    public function publicDetails($id)
+    {
+        $newsItem = News::with('university')->findOrFail($id);
+        return view('templ.news', compact('newsItem'));
+    }
+
 }

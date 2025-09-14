@@ -1,8 +1,4 @@
 @extends('templ.head')
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 @section('tmplt-contnt')
     <main id="main">
@@ -93,6 +89,48 @@
                 </div>
             </div>
         </section>
+<section id="news" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Latest News & Events</h2>
+            <p class="lead text-muted">Follow the latest unit activities</p>
+        </div>
+
+        @foreach($news->chunk(3) as $newsChunk)
+            <div class="row mb-4">
+                @foreach($newsChunk as $item)
+                    <div class="col-md-4 mb-4">
+                        <div class="card news-card h-100 border-0 shadow-sm animate__animated">
+                            <div class="position-relative">
+                                <a href="">
+                                    <img src="{{ $item->img_path ? asset('storage/' . $item->img_path) : asset('images/default-news.png') }}" 
+                                         alt="{{ $item->title }}" 
+                                         class="card-img-top" 
+                                         loading="lazy" />
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <p class="text-bold mb-0">
+                                        {{ $item->title }}
+                                    </p>
+                                </div>
+                               <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('news.public.details', $item) }}" class="btn btn-primary  ms-auto">
+                                        Details
+                                      <i class="fas fa-arrow-right me-1"></i>
+
+                                    </a>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endforeach
+    </div>
+</section>
     </main><!-- End #main -->
 
     <!-- Vendor JS Files -->

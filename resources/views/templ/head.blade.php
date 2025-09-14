@@ -120,6 +120,7 @@
 
                     <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('browse') }}">Universities</a></li>
                     <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('institutions') }}">Institutes</a></li>
+
                     <li class="nav-item"><a class="nav-link fw-bold" href="/contact">Contact Us</a></li>
 
                     @guest
