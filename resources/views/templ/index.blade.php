@@ -107,13 +107,17 @@
                                          alt="{{ $item->title }}" 
                                          class="card-img-top" 
                                          loading="lazy" />
+                                          <div class="date-box">
+                                        <h5 class="mb-0 text-white">{{ $item->publish_date->format('d') }}</h5>
+                                        <small class="text-white">{{ $item->publish_date->format('M') }}</small>
+                                    </div>
                                 </a>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body mt-3">
                                 <div class="d-flex justify-content-between mb-3">
-                                    <p class="text-bold mb-0">
+                                    <h3 class="text-bold mb-0">
                                         {{ $item->title }}
-                                    </p>
+                                    </h3>
                                 </div>
                                <div class="d-flex justify-content-between align-items-center">
                                     <a href="{{ route('news.public.details', $item) }}" class="btn btn-primary  ms-auto">
@@ -132,6 +136,38 @@
     </div>
 </section>
     </main><!-- End #main -->
+<style>
+    /* ===== صندوق التاريخ ===== */
+.date-box {
+  position: absolute;
+  bottom: -25px; /* نصه تحت الصورة */
+  left: 10px;
+  background-color: #1a8d29ff; /* اللون الجديد */
+  color: #fff;
+  padding: 5px;
+  border-radius: 6px;
+  text-align: center;
+  width: 60px; /* أكبر شوية */
+  height: 60px; /* أكبر شوية */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+  z-index: 2;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
 
+.date-box h5 {
+  font-size: 18px; /* أكبر */
+  font-weight: bold;
+  margin: 0;
+}
+
+.date-box small {
+  font-size: 12px; /* أكبر */
+  text-transform: uppercase;
+}
+</style>
     <!-- Vendor JS Files -->
 @endsection

@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
     <!-- Style.css -->
     <link rel="stylesheet" type="text/css" href="{{asset('css/style.css')}}">
+    
 </head>
 
 <body>

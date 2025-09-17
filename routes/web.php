@@ -179,8 +179,8 @@ Route::post('/news', [NewsController::class, 'store'])->name('news.store');
 Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->name('news.edit');
 Route::put('/news/{news}', [NewsController::class, 'update'])->name('news.update');
 Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
-
-    
+Route::delete('/news-images/{id}', [NewsController::class, 'destroyImage'])->name('newsImages.destroy');
+Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');    
 
    // Reservation Of Admin Faculty
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
