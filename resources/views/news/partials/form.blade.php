@@ -19,7 +19,7 @@
 
 <div class="mb-3">
     <label class="form-label">University</label>
-    <select name="university_id" class="form-control" required>
+    <select name="university_id" class="form-control" >
         <option value="">-- Select University --</option>
         @foreach($universities as $university)
             <option value="{{ $university->id }}" {{ old('university_id', $news->university_id ?? '') == $university->id ? 'selected' : '' }}>
