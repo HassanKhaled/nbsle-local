@@ -31,8 +31,12 @@
 
 <div class="mb-3">
     <label class="form-label">Publish Date</label>
-    <input type="date" name="publish_date" class="form-control" value="{{ old('publish_date', $news->publish_date->format('Y-m-d')) }}">
+    <input type="date" 
+           name="publish_date" 
+           class="form-control" 
+           value="{{ old('publish_date', isset($news) && $news->publish_date ? $news->publish_date->format('Y-m-d') : '') }}">
 </div>
+
 
 <div class="mb-3">
     <label class="form-label">Time</label>
