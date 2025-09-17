@@ -115,9 +115,9 @@
                             </div>
                             <div class="card-body mt-3">
                                 <div class="d-flex justify-content-between mb-3">
-                                    <h3 class="text-bold mb-0">
+                                    <h5 class="text-bold mb-0">
                                         {{ $item->title }}
-                                    </h3>
+                                    </h35>
                                 </div>
                                <div class="d-flex justify-content-between align-items-center">
                                     <a href="{{ route('news.public.details', $item) }}" class="btn btn-primary  ms-auto">

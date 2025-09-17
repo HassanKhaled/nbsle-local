@@ -86,7 +86,7 @@
                             <hr>
 
                             <div class="news-description text-start">
-                                <p class="card-text fs-4">{!! $news->desc !!}</p>
+                                <p class="card-text fs-6">{!! $news->desc !!}</p>
                             </div>
 
                             <div class="text-center mt-4">
