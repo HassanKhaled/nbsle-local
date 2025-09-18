@@ -120,5 +120,11 @@
         line-height: 1.8;
         color: #2c3e50;
     }
+    .carousel-item img {
+    width: 100%;
+    height: 60vh; /* 60% of screen height */
+    object-fit: cover;
+    object-position: center;
+}
 </style>
 @endsection
