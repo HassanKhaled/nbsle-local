@@ -113,11 +113,22 @@
                                     </div>
                                 </a>
                             </div>
+                            
                             <div class="card-body mt-3">
+                                <div class="d-flex justify-content-between align-items-center py-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-map-marker-alt me-1 text-success"></i>
+                                        <span class="fw-bold mb-0 text-muted">{{ $item->location }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="far fa-clock me-1 text-primary"></i>
+                                        <span class="fw-bold mb-0 text-muted">{{ \Carbon\Carbon::parse($item->time)->format('h:i A') }}</span>
+                                    </div>
+                                </div>
                                 <div class="d-flex justify-content-between mb-3">
                                     <h5 class="text-bold mb-0">
                                         {{ $item->title }}
-                                    </h35>
+                                    </h5>
                                 </div>
                                <div class="d-flex justify-content-between align-items-center">
                                     <a href="{{ route('news.public.details', $item) }}" class="btn btn-primary  ms-auto">
