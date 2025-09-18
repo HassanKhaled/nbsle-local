@@ -22,7 +22,7 @@
                                             <img src="{{ asset('storage/' . $image->image_url) }}"
                                                  class="d-block w-100"
                                                  alt="News Image"
-                                                 style="max-height:500px; object-fit: cover;">
+                                                 style="max-height:800px; object-fit: cover;">
                                         </div>
                                     @endforeach
                                 </div>
