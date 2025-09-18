@@ -22,7 +22,7 @@
                                             <img src="{{ asset('storage/' . $image->image_url) }}"
                                                  class="d-block w-100"
                                                  alt="News Image"
-                                                >
+                                                 style="max-height:500px; object-fit: cover;">
                                         </div>
                                     @endforeach
                                 </div>
@@ -120,11 +120,5 @@
         line-height: 1.8;
         color: #2c3e50;
     }
-    .carousel-item img {
-    width: 100%;
-    height: 40vh; /* 40% of screen height */
-    object-fit: cover;
-    object-position: center;
-}
 </style>
 @endsection
