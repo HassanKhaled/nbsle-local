@@ -118,6 +118,7 @@ class NewsController extends Controller
     public function publicDetails($id)
     {
         $news = News::with('university', 'newsImages')->where('is_active', true)->findOrFail($id);
+        $news->increment('views');
         return view('templ.news', compact('news'));
     }
 

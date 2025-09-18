@@ -118,11 +118,11 @@
                                 <div class="d-flex justify-content-between align-items-center py-2">
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-map-marker-alt me-1 text-success"></i>
-                                        <span class="fw-bold mb-0 text-muted">{{ $item->location }}</span>
+                                        <span class="mb-0 text-muted">{{ $item->location }}</span>
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <i class="far fa-clock me-1 text-primary"></i>
-                                        <span class="fw-bold mb-0 text-muted">{{ \Carbon\Carbon::parse($item->time)->format('h:i A') }}</span>
+                                        <span class="mb-0 text-muted">{{ \Carbon\Carbon::parse($item->time)->format('h:i A') }}</span>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between mb-3">
@@ -131,6 +131,9 @@
                                     </h5>
                                 </div>
                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted d-flex align-items-center">
+                                        <i class="fas fa-eye me-1 text-primary"></i> {{ $item->views }}
+                                    </span>
                                     <a href="{{ route('news.public.details', $item) }}" class="btn btn-primary  ms-auto">
                                         Details
                                       <i class="fas fa-arrow-right me-1"></i>
