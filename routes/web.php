@@ -73,7 +73,7 @@ Route::get('/', function () {
  
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     $uniqueUnis = \App\Models\labs::select('uni_id')->distinct()->get();
-    $universitys = \App\Models\universitys::where('type','!=','Institution')->count();
+    $universitys = \App\Models\universitys::whereIn('id',$uniqueUnis)->where('type','!=','Institution')->count();
     $institutes =\App\Models\universitys::where('type','Institution')->count() ;
     $labs = \App\Models\labs::all()->count()+\App\Models\UniLabs::all()->count();
     $devices = \App\Models\devices::all()->count()+ \App\Models\UniDevices::all()->count();
@@ -89,7 +89,7 @@ Route::get('/', function () {
 })->name('homepage');
 Route::get('/home',function (){
     $uniqueUnis = \App\Models\labs::select('uni_id')->distinct()->get();
-    $universitys = \App\Models\universitys::where('type','!=','Institution')->count();
+    $universitys = \App\Models\universitys::whereIn('id',$uniqueUnis)->where('type','!=','Institution')->count();
     $institutes =\App\Models\universitys::where('type','Institution')->count() ;
     $labs = \App\Models\labs::all()->count()+\App\Models\UniLabs::all()->count();
     $devices = \App\Models\devices::all()->count()+ \App\Models\UniDevices::all()->count();
