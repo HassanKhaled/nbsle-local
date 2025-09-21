@@ -55,6 +55,10 @@
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
+                    <th>Total Data Quality Index (%)</th>
+                    <th>Total Data Quality (%)</th>
+                    <th>Total Data Quality Description</th>
+                    <th>Proposed Actions</th>
                     <th>Total Devices</th>
                     <th>Total Labs</th>
                     <th>Devices With Name (%)</th>
@@ -73,14 +77,35 @@
                     <th>Image Upload Indicator (%)</th>
                     <th>Data Completeness (%)</th>
                     <th>Total Data Update (%)</th>
-                    <th>Total Data Quality Index (%)</th>
-                    <th>Total Data Quality (%)</th>
-                    <th>Total Data Quality Description</th>
-                    <th>Proposed Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
+            <td>{{ number_format($stats['totalDataQualityIndex'], 2) }}%</td>
+            <td>
+                    @php
+                        $icon = '';
+                        $color = '';
+                        switch($stats['totalDataQuality']) {
+                            case 'ممتاز':
+                                $icon = '🥇';
+                                break;
+                            case 'جيد جداً':
+                                $icon = '👍';
+                                break;
+                            case 'مقبول':
+                                $icon = '✍️';
+                                break;
+                            case 'ضعيف':
+                                $icon = '⚠️';
+                                break;
+                        }
+                    @endphp
+
+                    <span style="font-size: 1.5em;">{{ $icon }}</span>{{ $stats['totalDataQuality'] }}
+                </td>
+                    <td>{{ $stats['totalDataQuality_description'] }}</td>
+                    <td>{{ $stats['Proposed_proposal'] }}</td>
                     <td>{{ $stats['totalDevices'] }}</td>
                     <td>{{ $stats['totalLabs'] }}</td>
                     <td>{{ number_format($stats['totalDevicesName'], 2) }}%</td>
@@ -99,30 +124,7 @@
                     <td>{{ number_format($stats['imageIndicator'], 2) }}%</td>
                     <td>{{ number_format($stats['dataCompleteness'], 2) }}%</td>
                     <td>{{ number_format($stats['totalKPIUpdate'], 2) }}%</td>
-                    <td>{{ number_format($stats['totalDataQualityIndex'], 2) }}%</td>
-                    <td>
-                         @php
-                                $icon = '';
-                                $color = '';
-                                switch($stats['totalDataQuality']) {
-                                    case 'ممتاز':
-                                        $icon = '🥇';
-                                        break;
-                                    case 'جيد جداً':
-                                        $icon = '👍';
-                                        break;
-                                    case 'مقبول':
-                                        $icon = '✍️';
-                                        break;
-                                    case 'ضعيف':
-                                        $icon = '⚠️';
-                                        break;
-                                }
-                            @endphp
-
-                            <span style="font-size: 1.5em;">{{ $icon }}</span>{{ $stats['totalDataQuality'] }}</td>
-                    <td>{{ $stats['totalDataQuality_description'] }}</td>
-                    <td>{{ $stats['Proposed_proposal'] }}</td>
+                   
                 </tr>
             </tbody>
         </table>
@@ -140,13 +142,14 @@
             <thead class="table-dark text-center sticky-top">
                 <tr>
                     <th>Lab Name</th>
-                    <th>Image Indicator</th>
-                    <th>Data Completeness</th>
-                    <th>Data Update</th>
                     <th>Data Quality Index</th>
                     <th>Data Quality</th>
                     <th>Description</th>
                     <th>Proposed Actions</th>
+                    <th>Image Indicator</th>
+                    <th>Data Completeness</th>
+                    <th>Data Update</th>
+                    
                     <th>Total Devices</th>
                     <th>Name</th>
                     <th>Image</th>
@@ -186,10 +189,7 @@
                     
                     <tr class="{{ $rowClass }}">
                         <td class="fw-semibold">{{ $lab->name }}</td>
-                        <td class="text-end">{{ number_format($lab->image_upload_indicator, 2) }}%</td>
-                        <td class="text-end">{{ number_format($lab->data_completeness_full, 2) }}%</td>
-                        <td class="text-end">{{ $lab->kpi_update }}%</td>
-                        <td class="text-end">{{ number_format($lab->data_quality_index, 2) }}%</td>
+                            <td class="text-end">{{ number_format($lab->data_quality_index, 2) }}%</td>
                         <td>
                             @php
                                 $icon = '';
@@ -215,6 +215,10 @@
                         </td>
                         <td>{{ $lab->data_quality_description }}</td>
                         <td>{{ $lab->Proposed_proposal }}</td>
+                        <td class="text-end">{{ number_format($lab->image_upload_indicator, 2) }}%</td>
+                        <td class="text-end">{{ number_format($lab->data_completeness_full, 2) }}%</td>
+                        <td class="text-end">{{ number_format($lab->kpi_update, 2) }}%</td>
+                    
                         <td class="text-center">{{ $lab->devices_count }}</td>
                         <td class="text-center">{{ $lab->devices_with_name_count }}</td>
                         <td class="text-center">{{ $lab->devices_with_image_count }}</td>
