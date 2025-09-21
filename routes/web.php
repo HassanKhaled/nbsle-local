@@ -105,7 +105,7 @@ Route::get('/facbrowse/{uni_id}/{uniname}',[FacultyBrowseController::class,'cent
 
 Route::get('/device/{dev_id}/{lab_id}/{central}/{uni_id}/{uniname}/{facID?}/{facName?}',[DeviceLabController::class,'getDevice']) ->name('browsedevice');
 Route::get('/news/public/details/{id}', [NewsController::class, 'publicDetails'])->name('news.public.details');
-//Edit
+Route::post('/news/{id}/like', [NewsController::class, 'addLike'])->name('news.like');
 // all devices
 Route::get('/all-devices', [DeviceLabController::class, 'getAllDevices'])->name('allDevices');
 

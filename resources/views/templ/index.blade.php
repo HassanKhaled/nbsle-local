@@ -139,6 +139,10 @@
                                       <i class="fas fa-arrow-right me-1"></i>
 
                                     </a>
+
+                                    <button class="btn-like" data-id="{{ $item->id }}">
+                                        <i class="fas fa-thumbs-up me-1"></i> (<span id="likes-{{ $item->id }}">{{ $item->likes }}</span>)
+                                    </button>
                                 </div>
                             </div>
                             
@@ -184,4 +188,16 @@
 }
 </style>
     <!-- Vendor JS Files -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).on('click', '.btn-like', function() {
+    var newsId = $(this).data('id');
+    var url = "{{ url('/news') }}/" + newsId + "/like";
+
+    $.post(url, {_token: "{{ csrf_token() }}"}, function(data) {
+        $("#likes-" + newsId).text(data.likes);
+    });
+});
+</script>
+
 @endsection

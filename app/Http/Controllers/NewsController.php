@@ -122,4 +122,11 @@ class NewsController extends Controller
         return view('templ.news', compact('news'));
     }
 
+    public function addLike($id)
+    {
+        $news = News::findOrFail($id);
+        $news->increment('likes'); // يزيد العدد +1
+        return response()->json(['likes' => $news->likes]);
+    }
+
 }
