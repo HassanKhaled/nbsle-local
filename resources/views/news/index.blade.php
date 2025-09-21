@@ -20,7 +20,7 @@
         <a href="{{ route('news.index') }}" class="btn btn-secondary ms-2">Reset</a>
     </form>
 
-    <a href="{{ route('news.create') }}" class="btn btn-primary mb-3">Create News</a>
+    <a href="{{ route('news.create') }}" class="btn btn-primary rounded mb-3">Create News</a>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -48,11 +48,11 @@
                         <img src="{{ asset('storage/'.$item->img_path) }}" width="100">
                     </td>
                     <td>
-                        <a href="{{ route('news.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{{ route('news.edit', $item->id) }}" class="btn btn-warning btn-sm rounded">Edit</a>
                         <form action="{{ route('news.destroy', $item->id) }}" method="POST" style="display:inline-block">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this news?')">Delete</button>
+                            <button class="btn btn-danger btn-sm rounded" onclick="return confirm('Delete this news?')">Delete</button>
                         </form>
                     </td>
                 </tr>

@@ -174,7 +174,8 @@ Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->name('news.edi
 Route::put('/news/{news}', [NewsController::class, 'update'])->name('news.update');
 Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
 
-    
+    //services    
+    Route::get('/getServices',[loggedHomeController::class,'getServices'])->name('getServices');
 
    // Reservation Of Admin Faculty
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
