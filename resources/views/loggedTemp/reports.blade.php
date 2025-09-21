@@ -55,6 +55,8 @@
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
+                    <th>University</th>
+                    <th>Faculty</th>
                     <th>Total Data Quality Index (%)</th>
                     <th>Total Data Quality (%)</th>
                     <th>Total Data Quality Description</th>
@@ -81,6 +83,22 @@
             </thead>
             <tbody>
                 <tr>
+            <td>
+                @if($universityId === 'all')
+                    All Universities
+                @else
+                    {{ optional($universities->firstWhere('id', $universityId))->name }}
+                @endif
+            </td>
+            <td>
+                @if($facultyId === 'all')
+                    All Faculties
+                @elseif($facultyId === 'central')
+                    Central
+                @else
+                    {{ optional($faculties->firstWhere('fac_id', $facultyId))->name }}
+                @endif
+            </td>
             <td>{{ number_format($stats['totalDataQualityIndex'], 2) }}%</td>
             <td>
                     @php
