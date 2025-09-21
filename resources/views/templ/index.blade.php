@@ -125,10 +125,11 @@
                                         <span class="mb-0 text-muted">{{ \Carbon\Carbon::parse($item->time)->format('h:i A') }}</span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between mb-3">
+                                <div class="mb-3">
                                     <h5 class="text-bold mb-0">
                                         {{ $item->title }}
                                     </h5>
+                                    <span class="text-muted">{{ Str::limit($item->desc, 100) }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="text-muted d-flex align-items-center me-3">

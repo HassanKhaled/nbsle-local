@@ -214,11 +214,11 @@
     <div class="container">
         @if(Route::currentRouteName() === 'home' or Route::currentRouteName() === 'homepage')
 
-        <div id="visitorCount" class="row visitorCount">
+        <div id="visitorCount1" class="row visitorCount">
             <div class="col-4"></div>
             <div class="col-4">
                 <div>Website visit count:</div>
-                <div class="website-counter"></div>
+                <div class=""> <i class="fas fa-eye"></i> {{ $visitsCount }}</div>
             </div>
             <div class="col-4"></div>
         </div>

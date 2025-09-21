@@ -79,8 +79,12 @@ Route::get('/', function () {
     $devices = \App\Models\devices::all()->count()+ \App\Models\UniDevices::all()->count();
 //    $devices = \App\Models\devices::sum('num_units')+ \App\Models\UniDevices::sum('num_units');
     $news = \App\Models\News::get();
-
-    return view('templ/index',compact('universitys','institutes','labs','devices','news'));
+    \App\Models\Visit::create([
+        'page' => 'home',
+        'ip'   => request()->ip(),
+    ]);
+    $visitsCount = \App\Models\Visit::where('page', 'home')->count();
+    return view('templ/index',compact('universitys','institutes','labs','devices','news','visitsCount'));
 
 })->name('homepage');
 Route::get('/home',function (){
@@ -90,9 +94,14 @@ Route::get('/home',function (){
     $labs = \App\Models\labs::all()->count()+\App\Models\UniLabs::all()->count();
     $devices = \App\Models\devices::all()->count()+ \App\Models\UniDevices::all()->count();
     $news = \App\Models\News::get();
-
+      \App\Models\Visit::create([
+        'page' => 'home',
+        'ip'   => request()->ip(),
+    ]);
+    $visitsCount = \App\Models\Visit::where('page', 'home')->count();
+    
 //    $devices = \App\Models\devices::sum('num_units')+ \App\Models\UniDevices::sum('num_units');
-    return view('templ/index',compact('universitys','institutes','labs','devices','news'));
+    return view('templ/index',compact('universitys','institutes','labs','devices','news','visitsCount'));
 })->name('home');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
