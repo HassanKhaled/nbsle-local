@@ -48,7 +48,6 @@
                             <a class="nav-link fw-bold" href="{{ route('browse') }}">
                                 <h4 class="title">{{$universitys}} </h4>
                                 <h4 class="title">Universities</h4>
-                                <p class="description text-hide">quas molestias excepturi sint</p>
                             </a>            
                         </div>
                     </div>
@@ -60,7 +59,6 @@
                                 <a class="nav-link fw-bold" href="{{ route('institutions') }}">
                                     <h4 class="title">{{$institutes}}</h4>
                                     <h4 class="title">Institutes</h4>
-                                    <p class="description text-hide">quas molestias excepturi sint</p>
                                 </a>
                         </div>
                     </div>
@@ -71,7 +69,6 @@
                             <a class="nav-link fw-bold" href="{{ route('institutions') }}">
                                 <h4 class="title">{{$labs}} </h4>
                                 <h4 class="title">Registered labs</h4>
-                                <p class="description text-hide">quas molestias excepturi sint</p>
                             </a>
                         </div>
                     </div>
@@ -82,7 +79,6 @@
                             <a class="nav-link fw-bold" href="{{ route('allDevices') }}">
                                 <h4 class="title">{{$devices}} </h4>
                                 <h4 class="title">Equipment</h4>
-                                <p class="description text-hide">quas molestias excepturi sint</p>
                             </a>
                         </div>
                     </div>
