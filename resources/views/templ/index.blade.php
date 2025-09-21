@@ -130,20 +130,25 @@
                                         {{ $item->title }}
                                     </h5>
                                 </div>
-                               <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted d-flex align-items-center">
-                                        <i class="fas fa-eye me-1 text-primary"></i> {{ $item->views }}
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted d-flex align-items-center me-3">
+                                        <i class="fas fa-eye text-primary me-1"></i>
+                                        {{ $item->views }}
                                     </span>
-                                    <a href="{{ route('news.public.details', $item) }}" class="btn btn-primary  ms-auto">
-                                        Details
-                                      <i class="fas fa-arrow-right me-1"></i>
 
-                                    </a>
-
-                                    <button class="btn-like" data-id="{{ $item->id }}">
-                                        <i class="fas fa-thumbs-up me-1"></i> (<span id="likes-{{ $item->id }}">{{ $item->likes }}</span>)
+                                    <button class="btn-like d-flex align-items-center" 
+                                            data-id="{{ $item->id }}">
+                                        <i class="fas fa-thumbs-up me-1"></i>
+                                        <span id="likes-{{ $item->id }}">{{ $item->likes }}</span>
                                     </button>
+
+                                    <a href="{{ route('news.public.details', $item) }}" 
+                                    class="btn btn-primary d-flex align-items-center">
+                                        <span class="me-1">Details</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
                                 </div>
+
                             </div>
                             
                         </div>
@@ -185,7 +190,26 @@
 .date-box small {
   font-size: 12px; /* أكبر */
   text-transform: uppercase;
+
 }
+
+.btn-like {
+    border: none;
+    background: transparent;
+    color: #41A451 !important; /* رمادي افتراضي */
+    font-size: 1.1rem; /* حجم النص */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.btn-like i {
+    font-size: 1.2rem; /* تكبير الأيقونة */
+}
+
+.btn-like:hover {
+    color: #0d6efd; /* لون primary عند الهوفر */
+}
+
 </style>
     <!-- Vendor JS Files -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
