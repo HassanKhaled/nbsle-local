@@ -65,6 +65,11 @@
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/browse">Institutions</a>
                 </li>
+                @auth()
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('userworkshop') }}">Workshop</a>
+                    </li>
+                @endauth
                 <li class="nav-item">
                     <a class="nav-link text-white" href='#'> Contact Us</a>
                 </li>

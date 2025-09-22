@@ -205,7 +205,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/FacworkshopSub/{uniID}/{facultyID}/store',[WorkshopsController::class,'storeFacWorkshopDetails']);
 
     // Workshops Reg. form
-    Route::get('/WorkRegistrationForm',[WorkshopsController::class,'GetRegForm']);
+    Route::get('/WorkRegistrationForm',[WorkshopsController::class,'GetRegForm'])->name('userworkshop');
     Route::post('/WorkRegistrationForm/store',[WorkshopsController::class,'storeRegistrationDetails']);
 
 });
