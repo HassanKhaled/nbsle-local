@@ -50,7 +50,7 @@ class loggedHomeController extends Controller
 
         $ahli['unis'] = $stables['universities']->where('type','ahli')->pluck('id');
 ///////// only universities that has entered labs
-        $ahli['unis'] = $stables['labs']->whereIn('uni_id',$ahli['unis'])->pluck('uni_id')->unique();
+        $ahli['labs'] = $stables['labs']->whereIn('uni_id',$ahli['unis'])->pluck('uni_id')->unique();
         $ahli['labs'] = $stables['labs']->whereIn('uni_id',$ahli['unis'])->pluck('id');
         $ahli['central_labs'] = $stables['central_labs']->whereIn('uni_id',$ahli['unis'])->pluck('id');
         // count rows
