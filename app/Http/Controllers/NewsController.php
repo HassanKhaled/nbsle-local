@@ -11,7 +11,15 @@ class NewsController extends Controller
     // Show all news
     public function index()
     {
-        $news = News::with('university')->latest()->paginate(10);
+        $user = auth()->user();
+        if (!$user->has_role('admin')) {
+
+            $news = News::where('university_id', $user->uni_id)->with('university')->latest()->paginate(10);
+
+        } else {
+            $news = News::with('university')->latest()->paginate(10);
+        }
+
         return view('news.index', compact('news'));
     }
 
