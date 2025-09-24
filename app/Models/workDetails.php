@@ -32,7 +32,10 @@ class WorkDetails extends Model
         'rep_name',
         'rep_phone',
         'rep_email',
-        'notes'
+        'notes',
+        'likes',
+        'views',
+        'is_approved'
     ];
 
     protected $dates = ['st_date', 'end_date'];
@@ -51,9 +54,14 @@ class WorkDetails extends Model
 
     public function faculty()
     {
-        return $this->belongsTo(fac_uni::class, 'Faculty_id');
+        return $this->belongsTo(facultys::class, 'Faculty_id');
     }
 
+    // A workshop has many registrations (participants)
+    public function registrations()
+    {
+        return $this->hasMany(WorkReg::class, 'workshop_id');
+    }
     
     protected $casts = [
         'Lec_ar_names'   => 'array',
@@ -62,6 +70,8 @@ class WorkDetails extends Model
         'Lec_en_details' => 'array',
         'fees_types'     => 'array',
         'fees_values'    => 'array',
+        'is_approved'    => 'boolean',
+
     ];
 }
 

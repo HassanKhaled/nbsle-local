@@ -30,11 +30,19 @@
                     <div class="card shadow">
                         <div class="card-header text-center">
                             <h5>Workshop Registration Form</h5>
+                            <small class="text-muted">
+                                You are registering for: <strong>{{ $workshop->workshop_ar_title ?? $workshop->workshop_en_title }}</strong>
+                            </small>
                         </div>
 
                         <div class="card-body">
-                            <form action="{{ url('/WorkRegistrationForm/store') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('storeworkshop') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
+
+                                {{-- Hidden fields for workshop/university/faculty --}}
+                                <input type="hidden" name="workshop_id" value="{{ $workshop->id }}">
+                                <input type="hidden" name="uni_id" value="{{ $workshop->Uni_id }}">
+                                <input type="hidden" name="fac_id" value="{{ $workshop->Faculty_id }}">
 
                                 {{-- Participant Info --}}
                                 <legend>Participant Basic Information</legend>
@@ -81,32 +89,6 @@
                                     </div>
                                 </div>
 
-                                {{-- University --}}
-                                <div class="form-group row">
-                                    <label class="col-md-4 col-form-label text-md-right">University <span class="text-danger">*</span></label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="PartUni" id="PartUni" class="form-control" value="{{ old('PartUni') }}" required>
-                                        @error('PartUni') <small class="text-danger">{{ $message }}</small> @enderror
-                                    </div>
-                                </div>
-
-                                {{-- Faculty --}}
-                                <div class="form-group row">
-                                    <label class="col-md-4 col-form-label text-md-right">Faculty <span class="text-danger">*</span></label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="PartFaculty" id="PartFaculty" class="form-control" value="{{ old('PartFaculty') }}" required>
-                                        @error('PartFaculty') <small class="text-danger">{{ $message }}</small> @enderror
-                                    </div>
-                                </div>
-
-                                {{-- Department --}}
-                                <div class="form-group row">
-                                    <label class="col-md-4 col-form-label text-md-right">Department <span class="text-danger">*</span></label>
-                                    <div class="col-md-6">
-                                        <input type="text" name="PartDept" id="PartDept" class="form-control" value="{{ old('PartDept') }}" required>
-                                        @error('PartDept') <small class="text-danger">{{ $message }}</small> @enderror
-                                    </div>
-                                </div>
 
                                 <hr>
 

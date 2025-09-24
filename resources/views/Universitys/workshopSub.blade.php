@@ -281,5 +281,10 @@
                 $('#WorkshopArabicName, #WorkshopEnglishName').prop('disabled', false).prop('required', true);
             }
         });
+
+        // Trigger the default selection on page load
+        $(document).ready(function() {
+            $('input[name=optradio]:checked').trigger('change');
+        });
     </script>
 @endsection

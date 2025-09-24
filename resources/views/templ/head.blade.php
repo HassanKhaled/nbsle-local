@@ -123,7 +123,7 @@
 
                     @auth()
                         <li class="nav-item">
-                            <a class="nav-link fw-bold" href="{{ route('userworkshop') }}">Workshop</a>
+                            <a class="nav-link fw-bold" href="{{ route('workshops.index') }}">Workshops</a>
                         </li>
                     @endauth
                     <li class="nav-item"><a class="nav-link fw-bold" href="/contact">Contact Us</a></li>

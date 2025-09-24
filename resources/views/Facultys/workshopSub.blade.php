@@ -7,7 +7,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-10">
 
-                    {{-- ✅ Flash Messages --}}
+                    {{-- Flash Messages --}}
                     @if(session('message'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('message') }}
@@ -15,7 +15,7 @@
                         </div>
                     @endif
 
-                    {{-- ✅ Validation Errors --}}
+                    {{-- Validation Errors --}}
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <strong>There were some problems with your input:</strong>
@@ -197,76 +197,80 @@
     </div>
 </main>
 
-{{-- ✅ Scripts --}}
+{{-- Scripts --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"/>
 
 <script>
-$(function () {
-    // Datepickers
-    $("#WorkshopSDate").datepicker({
-        format: "mm/dd/yyyy",
-        todayHighlight: true,
-        autoclose: true,
-        startDate: "today"
-    }).on('changeDate', function (e) {
-        $('#WorkshopEDate').prop('disabled', false).datepicker({
+    $(function () {
+        // Datepickers
+        $("#WorkshopSDate").datepicker({
             format: "mm/dd/yyyy",
-            startDate: e.date,
-            autoclose: true
+            todayHighlight: true,
+            autoclose: true,
+            startDate: "today"
+        }).on('changeDate', function (e) {
+            $('#WorkshopEDate').prop('disabled', false).datepicker({
+                format: "mm/dd/yyyy",
+                startDate: e.date,
+                autoclose: true
+            });
+        });
+
+        // Language toggles
+        $(".radioBtn").on('change', function () {
+            let lang = $("input[name=optradio]:checked").val();
+            if (lang === "arabic") {
+                $("#WorkshopArabicName").prop({ required: true, disabled: false });
+                $("#WorkshopEnglishName").prop({ required: false, disabled: true });
+            } else if (lang === "english") {
+                $("#WorkshopArabicName").prop({ required: false, disabled: true });
+                $("#WorkshopEnglishName").prop({ required: true, disabled: false });
+            } else {
+                $("#WorkshopArabicName, #WorkshopEnglishName").prop({ required: true, disabled: false });
+            }
         });
     });
-
-    // Language toggles
-    $(".radioBtn").on('change', function () {
-        let lang = $("input[name=optradio]:checked").val();
-        if (lang === "arabic") {
-            $("#WorkshopArabicName").prop({ required: true, disabled: false });
-            $("#WorkshopEnglishName").prop({ required: false, disabled: true });
-        } else if (lang === "english") {
-            $("#WorkshopArabicName").prop({ required: false, disabled: true });
-            $("#WorkshopEnglishName").prop({ required: true, disabled: false });
-        } else {
-            $("#WorkshopArabicName, #WorkshopEnglishName").prop({ required: true, disabled: false });
-        }
+        
+    // Trigger the default selection on page load
+    $(document).ready(function() {
+        $('input[name=optradio]:checked').trigger('change');
     });
-});
+    // Generate lecturer fields
+    function generateLec() {
+        let count = parseInt($("#nolec").val());
+        let lang = $("input[name=optradio]:checked").val();
 
-// Generate lecturer fields
-function generateLec() {
-    let count = parseInt($("#nolec").val());
-    let lang = $("input[name=optradio]:checked").val();
+        $("#lecName, #lecAcDet, #lecName2, #lecAcDet2").empty();
 
-    $("#lecName, #lecAcDet, #lecName2, #lecAcDet2").empty();
-
-    for (let i = 0; i < count; i++) {
-        if (lang === "arabic" || lang === "bothLan") {
-            $("#lecName").append(`<input class="form-control mb-2" type="text" name="LecturerArabicName${i}" placeholder="Arabic Name" required>`);
-            $("#lecAcDet").append(`<input class="form-control mb-2" type="text" name="LecturerDetailsInAr${i}" placeholder="Academic Details (AR)" required>`);
-        }
-        if (lang === "english" || lang === "bothLan") {
-            $("#lecName2").append(`<input class="form-control mb-2" type="text" name="LecturerEnglishName${i}" placeholder="English Name" required>`);
-            $("#lecAcDet2").append(`<input class="form-control mb-2" type="text" name="LecturerDetailsInEng${i}" placeholder="Academic Details (EN)" required>`);
+        for (let i = 0; i < count; i++) {
+            if (lang === "arabic" || lang === "bothLan") {
+                $("#lecName").append(`<input class="form-control mb-2" type="text" name="LecturerArabicName${i}" placeholder="Arabic Name" required>`);
+                $("#lecAcDet").append(`<input class="form-control mb-2" type="text" name="LecturerDetailsInAr${i}" placeholder="Academic Details (AR)" required>`);
+            }
+            if (lang === "english" || lang === "bothLan") {
+                $("#lecName2").append(`<input class="form-control mb-2" type="text" name="LecturerEnglishName${i}" placeholder="English Name" required>`);
+                $("#lecAcDet2").append(`<input class="form-control mb-2" type="text" name="LecturerDetailsInEng${i}" placeholder="Academic Details (EN)" required>`);
+            }
         }
     }
-}
 
-// Generate fees fields
-function generateFees() {
-    let type = $("#nofees").val();
-    $("#categoryName, #categoryAmount").empty();
+    // Generate fees fields
+    function generateFees() {
+        let type = $("#nofees").val();
+        $("#categoryName, #categoryAmount").empty();
 
-    if (type == 1) {
-        $("#categoryName").append(`<input class="form-control" type="text" value="Unified Fees" readonly>`);
-        $("#categoryAmount").append(`<input class="form-control" type="number" name="samefees" placeholder="EGP" required>`);
-    } else if (type == 2) {
-        $("#categoryName").append(`<input class="form-control mb-2" type="text" value="Internal Members" readonly>`);
-        $("#categoryAmount").append(`<input class="form-control mb-2" type="number" name="internalfees" placeholder="EGP" required>`);
+        if (type == 1) {
+            $("#categoryName").append(`<input class="form-control" type="text" value="Unified Fees" readonly>`);
+            $("#categoryAmount").append(`<input class="form-control" type="number" name="samefees" placeholder="EGP" required>`);
+        } else if (type == 2) {
+            $("#categoryName").append(`<input class="form-control mb-2" type="text" value="Internal Members" readonly>`);
+            $("#categoryAmount").append(`<input class="form-control mb-2" type="number" name="internalfees" placeholder="EGP" required>`);
 
-        $("#categoryName").append(`<input class="form-control" type="text" value="External Members" readonly>`);
-        $("#categoryAmount").append(`<input class="form-control" type="number" name="externalfees" placeholder="EGP" required>`);
+            $("#categoryName").append(`<input class="form-control" type="text" value="External Members" readonly>`);
+            $("#categoryAmount").append(`<input class="form-control" type="number" name="externalfees" placeholder="EGP" required>`);
+        }
     }
-}
 </script>
 @endsection

@@ -195,6 +195,16 @@ Route::group(['middleware' => ['auth']], function() {
    // Reservation Of Admin Faculty
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
    Route::post('/adminReservation/{id}/confirm', [ReservationController::class, 'confirm'])->name('confirm');
+    
+    // Workshops for Admin
+    Route::get('/adminworkshops', [WorkshopsController::class, 'showAdminWorkshops'])->name('admin.workshops.index');
+    Route::post('/adminworkshops/{id}/approve', [WorkshopsController::class, 'approve'])->name('admin.workshops.approve');
+   
+    Route::get('/faculties-by-university/{uniId}', function($uniId){
+        return App\Models\fac_uni::where('uni_id', $uniId)->orderBy('name')->get(['id','name']);
+    })->name('admin.faculties.by.uni');
+    
+    Route::get('/workshops/reservations', [WorkshopsController::class, 'workshopReservations'])->name('admin.workshops.reservations');
 
     // Workshops Adv. Uni
     Route::get('/UniworkshopSub/{uniID}',[WorkshopsController::class,'GetSemFormUni'])->name('uniworkshop');
@@ -204,8 +214,13 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/FacworkshopSub/{uniID}/{facultyID}',[WorkshopsController::class,'GetSemFormFac'])->name('facworkshop');
     Route::post('/FacworkshopSub/{uniID}/{facultyID}/store',[WorkshopsController::class,'storeFacWorkshopDetails']);
 
+    // Workshops Users
+    Route::get('/workshops', [WorkshopsController::class, 'listWorkshops'])->name('workshops.index');
+    Route::get('/workshops/{id}', [WorkshopsController::class, 'showWorkshop'])->name('workshops.show');
+    Route::post('/workshops/{id}/like', [WorkshopsController::class, 'likeWorkshop'])->name('workshops.like');
+
     // Workshops Reg. form
-    Route::get('/WorkRegistrationForm',[WorkshopsController::class,'GetRegForm'])->name('userworkshop');
-    Route::post('/WorkRegistrationForm/store',[WorkshopsController::class,'storeRegistrationDetails']);
+    Route::get('/WorkRegistrationForm/{workshop_id}',[WorkshopsController::class,'GetRegForm'])->name('userworkshop');
+    Route::post('/WorkRegistrationForm/store',[WorkshopsController::class,'storeRegistrationDetails'])->name('storeworkshop');
 
 });
