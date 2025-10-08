@@ -12,6 +12,13 @@
             <i class="bi bi-file-earmark-excel"></i> Download Excel
         </button>
     </div>
+    @if (auth()->user()->role_id == 1)
+        <form method="GET" action="{{ route('university.ranks') }}">
+            <button type="submit" class="btn btn-success mb-3">
+                📊  Rank  
+            </button>
+        </form>
+    @endif
 
     {{-- Filters --}}
     <div class="card shadow-sm mb-4">

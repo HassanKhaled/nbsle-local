@@ -153,6 +153,11 @@ Route::any('/importthat/{item}',[ExpAndImpController::class,'import'])->name('im
 
 Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/university-ranks', [ReportController::class, 'calculateUniversityRanks'])
+    ->name('university.ranks');
+
+   Route::get('/university-ranks/export', [ReportController::class, 'exportToExcel'])
+    ->name('university.ranks.export');
     //News 
     Route::get('/news', [NewsController::class, 'index'])->name('news.index');
     Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');

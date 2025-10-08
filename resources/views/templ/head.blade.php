@@ -71,6 +71,9 @@
 .navbar-toggler:hover{
     border: white;
 }
+.bg-color{
+ background: #1e4356;
+}
 }
 </style>
 </head>
