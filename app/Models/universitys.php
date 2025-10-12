@@ -47,5 +47,10 @@ class universitys extends Model
     {
         return $this->hasMany(News::class, 'university_id');
     }
+
+    public function workshops()
+    {
+        return $this->hasMany(workDetails::class, 'Uni_id');
+    }
 }
 

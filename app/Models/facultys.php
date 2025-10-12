@@ -30,4 +30,10 @@ class facultys extends Model
     {
         return $this->hasMany(Reservation::class, 'fac_id');
     }
+
+    // A faculty has many workshops
+    public function workshops()
+    {
+        return $this->hasMany(WorkDetails::class, 'Faculty_id');
+    }
 }

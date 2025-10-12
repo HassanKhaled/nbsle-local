@@ -21,6 +21,7 @@ use App\Http\Controllers\ReservationController;
 use App\Models\User;
 use App\Http\Controllers\DeviceRatingController;
 use App\Http\Controllers\Reportcontroller;
+use App\Http\Controllers\WorkshopsController;
 
 
 /*
@@ -195,11 +196,49 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/ratings/create', [DeviceRatingController::class, 'create'])->name('ratings.create');
     Route::post('/ratings', [DeviceRatingController::class, 'store'])->name('ratings.store');
     Route::put('/ratings/{rating}', [DeviceRatingController::class, 'update'])->name('ratings.update');
+    //edit
+    //News 
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
+    Route::post('/news', [NewsController::class, 'store'])->name('news.store');
+    Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->name('news.edit');
+    Route::put('/news/{news}', [NewsController::class, 'update'])->name('news.update');
+    Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
+    Route::delete('/news-images/{id}', [NewsController::class, 'destroyImage'])->name('newsImages.destroy');
+    Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');    
+
 //edit
   
     
    // Reservation Of Admin Faculty
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
    Route::post('/adminReservation/{id}/confirm', [ReservationController::class, 'confirm'])->name('confirm');
+    
+    // Workshops for Admin
+    Route::get('/adminworkshops', [WorkshopsController::class, 'showAdminWorkshops'])->name('admin.workshops.index');
+    Route::post('/adminworkshops/{id}/approve', [WorkshopsController::class, 'approve'])->name('admin.workshops.approve');
+   
+    Route::get('/faculties-by-university/{uniId}', function($uniId){
+        return App\Models\fac_uni::where('uni_id', $uniId)->orderBy('name')->get(['id','name']);
+    })->name('admin.faculties.by.uni');
+    
+    Route::get('/workshops/reservations', [WorkshopsController::class, 'workshopReservations'])->name('admin.workshops.reservations');
+
+    // Workshops Adv. Uni
+    Route::get('/UniworkshopSub/{uniID}',[WorkshopsController::class,'GetSemFormUni'])->name('uniworkshop');
+    Route::get('/ajax-autocomplete-fname',[WorkshopsController::class,'searchFacultyName']);
+    Route::post('/UniworkshopSub/{uniID}/store',[WorkshopsController::class,'storeUniWorkshopDetails']);
+    // Workshops Adv. Faculty
+    Route::get('/FacworkshopSub/{uniID}/{facultyID}',[WorkshopsController::class,'GetSemFormFac'])->name('facworkshop');
+    Route::post('/FacworkshopSub/{uniID}/{facultyID}/store',[WorkshopsController::class,'storeFacWorkshopDetails']);
+
+    // Workshops Users
+    Route::get('/workshops', [WorkshopsController::class, 'listWorkshops'])->name('workshops.index');
+    Route::get('/workshops/{id}', [WorkshopsController::class, 'showWorkshop'])->name('workshops.show');
+    Route::post('/workshops/{id}/like', [WorkshopsController::class, 'likeWorkshop'])->name('workshops.like');
+
+    // Workshops Reg. form
+    Route::get('/WorkRegistrationForm/{workshop_id}',[WorkshopsController::class,'GetRegForm'])->name('userworkshop');
+    Route::post('/WorkRegistrationForm/store',[WorkshopsController::class,'storeRegistrationDetails'])->name('storeworkshop');
 
 });

@@ -42,4 +42,9 @@ class fac_uni extends Model
     {
         return $this->hasMany(facultys::class, 'fac_id');
     }
+
+    public function workshops()
+    {
+        return $this->hasMany(workDetails::class, 'Faculty_id');
+    }
 }
