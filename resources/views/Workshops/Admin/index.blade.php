@@ -1,7 +1,7 @@
-@extends('templ.head')
 
-@section('tmplt-contnt')
-<div class="container py-5 mt-5">
+@extends('loggedTemp.head')
+@section('loggedContent')
+<div class="container-fluid py-5 mt-5">
         {{-- Page Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
         <h2 class="fw-bold mb-0">
@@ -34,7 +34,7 @@
 
             <div class="col-md-3">
                 <label class="form-label">University</label>
-                <select name="university" id="filter-university" class="form-select">
+                <select name="university" id="filter-university" class="form-control">
                     <option value="">-- All --</option>
                     @foreach($universities as $uni)
                         <option value="{{ $uni->id }}" {{ request('university') == $uni->id ? 'selected' : '' }}>
@@ -46,7 +46,7 @@
 
             <div class="col-md-3">
                 <label class="form-label">Faculty</label>
-                <select name="faculty" id="filter-faculty" class="form-select">
+                <select name="faculty" id="filter-faculty" class="form-control">
                     <option value="">-- All --</option>
                     @foreach($faculties as $fac)
                         <option value="{{ $fac->id }}" {{ request('faculty') == $fac->id ? 'selected' : '' }}>
@@ -58,7 +58,7 @@
 
             <div class="col-md-2">
                 <label class="form-label">Status</label>
-                <select name="status" class="form-select">
+                <select name="status" class="form-control">
                     <option value="">-- All --</option>
                     <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
                     <option value="pending"  {{ request('status') == 'pending'  ? 'selected' : '' }}>Pending</option>
@@ -66,7 +66,7 @@
             </div>
 
             <div class="col-md-1 d-grid">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i></button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i>search</button>
             </div>
             
         </div>
