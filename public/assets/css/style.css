@@ -70,11 +70,11 @@ h1, h2, h3, h4, h5, h6, .font-primary {
 # Header
 --------------------------------------------------------------*/
 #header {
-  /* height: 100px; */
+  height: 100px;
   transition: all 0.5s;
   z-index: 997;
   transition: all 0.5s;
-  background: #1e4356;
+  background: #fff;
 }
 
 #header.header-transparent {
@@ -144,7 +144,7 @@ h1, h2, h3, h4, h5, h6, .font-primary {
   font-family: "Open Sans", sans-serif;
   /*font-size: 14px;*/
     font-size: 16px;
-    color:#fff;
+    color:#000;
 
     /*color: #a2cce3;*/
     /*color: #CEF046;*/
@@ -352,26 +352,26 @@ h1, h2, h3, h4, h5, h6, .font-primary {
     /*transform: translateY(5px) rotate(2deg);*/
 }
 
-#hero .carousel-control-prev, #hero .carousel-control-next {
+/* #hero .carousel-control-prev, #hero .carousel-control-next {
   width: 10%;
-}
+} */
 
-#hero .carousel-control-next-icon, #hero .carousel-control-prev-icon {
+/* #hero .carousel-control-next-icon, #hero .carousel-control-prev-icon {
   background: none;
   font-size: 48px;
   line-height: 1;
   width: auto;
   height: auto;
-}
+} */
 
-@media (min-width: 1024px) {
-  #hero p {
-    width: 60%;
-  }
-  #hero .carousel-control-prev, #hero .carousel-control-next {
-    width: 5%;
-  }
-}
+    /* @media (min-width: 1024px) {
+      #hero p {
+        width: 60%;
+      }
+      #hero .carousel-control-prev, #hero .carousel-control-next {
+        width: 5%;
+      }
+    } */
 
 @media (max-width: 768px) {
   #hero::after {
