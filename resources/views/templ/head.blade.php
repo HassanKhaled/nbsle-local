@@ -71,6 +71,9 @@
 .navbar-toggler:hover{
     border: white;
 }
+.bg-color{
+ background: #1e4356;
+}
 }
 </style>
 </head>
@@ -78,11 +81,11 @@
 <!-- ======= Header ======= -->
 
 <header id="header" class="fixed-top">
-    <div class="container">
+    <div class="container-fluid">
         <nav class="navbar navbar-expand-lg w-100">
             <!-- Left Logo -->
             <a class="navbar-brand" href="/">
-                <img src="{{ asset('2.png') }}" alt="" class="nav-logo">
+                <img src="{{ asset('logo.png') }}" alt="" class="nav-logo">
             </a>
 
             <!-- Toggle Button (Mobile) -->
@@ -93,7 +96,7 @@
 
             <!-- Navbar Links -->
             <div class="collapse navbar-collapse " id="mainNavbar">
-                <ul class="navbar-nav ms-auto text-white">
+                <ul class="navbar-nav m-auto text-white">
                     @guest
                         <li class="nav-item"><a class="nav-link fw-bold" href="/">Home</a></li>
                     @endguest

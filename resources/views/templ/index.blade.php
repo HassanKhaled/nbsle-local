@@ -2,41 +2,46 @@
 
 @section('tmplt-contnt')
     <main id="main">
-        <!-- ======= Hero Section ======= -->
-        <section id="hero" class="d-flex justify-content-center align-items-center">
-            <div id="carouselExampleIndicators" class="carousel slide w-100 " data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
-                </ol>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img class="d-block w-100 img-fluid" src="{{asset('1b.png')}}"   alt="First slide" >
-                    </div>
-                    <div class="carousel-item">
-                        <img class="d-block w-100 img-fluid" src="{{asset('2b-last-ed.png')}}"  alt="Second slide" >
-                    </div>
-                    <div class="carousel-item">
-                        <img class="d-block w-100 img-fluid" src="{{asset('3b.png')}}"   alt="Third slide" >
-                    </div>
-                    <div class="carousel-item">
-                        <img class="d-block w-100 img-fluid" src="{{asset('4b.png')}}"   alt="Forth slide" >
-                    </div>
+       <!-- ======= Hero Section ======= -->
+    <section id="her" class="d-flex justify-content-center align-items-center p-0">
+        <div id="heroCarousel" class="carousel slide w-100" data-bs-ride="carousel">
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            </div>
+
+            <!-- Carousel Inner -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{{ asset('NewBanner.png') }}" class="d-block w-100 img-fluid" alt="Slide 1">
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('NewBanner.png') }}" class="d-block w-100 img-fluid" alt="Slide 2">
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('NewBanner.png') }}" class="d-block w-100 img-fluid" alt="Slide 3">
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('NewBanner.png') }}" class="d-block w-100 img-fluid" alt="Slide 4">
                 </div>
             </div>
-        </section>
-        <!-- End Hero -->
-<!-- Previous and Next button-->
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+    <!-- End Hero Section -->
 
         <!-- ======= Statistics Section ======= -->
         <section class="services">

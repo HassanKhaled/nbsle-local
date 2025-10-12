@@ -4,7 +4,7 @@
   <main id="main">
 
     <!-- ======= Our Portfolio Section ======= -->
-    <section class="breadcrumbs bg-white shadow-lg">
+    <section class="breadcrumbs bg-color shadow-lg">
       <div class="container">
       @include('templ.flash-message')
           <div class="d-flex justify-content-between align-items-center">
