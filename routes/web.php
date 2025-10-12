@@ -17,8 +17,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FacUniController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\ReservationController;
+ use App\Http\Controllers\NewsController;
 use App\Models\User;
 use App\Http\Controllers\DeviceRatingController;
+use App\Http\Controllers\Reportcontroller;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -70,21 +74,34 @@ Route::get('/', function () {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     $uniqueUnis = \App\Models\labs::select('uni_id')->distinct()->get();
     $universitys = \App\Models\universitys::whereIn('id',$uniqueUnis)->where('type','!=','Institution')->count();
-    $institutes =\App\Models\universitys::whereIn('id',$uniqueUnis)->where('type','Institution')->count() ;
+    $institutes =\App\Models\universitys::where('type','Institution')->count() ;
     $labs = \App\Models\labs::all()->count()+\App\Models\UniLabs::all()->count();
     $devices = \App\Models\devices::all()->count()+ \App\Models\UniDevices::all()->count();
 //    $devices = \App\Models\devices::sum('num_units')+ \App\Models\UniDevices::sum('num_units');
-    return view('templ/index',compact('universitys','institutes','labs','devices'));
-    
+    $news = \App\Models\News::get();
+    \App\Models\Visit::create([
+        'page' => 'home',
+        'ip'   => request()->ip(),
+    ]);
+    $visitsCount = \App\Models\Visit::where('page', 'home')->count();
+    return view('templ/index',compact('universitys','institutes','labs','devices','news','visitsCount'));
+
 })->name('homepage');
 Route::get('/home',function (){
     $uniqueUnis = \App\Models\labs::select('uni_id')->distinct()->get();
     $universitys = \App\Models\universitys::whereIn('id',$uniqueUnis)->where('type','!=','Institution')->count();
-    $institutes =\App\Models\universitys::whereIn('id',$uniqueUnis)->where('type','Institution')->count() ;
+    $institutes =\App\Models\universitys::where('type','Institution')->count() ;
     $labs = \App\Models\labs::all()->count()+\App\Models\UniLabs::all()->count();
     $devices = \App\Models\devices::all()->count()+ \App\Models\UniDevices::all()->count();
+    $news = \App\Models\News::get();
+      \App\Models\Visit::create([
+        'page' => 'home',
+        'ip'   => request()->ip(),
+    ]);
+    $visitsCount = \App\Models\Visit::where('page', 'home')->count();
+    
 //    $devices = \App\Models\devices::sum('num_units')+ \App\Models\UniDevices::sum('num_units');
-    return view('templ/index',compact('universitys','institutes','labs','devices'));
+    return view('templ/index',compact('universitys','institutes','labs','devices','news','visitsCount'));
 })->name('home');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -96,6 +113,11 @@ Route::get('/facbrowse/{uni_id}/{uniname}/{facID}/{facName}',[FacultyBrowseContr
 Route::get('/facbrowse/{uni_id}/{uniname}',[FacultyBrowseController::class,'centralLabs']) ->name('browsecentrallab'); // browse central labs in a uni
 
 Route::get('/device/{dev_id}/{lab_id}/{central}/{uni_id}/{uniname}/{facID?}/{facName?}',[DeviceLabController::class,'getDevice']) ->name('browsedevice');
+Route::get('/news/public/details/{id}', [NewsController::class, 'publicDetails'])->name('news.public.details');
+Route::post('/news/{id}/like', [NewsController::class, 'addLike'])->name('news.like');
+// all devices
+Route::get('/all-devices', [DeviceLabController::class, 'getAllDevices'])->name('allDevices');
+
 
 Auth::routes(['register' => true]);
 Auth::routes();
@@ -129,6 +151,24 @@ Route::any('/exporttoExcel/{what}',[ExpAndImpController::class,'exporttoExcel'])
 Route::any('/downloadTemplate/{labs}',[ExpAndImpController::class,'downloadTemplate'])->name('downloadTemplate');
 Route::any('/importthat/{item}',[ExpAndImpController::class,'import'])->name('importthat');
 
+Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/university-ranks', [ReportController::class, 'calculateUniversityRanks'])
+    ->name('university.ranks');
+
+   Route::get('/university-ranks/export', [ReportController::class, 'exportToExcel'])
+    ->name('university.ranks.export');
+    //News 
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
+    Route::post('/news', [NewsController::class, 'store'])->name('news.store');
+    Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->name('news.edit');
+    Route::put('/news/{news}', [NewsController::class, 'update'])->name('news.update');
+    Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
+    Route::delete('/news-images/{id}', [NewsController::class, 'destroyImage'])->name('newsImages.destroy');
+    Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');  
+});
+
 Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles', RoleController::class);
     Route::resource('Users', UserController::class);
@@ -139,7 +179,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('DeviceLab',DeviceLabController::class);
     Route::resource('UniLab',UniversityLabsController::class);
     Route::resource('UniDevice',UniversityDevicesController::class);
-
 
     // Booking (Reservation) Devices ==> User
 
@@ -156,8 +195,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/ratings/create', [DeviceRatingController::class, 'create'])->name('ratings.create');
     Route::post('/ratings', [DeviceRatingController::class, 'store'])->name('ratings.store');
     Route::put('/ratings/{rating}', [DeviceRatingController::class, 'update'])->name('ratings.update');
+//edit
+  
+    
    // Reservation Of Admin Faculty
-
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
    Route::post('/adminReservation/{id}/confirm', [ReservationController::class, 'confirm'])->name('confirm');
+
 });

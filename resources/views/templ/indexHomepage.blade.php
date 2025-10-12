@@ -1,8 +1,8 @@
 @extends('templ.head')
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
 
 @section('tmplt-contnt')
     <main id="main">
@@ -47,7 +47,7 @@
             <div class="container">
                 <div class="row">
                 @if(Auth()->user()->hasRole('university'))    
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up">
+                    <div class="col-md-6 col-lg-3 " data-aos="fade-up">
                         <div class="icon-box icon-box-pink">
                             <div class="icon"><i class="bx bxs-school"></i></div>
                             <h4 class="title">{{$stables['faculties']->count()}} </h4>
@@ -57,7 +57,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-md-6 col-lg-3 " data-aos="fade-up" data-aos-delay="100">
                         <div class="icon-box icon-box-blue">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$stables['labs']->count()}}</h4>
@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+                    <div class="col-md-6 col-lg-3 " data-aos="fade-up" data-aos-delay="200">
                         <div class="icon-box icon-box-cyan">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$stables['central_labs']->count()}} </h4>
@@ -75,7 +75,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
                         <div class="icon-box icon-box-cyan">
                             <div class="icon"><i class="bx bxs-plug"></i></div>
                             <h4 class="title">{{$stables['devices']->count()}} </h4>
@@ -84,7 +84,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="250">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="250">
                         <div class="icon-box icon-box-green">
                             <div class="icon"><i class="bx bx-plug"></i></div>
                             <h4 class="title">{{$stables['central_devices']->count()}} </h4>
@@ -95,7 +95,7 @@
                 @endif
                 @if(Auth()->user()->hasRole('faculty'))
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up">
                         <div class="icon-box icon-box-pink">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$stables['labs']->count()}}</h4>
@@ -105,7 +105,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
                         <div class="icon-box icon-box-blue">
                             <div class="icon"><i class="bx bxs-plug"></i></div>
                             <h4 class="title">{{$stables['devices']->count()}}</h4>
@@ -119,7 +119,7 @@
 
                 @if(Auth()->user()->hasRole('department'))
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up">
                         <div class="icon-box icon-box-pink">
                             <div class="icon"><i class="bx bxs-vial"></i></div>
                             <h4 class="title">{{$stables['labs']->count()}}</h4>
@@ -129,7 +129,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
                         <div class="icon-box icon-box-blue">
                             <div class="icon"><i class="bx bxs-plug"></i></div>
                             <h4 class="title">{{$stables['devices']->count()}}</h4>
@@ -148,15 +148,14 @@
 
     <!-- Vendor JS Files -->
 
-    <script src="assets/vendor/aos/aos.js"></script>
+    <!-- <script src="assets/vendor/aos/aos.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
     <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
     <script src="assets/vendor/php-email-form/validate.js"></script>
-    <script src="assets/vendor/purecounter/purecounter.js"></script>
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-    <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+    <script src="assets/vendor/waypoints/noframework.waypoints.js"></script> -->
 
     <!-- Template Main JS File -->
-    <script src="assets/js/main.js"></script>
+    <!-- <script src="assets/js/main.js"></script> -->
 @endsection

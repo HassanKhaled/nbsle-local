@@ -31,7 +31,9 @@ class labs extends Model
 
     public function devices()
     {
-        return $this->belongsToMany(devices::class, 'device_lab')->using(device_lab::class);
+        //edit
+       // return $this->belongsToMany(devices::class, 'device_lab', 'lab_id', 'device_id');
+        return $this->hasMany(devices::class, 'lab_id');
     }
     public function whereDept($dept){
         $mod = $this;
@@ -55,4 +57,17 @@ class labs extends Model
 //        return $this->belongsToMany(Staff::class, 'LabStaff',
 //            'lab_id','manager_id')->withPivot('central');
     }
+
+
+    public function university()
+    {
+        return $this->belongsTo(universitys::class, 'uni_id');
+    }
+
+    public function faculty()
+    {
+        return $this->belongsTo(facultys::class, 'fac_id');
+    }
+
+   
 }

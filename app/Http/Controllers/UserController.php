@@ -16,8 +16,7 @@ use Illuminate\Support\Facades\Redirect;
 use Spatie\Permission\Models\Role;
 use function Sodium\add;
 
-class
-UserController extends Controller
+class UserController extends Controller
 {
 
 

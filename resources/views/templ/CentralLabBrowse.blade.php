@@ -16,11 +16,11 @@
         }
         /* Style the buttons */
         .btn {
-            border: none;
+            /* border: none;
             outline: none;
             margin: 5px 5px;
             background-color: transparent;
-            cursor: pointer;
+            cursor: pointer; */
             /*text-decoration: underline;*/
             /*border-bottom: 1px solid black;*/
         }
@@ -39,11 +39,12 @@
             border-bottom: 1px solid #A7DA30;
         }
 
+
     </style>
     <main id="main">
 
         <!-- ======= Our Portfolio Section ======= -->
-        <section class="breadcrumbs">
+        <section class="breadcrumbs bg-color shadow-lg">
             <div class="container">
 
                 <div class="d-flex justify-content-between align-items-center">
@@ -58,10 +59,10 @@
         </section><!-- End Our Portfolio Section -->
 
         <!-- ======= Portfolio Section ======= -->
-        <section class="portfolio">
-            <div class="container">
+    <section class="portfolio">
+        <div class="container">
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-lg-12">
                         <div id="myBtnContainer">
                             <button class="btn col-lg-3 mr-5 font-weight-bold" onclick="filterSelection('all')"> Show all</button>
@@ -71,8 +72,38 @@
                             @endforeach
                         </div>
                     </div>
+                </div> -->
+
+                 <div  class="card shadow-sm border-0">
+                    <div class="card-header text-white text-center py-3" style="background-color: #107869;">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-filter me-2"></i>Filter by Laboratory
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="myBtnContainer" class="row g-3 justify-content-center">
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <button class="btn btn-outline-success btn-lg w-100 shadow-sm rounded-pill text-wrap"
+                                        onclick="filterSelection('all')">
+                                    <i class="fas fa-th-large me-2"></i>Show all
+                                </button>
+                            </div>
+                            <div class="col-lg-9"></div>
+                            <!-- Lab Filter Buttons -->
+                            @foreach($labss as $lab)
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <button class="btn btn-outline-success btn-lg w-100 shadow-sm rounded-pill text-wrap"  
+                                        onclick="filterSelection('l{{$lab->id}}')">
+                                    <i class="fas fa-flask me-2"></i>
+                                    <small class="d-block">{{$lab->name ?? $lab->Arabicname}}</small>
+                                </button>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
-                <div class="row portfolio-container" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
+
+                <!-- <div class="row portfolio-container" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
                     @foreach($labss as $lab)
                         <label hidden>{{$devices = \App\Models\UniDevices::where('lab_id',$lab->id)->get()}}</label>
                         @foreach($devices as $device)
@@ -86,9 +117,69 @@
                             </div>
                         @endforeach
                     @endforeach
-                </div>
+                </div> -->
+
+ <div class="row portfolio-container g-4" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
+                @foreach($labss as $lab)
+                        <label hidden>{{$devices = \App\Models\UniDevices::where('lab_id',$lab->id)->get()}}</label>
+                    @if($devices->isEmpty())
+                        <div class="col-lg-12  filterDiv l{{$lab->id}}">
+                            <div class="card h-100 shadow-sm border-0">
+                                <div class="card-body text-center p-3">
+                                    <h6 class="card-title fw-bold text-dark mb-2">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        No devices available in this laboratory
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        @foreach($devices as $device)
+                            <div class="col-lg-3 col-md-6 col-sm-6 portfolio-wrap filterDiv l{{$lab->id}}">
+                                <div class="card  h-100 shadow-sm border-0">
+                                    <!-- Device Image -->
+                                    <div class="position-relative overflow-hidden">
+                                    <a  href="{{route('browsedevice',[$device->id,$lab->id,'1',$uni_id, $uniname])}}" 
+                                    class="text-decoration-none">
+                                        <img src="{{asset($device->ImagePath)}}" 
+                                            class="card-img-top img-fluid" 
+                                            style="height: 200px; object-fit: cover;" 
+                                            alt="{{$device->name ?? $device->Arabicname}}">
+                                    </a>
+                                    
+                                
+                                </div>
+
+                                <!-- Device Info -->
+                                <div class="card-body text-center p-3">
+                                    <h6 class="card-title fw-bold text-dark mb-2 text-truncate" 
+                                        title="{{$device->name ?? $device->Arabicname}}">
+                                        {{$device->name ?? $device->Arabicname}}
+                                    </h6>
+                                    
+                                    <p class="card-text text-muted small mb-3">
+                                        <i class="fas fa-building me-1"></i>
+                                        {{$lab->name ?? $lab->Arabicname}}
+                                    </p>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-grid gap-2">
+                                        <a href="{{route('browsedevice',[$device->id,$lab->id,'1',$uni_id, $uniname])}}" 
+                                        class="btn btn-success btn-sm rounded-pill">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>                            
+                            </div>
+                        </div>
+                        @endforeach
+                    @endif
+                @endforeach
             </div>
-        </section><!-- End Portfolio Section -->
+           
+        </div>
+    </section><!-- End Portfolio Section -->
     </main>
 
 

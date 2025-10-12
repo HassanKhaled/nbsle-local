@@ -3,7 +3,7 @@
     <main id="main">
 
         <!-- ======= Top green Section ======= -->
-        <section class="breadcrumbs">
+        <section class="breadcrumbs bg-color shadow-lg">
             <div class="container">
                 <div class="d-flex justify-content-between align-items-center">
                     <h2>{{$uniname}}</h2>

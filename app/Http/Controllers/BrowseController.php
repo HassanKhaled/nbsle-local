@@ -24,11 +24,24 @@ class BrowseController extends Controller
         // Browse a list of all universities in view
     public function __invoke(Request $request)
     {
-        // show all public universities and only populated private and national universities
-        $uni = universitys::where('type','=','public')->get();
-        $uniqueUnis = \App\Models\labs::select('uni_id')->distinct()->get();
-        $universitys = \App\Models\universitys::whereIn('id',$uniqueUnis)->whereNotIn('type',['Institution','public'])->get();
-        $unis = $uni->concat($universitys);
+        // 1) Get all public universities
+        $publicUnis = universitys::where('type', '=', 'public')->get();
+
+        // 2) Get unique university IDs from labs
+        $uniqueUnis = \App\Models\labs::select('uni_id')->distinct()->pluck('uni_id');
+
+        // 3) Get unique university IDs from UniLabs
+        $uniqueUnisFromUniLabs = \App\Models\UniLabs::select('uni_id')->distinct()->pluck('uni_id');
+
+        // Merge the IDs from labs + UniLabs
+        $allUniqueUniIds = $uniqueUnis->merge($uniqueUnisFromUniLabs)->unique();
+        // 4) Get universities with those IDs (excluding Institution + public to avoid duplication)
+        $otherUnis = universitys::whereIn('id', $allUniqueUniIds)
+            ->whereNotIn('type', ['Institution', 'public'])
+            ->get();
+        // 5) Merge results
+        $unis = $publicUnis->concat($otherUnis);
+
         return view('templ/browse', compact('unis'));
     }
 

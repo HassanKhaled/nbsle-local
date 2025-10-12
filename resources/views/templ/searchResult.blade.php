@@ -5,7 +5,7 @@
     <main id="main">
 
         <!-- ======= Our Portfolio Section ======= -->
-        <section class="breadcrumbs">
+        <section class="breadcrumbs bg-color shadow-lg">
             <div class="container">
                 <div class="d-flex justify-content-between align-items-center">
                     <h2>Search results for "{{$searchFor}}"</h2>
@@ -13,106 +13,135 @@
             </div>
         </section><!-- End Our Portfolio Section -->
 
-        <section class="search-form">
+        <section class="search-form my-4">
             <div class="container">
-            <div class="card">
-                <button class="btn card-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    Advanced Search
-                </button>
-                <div class="collapse" id="collapseExample">
-                <div class="card-body">
-                    <form class="form-material row" action="{{ route('university.search','All') }}" method="get">
-                        @csrf
-                        <label hidden>{{$universitys = \App\Models\universitys::all()->sortBy('name')}}</label>
-                        <div class="row col-10">
-                            <strong class="col-3">University</strong>
-                            <select class="col-6" name="uni_id" onchange="run(this.value)">
-                                <option name="uni_id" selected value="">Select University</option>
-                                @foreach($universitys as $uni)
-                                    <option name="uni_id" value="{{$uni->id}}" {{$uni->id==$request->uni_id?'selected':''}}>{{$uni->name}}</option>
-                                @endforeach
-                            </select>
+                <div class="card shadow-sm">
+                    <button class="btn btn-light card-header text-start fw-bold" type="button" 
+                            data-bs-toggle="collapse" data-bs-target="#collapseExample" 
+                            aria-expanded="false" aria-controls="collapseExample">
+                        Advanced Search
+                    </button>
+                    
+                    <div class="collapse" id="collapseExample">
+                        <div class="card-body">
+                            <form class="row g-3" action="{{ route('university.search','All') }}" method="get">
+                                @csrf
+                                
+                                <!-- University -->
+                                <div class="col-md-6">
+                                    <label for="uni_id" class="form-label fw-semibold">University</label>
+                                    <select id="uni_id" name="uni_id" class="form-select" onchange="run(this.value)">
+                                        <option selected value="">Select University</option>
+                                        @foreach(\App\Models\universitys::all()->sortBy('name') as $uni)
+                                            <option value="{{$uni->id}}" {{$uni->id==$request->uni_id?'selected':''}}>{{$uni->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <!-- Faculty -->
+                                <div class="col-md-6">
+                                    <label for="facs" class="form-label fw-semibold">Faculty</label>
+                                    <select id="facs" name="fac_id" class="form-select">
+                                        <option selected value="">Select Faculty</option>
+                                        @foreach(\App\Models\facultys::all()->sortBy('name') as $fac)
+                                            <option value="{{$fac->id}}" {{$fac->id==$request->fac_id?'selected':''}}>{{$fac->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <!-- Equipment Name -->
+                                <div class="col-md-6">
+                                    <label for="device_name" class="form-label fw-semibold">Equipment Name</label>
+                                    <input type="text" id="device_name" name="device_name" class="form-control" value="{{$request->device_name}}">
+                                </div>
+                                
+                                <!-- Service -->
+                                <div class="col-md-6">
+                                    <label for="services" class="form-label fw-semibold">Service</label>
+                                    <input type="text" id="services" name="services" class="form-control" value="{{$request->services}}">
+                                </div>
+                                
+                                <!-- Model -->
+                                <div class="col-md-6">
+                                    <label for="model" class="form-label fw-semibold">Model</label>
+                                    <input type="text" id="model" name="model" class="form-control" value="{{$request->model}}">
+                                </div>
+                                
+                                <!-- Submit Button -->
+                                <div class="col-12 text-end">
+                                    <button class="btn btn-success px-4">Search</button>
+                                </div>
+                            </form>
                         </div>
-                        <label hidden>{{$facs = \App\Models\facultys::all()->sortBy('name')}}</label>
-                        <div class="row col-6 mt-3">
-                            <strong class="col-5">Faculty</strong>
-                            <select class="col-6" name="fac_id" id="facs">
-                                <option name="fac_id" selected value="">Select Faculty</option>
-                                @foreach($facs as $fac)
-                                    <option name="fac_id" value="{{$fac->id}}" {{$fac->id == $request->fac_id?'selected':''}}>{{$fac->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="row col-6 mt-3">
-                            <strong class="col-5">Equipment Name</strong>
-                            <input class="col-6" name="device_name" value="{{$request->device_name}}">
-                        </div>
-                        <div class="row col-6 mt-3">
-                            <strong class="col-5">Service</strong>
-                            <input class="col-6" name="services" value="{{$request->services}}">
-                        </div>
-                        <div class="row col-6 mt-3">
-                            <strong class="col-5">Model</strong>
-                            <input class="col-6" name="model" value="{{$request->model}}">
-                        </div>
-
-                        <div class="row col-6 mt-3">
-                            <i class="col-9"></i>
-                            <button class="btn btn-basic col-3">Search</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-                </div>
-            </div>
             </div>
         </section>
 
+
         <!-- ======= Search Result ======= -->
-        <section class="portfolio">
+        <section class="portfolio py-4">
             <div class="container">
-                <div class="row portfolio-container" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
+                <div class="row portfolio-container g-4" 
+                    data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
+                    
                     @if(count($devices)==0 and count($unis)==0 and count($unidevices)==0)
                         <h4 class="text-center">No Results</h4>
                     @else
-                    @foreach($unis as $u => $uni)
-                        <div class="col-lg-2 col-md-6 portfolio-wrap ">
-                            <div class="portfolio-item" style="background-color: white">
-                                <a href="{{route('browseuniversity',[$uni->id,$uni->name])}}">
-                                    <img src="{{asset($uni->ImagePath)}}" class="img-fluid" style="width:200px;height:200px;" alt="">
-                                </a>
-                                <h6 class="text-center" href="{{route('browseuniversity',[$uni->id,$uni->name])}}">{{$uni->name}}</h6>
+                    
+                        @foreach($unis as $u => $uni)
+                            <div class="col-lg-3 col-md-4 col-sm-6 portfolio-wrap">
+                                <div class="card shadow-sm h-100 border-0">
+                                    <a href="{{route('browseuniversity',[$uni->id,$uni->name])}}" class="d-flex justify-content-center p-3">
+                                        <img src="{{asset($uni->ImagePath)}}" class="card-img-top img-fluid rounded" 
+                                            style="max-height:200px; object-fit:contain;" alt="">
+                                    </a>
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">{{$uni->name}}</h6>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+
                         @foreach($devices as $device)
-                            <div class="col-lg-2 col-md-6 portfolio-wrap">
-                                <div class="portfolio-item" style="background-color: white">
-                                    <a href="{{route('browsedevice',[$device->id,$device->lab_id,'0',$device->uni_id,\App\Models\universitys::find($device->uni_id)->name])}}">
-                                        <img src="{{asset($device->ImagePath)}}" class="img-fluid" style="width:200px;height:200px;" alt="">
+                            <div class="col-lg-3 col-md-4 col-sm-6 portfolio-wrap">
+                                <div class="card shadow-sm h-100 border-0">
+                                    <a href="{{route('browsedevice',[$device->id,$device->lab_id,'0',$device->uni_id,\App\Models\universitys::find($device->uni_id)->name])}}" 
+                                    class="d-flex justify-content-center p-3">
+                                        <img src="{{asset($device->ImagePath)}}" class="card-img-top img-fluid rounded" 
+                                            style="max-height:200px; object-fit:contain;" alt="">
                                     </a>
-                                    <h6 class="text-center" href="{{route('browsedevice',[$device->id,$device->lab_id,'0',$device->uni_id,\App\Models\universitys::find($device->uni_id)->name])}}">{{$device->name}}</h6>
-{{--                                    @dd($loop->index)--}}
-                                    <p class="text-center">{{\App\Models\universitys::find($device->uni_id)->name}}</p>
-                                    <p class="text-center">{{\App\Models\facultys::find($device->fac_id)->name}}</p>
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">{{$device->name}}</h6>
+                                        <p class="mb-1 text-muted small">{{\App\Models\universitys::find($device->uni_id)->name}}</p>
+                                        <p class="mb-0 text-muted small">{{\App\Models\facultys::find($device->fac_id)->name}}</p>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
+
                         @foreach($unidevices as $device)
-                            <div class="col-lg-2 col-md-6 portfolio-wrap">
-                                <div class="portfolio-item" style="background-color: white">
-                                    <a href="{{route('browsedevice',[$device->id,$device->lab_id,'1',$device->uni_id,\App\Models\universitys::find($device->uni_id)->name])}}">
-                                        <img src="{{asset($device->ImagePath)}}" class="img-fluid" style="width:200px;height:200px;" alt="">
+                            <div class="col-lg-3 col-md-4 col-sm-6 portfolio-wrap">
+                                <div class="card shadow-sm h-100 border-0">
+                                    <a href="{{route('browsedevice',[$device->id,$device->lab_id,'1',$device->uni_id,\App\Models\universitys::find($device->uni_id)->name])}}" 
+                                    class="d-flex justify-content-center p-3">
+                                        <img src="{{asset($device->ImagePath)}}" class="card-img-top img-fluid rounded" 
+                                            style="max-height:200px; object-fit:contain;" alt="">
                                     </a>
-                                    <h6 class="text-center" href="{{route('browsedevice',[$device->id,$device->lab_id,'1',$device->uni_id,\App\Models\universitys::find($device->uni_id)->name])}}">{{$device->name}}</h6>
-                                    <p class="text-center">{{\App\Models\universitys::find($device->uni_id)->name}}</p>
-                                    <p class="text-center">{{\App\Models\UniLabs::find($device->lab_id)->name}}</p>
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">{{$device->name}}</h6>
+                                        <p class="mb-1 text-muted small">{{\App\Models\universitys::find($device->uni_id)->name}}</p>
+                                        <p class="mb-0 text-muted small">{{\App\Models\UniLabs::find($device->lab_id)->name}}</p>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
+
                     @endif
                 </div>
             </div>
         </section>
+
         <!-- End Search Result -->
     </main>
 
@@ -134,26 +163,10 @@
 
     <!-- Vendor JS Files -->
     <script src="{{asset('assets/vendor/aos/aos.js')}}"></script>
-    {{--    <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>--}}
     <script src="{{asset('assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
-    {{--    <script src="{{asset('assets/vendor/isotope-layout/isotope.pkgd.min.js')}}'"></script>--}}
-    {{--    <script src="{{asset('assets/vendor/php-email-form/validate.js')}}"></script>--}}
-    {{--    <script src="{{asset('assets/vendor/purecounter/purecounter.js')}}'"></script>--}}
+   
     <script src="{{asset('assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
-    {{--    <script src="{{asset('assets/vendor/waypoints/noframework.waypoints.js')}}'"></script>--}}
-
     <!-- Template Main JS File -->
     <script src="{{asset('assets/js/main.js')}}"></script>
-    {{--    <script src="assets/vendor/aos/aos.js"></script>--}}
-    {{--    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>--}}
-    {{--    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>--}}
-    {{--    <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>--}}
-    {{--    <script src="assets/vendor/php-email-form/validate.js"></script>--}}
-    {{--    <script src="assets/vendor/purecounter/purecounter.js"></script>--}}
-    {{--    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>--}}
-    {{--    <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>--}}
-
-    {{--    <!-- Template Main JS File -->--}}
-    {{--    <script src="assets/js/main.js"></script>--}}
 @endsection
 

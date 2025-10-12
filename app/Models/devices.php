@@ -18,7 +18,6 @@ class devices extends Model
         'model',
         'manufacturer',
         'lab_id',
-//        'device_id',
         'num_units',
         'cost',
         'services',
@@ -40,7 +39,10 @@ class devices extends Model
     ];
     public function lab()
     {
-        return $this->belongsToMany(labs::class, 'device_lab')->using(device_lab::class);
+        //edit
+     
+         //return $this->belongsToMany(labs::class, 'lab_id');
+          return $this->belongsTo(Labs::class, 'lab_id');
     }
 
     public function reservations()

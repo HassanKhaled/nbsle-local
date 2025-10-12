@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+    use App\Models\Visit;
 
 class HomeController extends Controller
 {
@@ -24,5 +25,20 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+
+    public function visits()
+    {
+        // تسجيل الزيارة
+        Visit::create([
+            'page' => 'home',
+            'ip'   => request()->ip(),
+        ]);
+
+        // حساب عدد الزيارات
+        $visitsCount = Visit::where('page', 'home')->count();
+
+        return view('home', compact('visitsCount'));
     }
 }

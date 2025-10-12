@@ -22,6 +22,10 @@ use Illuminate\Support\Facades\Gate;
 use function Complex\add;
 use function PHPUnit\Framework\isNull;
 use App\Models\DeviceRating;
+use App\Models\DeviceRatingUniLab;
+use App\Models\ReservationUniLab;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 class DeviceLabController extends Controller
 {
     // Get device details for guests
@@ -31,10 +35,16 @@ class DeviceLabController extends Controller
         if ($central=='1'){
             $lab = UniLabs::find($lab_id);
             $dev = UniDevices::find($dev_id);
+            $ratings = DeviceRatingUniLab::where('device_id', $dev_id)->get();
+            $reservationCount = ReservationUniLab::where('device_id', $dev_id)->count();
+
         }
         else {
             $lab = labs::find($lab_id);
             $dev = devices::find($dev_id);
+            $ratings = DeviceRating::where('device_id', $dev_id)->get();
+            $reservationCount = Reservation::where('device_id', $dev_id)->count();
+
 
             // services of services table belong to this device
            // $services = services::select('service_name')->where('device_id',$dev_id)->get();
@@ -56,7 +66,6 @@ class DeviceLabController extends Controller
             $facName = $fac->name;
         }
       
-        $ratings = DeviceRating::where('device_id', $dev_id)->get();
 
         // Calculate averages for each field
         $averages = [
@@ -73,15 +82,53 @@ class DeviceLabController extends Controller
             'recommend_service'       => round($ratings->avg('recommend_service'), 1),
         ];
 
-    // Count reservations for this device
-      $reservationCount = Reservation::where('device_id', $dev_id)->count();
-
-       $dev->increment('views');
-       $dev->save();
+        // Count reservations for this device
+        $dev->timestamps = false;   
+        $dev->increment('views');
+        $dev->timestamps = true;
 
         return view('templ/device',compact('dev','cost','services','coords','uni_id','uniname','facID','facName','lab','fac_coor','uni_coor','central',
             'lab_id','ratings','averages','reservationCount'));
     }
+
+    // Get all devices
+    // public function getAllDevices()
+    // {
+    //     // get all normal + central devices
+    //     $normalDevices  = devices::with('lab')->get();
+    //     $centralDevices = UniDevices::with('lab')->get();
+    //     $allDevices = $normalDevices->merge($centralDevices);
+        
+    //     //dd($centralDevices);
+    //     return view('templ.all_devices', compact('allDevices'));
+    // }
+    public function getAllDevices()
+    {
+        $perPage = 15; // number of devices per page
+        $page = request()->get('page', 1);
+
+        // Fetch devices separately
+        $normalDevices  = devices::with('lab')->get();
+        $centralDevices = UniDevices::with('lab')->get();
+        $allDevices = $normalDevices->merge($centralDevices);
+
+        // Sort by name or id (optional, otherwise order is mixed)
+        $allDevices = $allDevices->sortBy('name')->values();
+
+        // Paginate manually
+        $pagedDevices = new LengthAwarePaginator(
+            $allDevices->forPage($page, $perPage),
+            $allDevices->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('templ.all_devices', [
+            'allDevices' => $pagedDevices
+        ]);
+    }
+  
     /*** Display a listing of the resource.*/
     public function index()
     {
