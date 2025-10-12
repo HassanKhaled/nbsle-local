@@ -49,7 +49,7 @@ class loggedHomeController extends Controller
         //        $private['num_devices']=$stables['devices']->whereIn('lab_id',$private['labs'])->sum('num_units');
         //        $private['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$private['central_labs'])->sum('num_units');
 
-//         $ahli['unis'] = $stables['universities']->where('type','ahli')->pluck('id');
+        $ahli['unis'] = $stables['universities']->where('type','ahli')->pluck('id');
         ///////// only universities that has entered labs
         $ahli['unis'] = $stables['labs']->whereIn('uni_id',$ahli['unis'])->pluck('uni_id')->unique();
 ///////// only universities that has entered labs
