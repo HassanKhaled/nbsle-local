@@ -12,6 +12,7 @@ use App\Models\UniDevices;
 use App\Models\UniLabs;
 use App\Models\universitys;
 use App\Models\User;
+use App\Models\services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,11 +34,11 @@ class loggedHomeController extends Controller
         $public['devices']=$stables['devices']->whereIn('lab_id',$public['labs'])->pluck('id');
         $public['central_devices']=$stables['central_devices']->whereIn('lab_id',$public['central_labs'])->pluck('id');
         // count all units
-//        $public['num_devices']=$stables['devices']->whereIn('lab_id',$public['labs'])->sum('num_units');
-//        $public['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$public['central_labs'])->sum('num_units');
+        //        $public['num_devices']=$stables['devices']->whereIn('lab_id',$public['labs'])->sum('num_units');
+        //        $public['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$public['central_labs'])->sum('num_units');
 
         $private['unis'] = $stables['universities']->where('type','private')->pluck('id');
-///////// only universities that has entered labs
+        ///////// only universities that has entered labs
         $private['unis'] = $stables['labs']->whereIn('uni_id',$private['unis'])->pluck('uni_id')->unique();
         $private['labs'] = $stables['labs']->whereIn('uni_id',$private['unis'])->pluck('id');
         $private['central_labs'] = $stables['central_labs']->whereIn('uni_id',$private['unis'])->pluck('id');
@@ -45,20 +46,22 @@ class loggedHomeController extends Controller
         $private['devices']=$stables['devices']->whereIn('lab_id',$private['labs'])->pluck('id');
         $private['central_devices']=$stables['central_devices']->whereIn('lab_id',$private['central_labs'])->pluck('id');
         // count all units
-//        $private['num_devices']=$stables['devices']->whereIn('lab_id',$private['labs'])->sum('num_units');
-//        $private['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$private['central_labs'])->sum('num_units');
+        //        $private['num_devices']=$stables['devices']->whereIn('lab_id',$private['labs'])->sum('num_units');
+        //        $private['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$private['central_labs'])->sum('num_units');
 
-        $ahli['unis'] = $stables['universities']->where('type','ahli')->pluck('id');
+//         $ahli['unis'] = $stables['universities']->where('type','ahli')->pluck('id');
+        ///////// only universities that has entered labs
+        $ahli['unis'] = $stables['labs']->whereIn('uni_id',$ahli['unis'])->pluck('uni_id')->unique();
 ///////// only universities that has entered labs
         $ahli['labs'] = $stables['labs']->whereIn('uni_id',$ahli['unis'])->pluck('uni_id')->unique();
-        $ahli['labs'] = $stables['labs']->whereIn('uni_id',$ahli['unis'])->pluck('id');
+//         $ahli['labs'] = $stables['labs']->whereIn('uni_id',$ahli['unis'])->pluck('id');
         $ahli['central_labs'] = $stables['central_labs']->whereIn('uni_id',$ahli['unis'])->pluck('id');
         // count rows
         $ahli['devices']=$stables['devices']->whereIn('lab_id',$ahli['labs'])->pluck('id');
         $ahli['central_devices']=$stables['central_devices']->whereIn('lab_id',$ahli['central_labs'])->pluck('id');
         // count all units
-//        $ahli['num_devices']=$stables['devices']->whereIn('lab_id',$ahli['labs'])->sum('num_units');
-//        $ahli['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$ahli['central_labs'])->sum('num_units');
+        //        $ahli['num_devices']=$stables['devices']->whereIn('lab_id',$ahli['labs'])->sum('num_units');
+        //        $ahli['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$ahli['central_labs'])->sum('num_units');
 
         $institute['unis'] = $stables['universities']->where('type','Institution')->pluck('id');
         ///////// only universities that has entered labs
@@ -69,8 +72,8 @@ class loggedHomeController extends Controller
         $institute['devices']=$stables['devices']->whereIn('lab_id',$institute['labs'])->pluck('id');
         $institute['central_devices']=$stables['central_devices']->whereIn('lab_id',$institute['central_labs'])->pluck('id');
         // count all units
-//        $institute['num_devices']=$stables['devices']->whereIn('lab_id',$institute['labs'])->sum('num_units');
-//        $institute['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$institute['central_labs'])->sum('num_units');
+        //        $institute['num_devices']=$stables['devices']->whereIn('lab_id',$institute['labs'])->sum('num_units');
+        //        $institute['num_central_devices']=$stables['central_devices']->whereIn('lab_id',$institute['central_labs'])->sum('num_units');
         return compact('public','private','ahli','institute');
     }
 /*
@@ -134,7 +137,7 @@ public function index_homepage()
         $dev = DB::table('devices')
             ->join('labs', 'devices.lab_id', '=', 'labs.id')
             ->select('labs.fac_id',DB::raw('count(devices.id) as total')) // count rows
-//                ->select('labs.fac_id',DB::raw('sum(devices.num_units) as total')) // count all units
+    //                ->select('labs.fac_id',DB::raw('sum(devices.num_units) as total')) // count all units
             ->where('labs.uni_id',$stables['user']->uni_id)
             ->groupBy('labs.fac_id')
             ->get()->pluck('total','fac_id');
@@ -159,7 +162,7 @@ public function index_homepage()
         $dev = DB::table('devices')
             ->join('labs', 'devices.lab_id', '=', 'labs.id')
             ->select('labs.id',DB::raw('count(devices.id) as total')) // count rows
-//                ->select('labs.id',DB::raw('sum(devices.num_units) as total')) // count all units
+    //                ->select('labs.id',DB::raw('sum(devices.num_units) as total')) // count all units
             ->where('labs.uni_id',$stables['user']->uni_id)
             ->where('labs.fac_id',$stables['user']->fac_id)
             ->groupBy('labs.id')
@@ -187,7 +190,7 @@ public function index_homepage()
         $dev = DB::table('devices')
             ->join('labs', 'devices.lab_id', '=', 'labs.id')
             ->select('labs.id',DB::raw('count(devices.id) as total')) // count rows
-//                ->select('labs.id',DB::raw('sum(devices.num_units) as total')) // count all units
+    //                ->select('labs.id',DB::raw('sum(devices.num_units) as total')) // count all units
             ->where('labs.uni_id',$stables['user']->uni_id)
             ->where('labs.fac_id',$stables['user']->fac_id)
             ->where('labs.dept_id',$stables['user']->dept_id)
@@ -224,7 +227,7 @@ public function index_homepage()
             $dev = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
                 ->select('labs.uni_id',DB::raw('count(devices.id) as total')) // count rows
-//                ->select('labs.uni_id',DB::raw('sum(devices.num_units) as total')) // count all units
+        //                ->select('labs.uni_id',DB::raw('sum(devices.num_units) as total')) // count all units
                 ->groupBy('labs.uni_id')
                 ->get()->pluck('total','uni_id');
 
@@ -283,7 +286,7 @@ public function index_homepage()
             $dev = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
                 ->select('labs.fac_id',DB::raw('count(devices.id) as total')) // count rows
-//                ->select('labs.fac_id',DB::raw('sum(devices.num_units) as total')) // count all units
+        //                ->select('labs.fac_id',DB::raw('sum(devices.num_units) as total')) // count all units
                 ->where('labs.uni_id',$stables['user']->uni_id)
                 ->groupBy('labs.fac_id')
                 ->get()->pluck('total','fac_id');
@@ -305,7 +308,7 @@ public function index_homepage()
             $dev = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
                 ->select('labs.id',DB::raw('count(devices.id) as total')) // count rows
-//                ->select('labs.id',DB::raw('sum(devices.num_units) as total')) // count all units
+        //                ->select('labs.id',DB::raw('sum(devices.num_units) as total')) // count all units
                 ->where('labs.uni_id',$stables['user']->uni_id)
                 ->where('labs.fac_id',$stables['user']->fac_id)
                 ->groupBy('labs.id')
@@ -332,7 +335,7 @@ public function index_homepage()
             $dev = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
                 ->select('labs.id',DB::raw('count(devices.id) as total')) // count rows
-//                ->select('labs.id',DB::raw('sum(devices.num_units) as total')) // count all units
+        //                ->select('labs.id',DB::raw('sum(devices.num_units) as total')) // count all units
                 ->where('labs.uni_id',$stables['user']->uni_id)
                 ->where('labs.fac_id',$stables['user']->fac_id)
                 ->where('labs.dept_id',$stables['user']->dept_id)
@@ -993,7 +996,7 @@ public function index_homepage()
                 //chart
                 $devv = DB::table('uni_devices')
                     ->join('uni_labs','uni_devices.lab_id','=','uni_labs.id')
-//                    ->select('uni_labs.name',DB::raw('sum(uni_devices.num_units) as total'),'uni_labs.uni_id','uni_labs.id')
+        //                    ->select('uni_labs.name',DB::raw('sum(uni_devices.num_units) as total'),'uni_labs.uni_id','uni_labs.id')
                     ->select('uni_labs.name',DB::raw('count(uni_devices.id) as total'),'uni_labs.uni_id','uni_labs.id')
                     ->groupBy('uni_labs.id')
                     ->where('uni_labs.uni_id',$stables['user']->uni_id)
@@ -1035,7 +1038,7 @@ public function index_homepage()
                 //chart
                 $devv = DB::table('uni_devices')
                     ->join('uni_labs','uni_devices.lab_id','=','uni_labs.id')
-//                    ->select('uni_labs.name',DB::raw('sum(uni_devices.num_units) as total'),'uni_labs.uni_id','uni_labs.id')
+            //                    ->select('uni_labs.name',DB::raw('sum(uni_devices.num_units) as total'),'uni_labs.uni_id','uni_labs.id')
                     ->select('uni_labs.name',DB::raw('count(uni_devices.id) as total'),'uni_labs.uni_id','uni_labs.id')
                     ->groupBy('uni_labs.id')
                     ->where('uni_labs.uni_id',$stables['user']->uni_id)
@@ -1084,7 +1087,7 @@ public function index_homepage()
             //for chart
             $devv = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
-//                ->select('labs.name',DB::raw('sum(devices.num_units) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
+            //                ->select('labs.name',DB::raw('sum(devices.num_units) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
                 ->select('labs.name',DB::raw('count(devices.id) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
                 ->groupBy('labs.uni_id','labs.fac_id','labs.name','labs.id')
                 ->where('uni_id',$stables['user']->uni_id)
@@ -1147,7 +1150,7 @@ public function index_homepage()
             // for chart
             $dev = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
-//                ->select('labs.fac_id',DB::raw('sum(devices.num_units) as total'))
+            //                ->select('labs.fac_id',DB::raw('sum(devices.num_units) as total'))
                 ->select('labs.fac_id',DB::raw('count(devices.id) as total'))
                 ->where('labs.uni_id',$stables['user']->uni_id)
                 ->whereBetween('devices.entry_date',[$start_date,$end_date])
@@ -1195,7 +1198,7 @@ public function index_homepage()
             // for chart
             $devv = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
-//                ->select('labs.name',DB::raw('sum(devices.num_units) as total'),'labs.uni_id','labs.fac_id','labs.id')
+        //                ->select('labs.name',DB::raw('sum(devices.num_units) as total'),'labs.uni_id','labs.fac_id','labs.id')
                 ->select('labs.name',DB::raw('count(devices.id) as total'),'labs.uni_id','labs.fac_id','labs.id')
                 ->groupBy('labs.uni_id','labs.fac_id','labs.name','labs.id')
                 ->where('uni_id',$stables['user']->uni_id)
@@ -1242,7 +1245,7 @@ public function index_homepage()
             // for chart
             $dev = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
-//                ->select('labs.fac_id',DB::raw('sum(devices.num_units)) as total'))
+            //                ->select('labs.fac_id',DB::raw('sum(devices.num_units)) as total'))
                 ->select('labs.fac_id',DB::raw('count(devices.id) as total'))
                 ->where('labs.uni_id',$stables['user']->uni_id)
                 ->when($price, function ($query, $price) {
@@ -1297,7 +1300,7 @@ public function index_homepage()
             $devv = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
                 ->select('labs.name',DB::raw('count(devices.id) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
-//                ->select('labs.name',DB::raw('sum(devices.num_units) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
+        //                ->select('labs.name',DB::raw('sum(devices.num_units) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
                 ->groupBy('labs.name')
                 ->where('uni_id',$stables['user']->uni_id)
                 ->where('labs.fac_id',$stables['user']->fac_id)
@@ -1335,7 +1338,7 @@ public function index_homepage()
             return view('loggedTemp/FacDetails', compact('stables','labs','devvName','request','depts','x','y'));
         }
         elseif ($dept_selected != null and $lab_selected==null and ($start_date!=null or $end_date!=null))
-//             devices in a department at a certain time
+        //             devices in a department at a certain time
         {
             $start_date = ($request->start_date == null)? date('Y-m-d',mktime(0,0,0,01,01,2016)):$request->start_date;
             $end_date = ($request->end_date == null)? date('Y-m-d'):$request->end_date ;
@@ -1343,7 +1346,7 @@ public function index_homepage()
             $devv = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
                 ->select('labs.name',DB::raw('count(devices.id) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
-//                ->select('labs.name',DB::raw('sum(devices.num_units) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
+        //                ->select('labs.name',DB::raw('sum(devices.num_units) as total'),'labs.uni_id','labs.fac_id','labs.dept_id','labs.id')
                 ->groupBy('labs.name')
                 ->whereBetween('devices.entry_date',[$start_date,$end_date])
                 ->where('uni_id',$stables['user']->uni_id)
@@ -1442,7 +1445,7 @@ public function index_homepage()
             $dev = DB::table('devices')
                 ->join('labs', 'devices.lab_id', '=', 'labs.id')
                 ->select('labs.id',DB::raw('count(devices.id) as total'))
-//                ->select('labs.id',DB::raw('sum(devices.num_units) as total'))
+        //                ->select('labs.id',DB::raw('sum(devices.num_units) as total'))
                 ->where('labs.uni_id',$stables['user']->uni_id)
                 ->where('labs.fac_id',$stables['user']->fac_id)
                 ->when($price, function ($query, $price) {
@@ -1478,7 +1481,7 @@ public function index_homepage()
         $dev = DB::table('devices')
             ->join('labs', 'devices.lab_id', '=', 'labs.id')
             ->select('labs.id',DB::raw('count(devices.id) as total'))
-//            ->select('labs.id',DB::raw('sum(devices.num_units) as total'))
+        //            ->select('labs.id',DB::raw('sum(devices.num_units) as total'))
             ->where('labs.uni_id',$stables['user']->uni_id)
             ->where('labs.fac_id',$stables['user']->fac_id)
             ->where('labs.dept_id',$stables['user']->dept_id)
@@ -1502,6 +1505,12 @@ public function index_homepage()
         $x = array_values($lab_names->toArray());
         $title = 'Device in the labs';
         return view('loggedTemp/FacDetails', compact('stables','x','y','title'));
+    }
+
+    public function getServices()
+    {
+        $services = services::all();
+        return view('services.index', compact('services'));
     }
 
     // stable queries

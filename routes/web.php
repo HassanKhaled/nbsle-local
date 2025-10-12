@@ -207,9 +207,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::delete('/news-images/{id}', [NewsController::class, 'destroyImage'])->name('newsImages.destroy');
     Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');    
 
-//edit
-  
-    
+    //services    
+    Route::get('/getServices',[loggedHomeController::class,'getServices'])->name('getServices');
+
    // Reservation Of Admin Faculty
    Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
    Route::post('/adminReservation/{id}/confirm', [ReservationController::class, 'confirm'])->name('confirm');
