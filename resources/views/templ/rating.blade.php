@@ -82,6 +82,7 @@
                                         @method('PUT')
                                     @endif
                                     <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
+                                    <input type="hidden" name="central" value="{{ $reservation->central }}">
 
                                     <div class="modal-header bg-primary text-white border-0 py-4">
                                         <div>

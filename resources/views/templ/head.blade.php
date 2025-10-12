@@ -71,6 +71,9 @@
 .navbar-toggler:hover{
     border: white;
 }
+.bg-color{
+ background: #1e4356;
+}
 }
 </style>
 </head>
@@ -78,11 +81,11 @@
 <!-- ======= Header ======= -->
 
 <header id="header" class="fixed-top">
-    <div class="container">
+    <div class="container-fluid">
         <nav class="navbar navbar-expand-lg w-100">
             <!-- Left Logo -->
             <a class="navbar-brand" href="/">
-                <img src="{{ asset('2.png') }}" alt="" class="nav-logo">
+                <img src="{{ asset('logo.png') }}" alt="" class="nav-logo">
             </a>
 
             <!-- Toggle Button (Mobile) -->
@@ -93,7 +96,7 @@
 
             <!-- Navbar Links -->
             <div class="collapse navbar-collapse " id="mainNavbar">
-                <ul class="navbar-nav ms-auto text-white">
+                <ul class="navbar-nav m-auto text-white">
                     @guest
                         <li class="nav-item"><a class="nav-link fw-bold" href="/">Home</a></li>
                     @endguest
@@ -120,6 +123,12 @@
 
                     <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('browse') }}">Universities</a></li>
                     <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('institutions') }}">Institutes</a></li>
+
+                    @auth()
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold" href="{{ route('workshops.index') }}">Workshops</a>
+                        </li>
+                    @endauth
                     <li class="nav-item"><a class="nav-link fw-bold" href="/contact">Contact Us</a></li>
 
                     @guest
@@ -180,7 +189,7 @@
     <div class="footer-top">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-6 footer-links">
+                <div class="col-lg-3 col-md-6 footer-links">
                     <h4>Useful Links</h4>
                     <ul>
                         <li><i class="bx bx-chevron-right"></i> <a href="/">Home</a></li>
@@ -188,7 +197,7 @@
                         <li><i class="bx bx-chevron-right"></i> <a href="/services">Services</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-4 col-md-6 footer-contact">
+                <div class="col-lg-3 col-md-6 footer-contact">
                     <h4>Contact Us</h4>
                     <p>
                         The Supreme Council of Universities , Cairo University Campus , 3<sup>rd</sup> Floor - Giza -Egypt
@@ -198,13 +207,18 @@
                         <strong>Email:</strong> nbsle@scu.eg<br>
                     </p>
                 </div>
-                <div class="col-lg-4 col-md-6 footer-info">
+                <div class="col-lg-3 col-md-6 footer-info">
                     <h3>About Us</h3>
                     <p> The national bank for scientific laboratories and equipment (NBLSE) has been established by the decision of SCU in 2015. NBSLE aims to:</p>
                     <ul>
                         <li class="d-flex"><i class="bx bx-chevron-right"></i><p> Create up-to-date information system for the scientific laboratories and equipment in the Egyptian universities.</p></li>
                         <li class="d-flex"><i class="bx bx-chevron-right"></i><p> Enable the researchers to inquire the system to get the needed information about the scientific laboratories and equipment to facilitate the device using, procurement, and maintenance operations.</p></li>
                     </ul>
+                </div>
+                 <div class="col-lg-3 col-md-6 footer-info">
+                   <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d431.79421376621207!2d31.2090246!3d30.0267087!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14584790c4b2d829%3A0xf1fe6627dec178a1!2z2KfZhNio2YbZgyDYp9mE2YLZiNmF2Yog2YTZhNmF2LnYp9mF2YQg2YjYp9mE2KPYrNmH2LLYqSDYp9mE2LnZhNmF2YrYqSDYqNin2YTZhdis2YTYsyDYp9mE2KPYudmE2Yog2YTZhNis2KfZhdi52KfYqg!5e0!3m2!1sen!2seg!4v1758459150299!5m2!1sen!2seg" 
+                    width="400" height="350" 
+                    style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
         </div>
@@ -213,11 +227,11 @@
     <div class="container">
         @if(Route::currentRouteName() === 'home' or Route::currentRouteName() === 'homepage')
 
-        <div id="visitorCount" class="row visitorCount">
+        <div id="visitorCount1" class="row visitorCount">
             <div class="col-4"></div>
             <div class="col-4">
                 <div>Website visit count:</div>
-                <div class="website-counter"></div>
+                <div class=""> <i class="fas fa-eye"></i> {{ $visitsCount }}</div>
             </div>
             <div class="col-4"></div>
         </div>

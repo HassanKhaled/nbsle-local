@@ -7,7 +7,7 @@
     
 
     <!-- ======= Our Portfolio Section ======= -->
-    <section class="breadcrumbs bg-white shadow-lg">
+    <section class="breadcrumbs bg-color shadow-lg">
       <div class="container">
           <div class="d-flex justify-content-between align-items-center">
               <h2>{{$dev->name!=null?$dev->name:$dev->Arabicname}}</h2>
@@ -128,6 +128,7 @@
                                 <input type="hidden" name="lab_id" value="{{ $lab->id }}">
                                 <input type="hidden" name="fac_id" value="{{ $facID }}">
                                 <input type="hidden" name="uni_id" value="{{ $uni_id }}">
+                                <input type="hidden" name="central" value="{{ $central }}">
 
                                 <!-- Personal Information -->
                                 <div class="mb-5">

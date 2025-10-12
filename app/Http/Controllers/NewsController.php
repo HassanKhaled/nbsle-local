@@ -3,94 +3,138 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use App\Models\universitys;
+use App\Models\Universitys;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
-    //
-
-    public function index(Request $request)
+    // Show all news
+    public function index()
     {
-        $universities = universitys::all();
-        $query = News::with('university');
+        $user = auth()->user();
+        if (!$user->has_role('admin')) {
 
-        if ($request->filled('university_id')) {
-            $query->where('university_id', $request->university_id);
+            $news = News::where('university_id', $user->uni_id)->with('university')->latest()->paginate(10);
+
+        } else {
+            $news = News::with('university')->latest()->paginate(10);
         }
 
-        $news = $query->get();
-
-        return view('news.index', compact('news', 'universities'));
+        return view('news.index', compact('news'));
     }
 
-
-        public function create()
+    // Show form to create news
+    public function create()
     {
-        $universities = universitys::all();
+        $universities = Universitys::all();
         return view('news.create', compact('universities'));
     }
 
+    // Store new news
     public function store(Request $request)
     {
-        //dd($request);
-        $request->validate([
+        $validated = $request->validate([
             'title'         => 'required|string|max:255',
             'desc'          => 'required|string',
-            'img'           => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'university_id' => 'required|exists:universitys,id',
+            'img_path'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'news_images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'university_id' => 'nullable|exists:universitys,id',
+            'publish_date'  => 'nullable|date',
+            'time'          => 'nullable|string|max:100',
+            'location'      => 'nullable|string|max:255',
+            'is_active'     => 'boolean',
         ]);
 
-        $path = $request->file('img')->store('news_images', 'public');
+        if ($request->hasFile('img_path')) {
+            $validated['img_path'] = $request->file('img_path')->store('news', 'public');
+        }
 
-        News::create([
-            'title'         => $request->title,
-            'desc'          => $request->desc,
-            'img_path'      => $path,
-            'university_id' => $request->university_id,
-        ]);
+        $news = News::create($validated);
+
+        // Save multiple images
+        if ($request->hasFile('news_images')) {
+            foreach ($request->file('news_images') as $image) {
+                $path = $image->store('news_images', 'public');
+                $news->newsImages()->create(['image_url' => $path]);
+            }
+        }
 
         return redirect()->route('news.index')->with('success', 'News created successfully.');
     }
 
+    // Show single news
+    public function show(News $news)
+    {
+        return view('news.show', compact('news'));
+    }
+
+    // Show edit form
     public function edit(News $news)
     {
-        $universities = universitys::all();
+        $universities = Universitys::all();
         return view('news.edit', compact('news', 'universities'));
     }
 
+    // Update news
     public function update(Request $request, News $news)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title'         => 'required|string|max:255',
             'desc'          => 'required|string',
-            'img'           => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'university_id' => 'required|exists:universitys,id',
+            'img_path'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'news_images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'university_id' => 'nullable|exists:universitys,id',
+            'publish_date'  => 'nullable|date',
+            'time'          => 'nullable|string|max:100',
+            'location'      => 'nullable|string|max:255',
+            'is_active'     => 'boolean',
         ]);
 
-        $data = $request->only(['title', 'desc', 'university_id']);
-
-        if ($request->hasFile('img')) {
-            $data['img_path'] = $request->file('img')->store('news_images', 'public');
+        if ($request->hasFile('img_path')) {
+            $validated['img_path'] = $request->file('img_path')->store('news', 'public');
         }
 
-        $news->update($data);
+        $news->update($validated);
 
-        return redirect()->route('news.index')->with('success', 'News updated successfully.');
+        // Add new images
+        if ($request->hasFile('news_images')) {
+            foreach ($request->file('news_images') as $image) {
+                $path = $image->store('news_images', 'public');
+                $news->newsImages()->create(['image_url' => $path]);
+            }
+        }
+
+        return redirect()->route('news.edit', $news)->with('success', 'News updated successfully.');
     }
 
+
+    // Delete news
     public function destroy(News $news)
     {
-        // delete image file from storage if exists
-        if ($news->img_path && Storage::disk('public')->exists($news->img_path)) {
-            Storage::disk('public')->delete($news->img_path);
-        }
-
         $news->delete();
+        return redirect()->route('news.index')->with('success', 'News deleted successfully.');
+    }
 
-        return redirect()->route('news.index')
-            ->with('success', 'News and its image deleted successfully.');
+    public function destroyImage($id)
+    {
+        $image = \App\Models\NewsImage::findOrFail($id);
+        $image->delete();
+
+        return back()->with('success', 'Image deleted successfully.');
+    }
+
+    public function publicDetails($id)
+    {
+        $news = News::with('university', 'newsImages')->where('is_active', true)->findOrFail($id);
+        $news->increment('views');
+        return view('templ.news', compact('news'));
+    }
+
+    public function addLike($id)
+    {
+        $news = News::findOrFail($id);
+        $news->increment('likes'); // يزيد العدد +1
+        return response()->json(['likes' => $news->likes]);
     }
 
 }

@@ -4,7 +4,7 @@
   <main id="main">
 
     <!-- ======= Our Portfolio Section ======= -->
-    <section class="breadcrumbs bg-white shadow-lg">
+    <section class="breadcrumbs bg-color shadow-lg">
       <div class="container">
       @include('templ.flash-message')
           <div class="d-flex justify-content-between align-items-center">
@@ -216,7 +216,7 @@
                                             <td class="text-end">
                                                 @if($cost[$key])
                                                     <span class="badge bg-info fs-6 px-3 py-2">
-                                                        ${{$cost[$key]}}
+                                                        {{$cost[$key]}} EGP
                                                     </span>
                                                 @else
                                                     <span class="text-muted">-</span>

@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use function Complex\add;
 use function PHPUnit\Framework\isNull;
-
+use App\Models\ReservationUniLab;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
@@ -181,7 +181,6 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
-    
         // $this->validate($request, [
         //     'visitor_phone'=> 'nullable|min:11',
         //     'samples'      => 'required|numeric',
@@ -191,15 +190,21 @@ class ReservationController extends Controller
   
         // ]);
 
-          
+          if($request->central == 1){
+            $exists = ReservationUniLab::where(['date' => $request->date,'time' => $request->time])->exists();
+            $reserv = new ReservationUniLab;
+
+          }else{
+             $exists = Reservation::where(['date' => $request->date,'time' => $request->time])->exists();
+            $reserv = new Reservation;
+
+          }
         // Check if this date is exist
-        $exists = Reservation::where(['date' => $request->date,'time' => $request->time])->exists();
         // dd($exists);
 
         if($exists == false)
         {
             //dd("xxxxxxxxxxxxxxxx");
-            $reserv = new Reservation;
 
             $reserv->device_id      = $request->device_id;
             $reserv->user_id        = $request->user_id;

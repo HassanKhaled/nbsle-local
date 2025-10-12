@@ -4,7 +4,7 @@
     <main id="main">
 
         <!-- ======= About Us Section ======= -->
-        <section class="breadcrumbs bg-white shadow-lg">
+        <section class="breadcrumbs bg-color shadow-lg">
             <div class="container">
 
                 <div class="d-flex justify-content-between align-items-center">
