@@ -36,6 +36,7 @@
    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
+
 {{--Visitor count--}}
     @if(Route::currentRouteName() === 'home' or Route::currentRouteName() === 'homepage')
     <script defer src="{{asset('js/counter.js')}}"></script>
@@ -247,7 +248,6 @@
     <script src="assets/vendor/purecounter/purecounter.js"></script>
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
-
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
 </html>

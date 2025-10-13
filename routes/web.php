@@ -155,7 +155,8 @@ Route::any('/importthat/{item}',[ExpAndImpController::class,'import'])->name('im
 Route::get('/workshops', [WorkshopsController::class, 'listWorkshops'])->name('workshops.index');
 Route::get('/workshops/{id}', [WorkshopsController::class, 'showWorkshop'])->name('workshops.show');
 Route::post('/workshops/{id}/like', [WorkshopsController::class, 'likeWorkshop'])->name('workshops.like'); 
-
+Route::get('/calendar', [App\Http\Controllers\CalendarController::class, 'index'])->name('calendar.index');
+Route::get('/calendar/events', [App\Http\Controllers\CalendarController::class, 'getEvents']);
 
 Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -241,5 +242,5 @@ Route::group(['middleware' => ['auth']], function() {
     // Workshops Reg. form
     Route::get('/WorkRegistrationForm/{workshop_id}',[WorkshopsController::class,'GetRegForm'])->name('userworkshop');
     Route::post('/WorkRegistrationForm/store',[WorkshopsController::class,'storeRegistrationDetails'])->name('storeworkshop');
-
+   
 });
