@@ -44,52 +44,7 @@
     <!-- End Hero Section -->
 
         <!-- ======= Statistics Section ======= -->
-        <section class="services">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-6 col-lg-3" data-aos="fade-up">
-                        <div class="icon-box icon-box-pink">
-                            <div class="icon"><i class="bx bxs-bank"></i></div>
-                            <a class="nav-link fw-bold" href="{{ route('browse') }}">
-                                <h4 class="title">{{$universitys}} </h4>
-                                <h4 class="title">Universities</h4>
-                            </a>            
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-                        <div class="icon-box icon-box-blue">
-                          
-                            <div class="icon"><i class="bx bxs-school"></i></div>
-                                <a class="nav-link fw-bold" href="{{ route('institutions') }}">
-                                    <h4 class="title">{{$institutes}}</h4>
-                                    <h4 class="title">Institutes</h4>
-                                </a>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-                        <div class="icon-box icon-box-cyan">
-                            <div class="icon"><i class="bx bxs-vial"></i></div>
-                            <a class="nav-link fw-bold" href="{{ route('institutions') }}">
-                                <h4 class="title">{{$labs}} </h4>
-                                <h4 class="title">Registered labs</h4>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="250">
-                        <div class="icon-box icon-box-green">
-                            <div class="icon"><i class="bx bx-plug"></i></div>
-                            <a class="nav-link fw-bold" href="{{ route('allDevices') }}">
-                                <h4 class="title">{{$devices}} </h4>
-                                <h4 class="title">Equipment</h4>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+       
 <section id="news" class="py-5">
     <div class="container">
         <div class="text-center mb-5">
@@ -158,6 +113,61 @@
                 @endforeach
             </div>
         @endforeach
+    </div>
+</section>
+<section  class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Calendar</h2>
+            <p class="lead text-muted">Follow the latest News && Workshops</p>
+        </div>
+        @include('templ.calendar')
+    </div>
+</section>
+<section class="services">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-3" data-aos="fade-up">
+                <div class="icon-box icon-box-pink">
+                    <div class="icon"><i class="bx bxs-bank"></i></div>
+                    <a class="nav-link fw-bold" href="{{ route('browse') }}">
+                        <h4 class="title">{{$universitys}} </h4>
+                        <h4 class="title">Universities</h4>
+                    </a>            
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="icon-box icon-box-blue">
+                    
+                    <div class="icon"><i class="bx bxs-school"></i></div>
+                        <a class="nav-link fw-bold" href="{{ route('institutions') }}">
+                            <h4 class="title">{{$institutes}}</h4>
+                            <h4 class="title">Institutes</h4>
+                        </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="icon-box icon-box-cyan">
+                    <div class="icon"><i class="bx bxs-vial"></i></div>
+                    <a class="nav-link fw-bold" href="{{ route('institutions') }}">
+                        <h4 class="title">{{$labs}} </h4>
+                        <h4 class="title">Registered labs</h4>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="250">
+                <div class="icon-box icon-box-green">
+                    <div class="icon"><i class="bx bx-plug"></i></div>
+                    <a class="nav-link fw-bold" href="{{ route('allDevices') }}">
+                        <h4 class="title">{{$devices}} </h4>
+                        <h4 class="title">Equipment</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
     </main><!-- End #main -->

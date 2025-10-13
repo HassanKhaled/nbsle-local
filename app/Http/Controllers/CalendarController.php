@@ -83,6 +83,7 @@ public function getEvents(Request $request)
             ->map(function ($n) {
                 return [
                     'id' => 'news-' . $n->id,
+                    'event_id' =>$n->id,
                     'title' => $n->title,
                     'start' => \Carbon\Carbon::parse($n->publish_date)->format('Y-m-d'),
                     'end' => \Carbon\Carbon::parse($n->publish_date)->format('Y-m-d'),
@@ -107,6 +108,7 @@ public function getEvents(Request $request)
         ->map(function ($w) {
             return [
                 'id' => 'workshop-' . $w->id,
+                'event_id' =>$w->id,
                 'title' => $w->workshop_ar_title,
                 'start' => $w->st_date,
                 'end' => $w->end_date,

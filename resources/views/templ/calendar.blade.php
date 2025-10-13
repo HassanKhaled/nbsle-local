@@ -1,17 +1,7 @@
-@extends('templ.head')
 
-@section('tmplt-contnt')
- <main id="main">
+ <!-- <main id="main"> -->
 
-    <section class="breadcrumbs bg-color shadow-lg">
-      <div class="container">
-
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>Calendar</h2>
-        </div>
-
-      </div>
-    </section><!-- End Top green Section -->
+    
 
     <div class="calendar-container">
         <div class="calendar-header">
@@ -48,7 +38,7 @@
             </div>
         </div>
     </div>
-</main>
+<!-- </main> -->
     <script>
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
@@ -151,7 +141,7 @@
             }
 
             // Next month days
-            const totalCells = calendar.children.length - 7; // Subtract headers
+            const totalCells = calendar.children.length - 7; 
             const remainingCells = (Math.ceil(totalCells / 7) * 7) - totalCells;
             for (let day = 1; day <= remainingCells; day++) {
                 const dayEl = createDayElement(day, true);
@@ -177,7 +167,7 @@
             const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             return eventsData.filter(event => {
                 const eventStart = new Date(event.start).toISOString().split('T')[0];
-                const eventEnd = new Date(event.end).toISOString().split('T')[0];
+                const eventEnd = new Date(event.start).toISOString().split('T')[0];
                 return dateStr >= eventStart && dateStr <= eventEnd;
             });
         }
@@ -185,26 +175,46 @@
         function showEventDetails(event) {
             const modal = new bootstrap.Modal(document.getElementById('eventModal'));
             document.getElementById('eventModalTitle').textContent = event.title;
-            
+
             const badgeClass = event.type === 'news' ? 'bg-success' : 'bg-primary';
             const typeText = event.type === 'news' ? 'News' : 'Workshop';
-            
+
+            // Format start date only (YYYY-MM-DD)
+            const formattedStart = new Date(event.start).toLocaleDateString();
+
             let modalContent = `
                 <span class="modal-event-badge ${badgeClass}">${typeText}</span>
-                <p><strong>Date:</strong> ${event.start} ${event.end}</p>
+                <p><strong>Date:</strong> ${formattedStart}</p>
             `;
-            
+
             if (event.location) {
                 modalContent += `<p><strong>Location:</strong> ${event.location}</p>`;
             }
-            
+
             if (event.time) {
                 modalContent += `<p><strong>Time:</strong> ${event.time}</p>`;
             }
-            
+
+            // Add details button that goes to the proper route
+            let detailsUrl = '#';
+            if (event.type === 'news') {
+                detailsUrl = `/news/public/details/${event.event_id}`;
+            } else if (event.type === 'workshop') {
+                detailsUrl = `/workshops/${event.event_id}`;
+            }
+
+            modalContent += `
+                <div class="mt-3 text-end">
+                    <a href="${detailsUrl}" class="btn btn-primary" target="_blank">
+                        View Details
+                    </a>
+                </div>
+            `;
+
             document.getElementById('eventModalBody').innerHTML = modalContent;
             modal.show();
         }
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
      <style>
@@ -291,4 +301,3 @@
         }
 </style>
 
-@endsection
