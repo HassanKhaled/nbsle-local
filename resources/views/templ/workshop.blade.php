@@ -1,6 +1,7 @@
 @extends('templ.head')
 
 @section('tmplt-contnt')
+
 <main id="main">
     <section id="workshops" class="py-5">
         <div class="container">
@@ -130,5 +131,56 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
+<style>
+    /* ===== صندوق التاريخ ===== */
+.date-box {
+  position: absolute;
+  bottom: -25px; /* نصه تحت الصورة */
+  left: 10px;
+  background-color: #1a8d29ff; /* اللون الجديد */
+  color: #fff;
+  padding: 5px;
+  border-radius: 6px;
+  text-align: center;
+  width: 60px; /* أكبر شوية */
+  height: 60px; /* أكبر شوية */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+  z-index: 2;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
 
+.date-box h5 {
+  font-size: 18px; /* أكبر */
+  font-weight: bold;
+  margin: 0;
+}
+
+.date-box small {
+  font-size: 12px; /* أكبر */
+  text-transform: uppercase;
+
+}
+
+.btn-like {
+    border: none;
+    background: transparent;
+    color: #41A451 !important; /* رمادي افتراضي */
+    font-size: 1.1rem; /* حجم النص */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.btn-like i {
+    font-size: 1.2rem; /* تكبير الأيقونة */
+}
+
+.btn-like:hover {
+    color: #0d6efd; /* لون primary عند الهوفر */
+}
+
+</style>
 @endsection

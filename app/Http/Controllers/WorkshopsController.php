@@ -302,7 +302,7 @@ class WorkshopsController extends Controller
     public function listWorkshops()
     {
         $workshops = workDetails::where('is_approved', 1)->orderBy('st_date', 'desc')->get();
-        return view('Workshops.index', compact('workshops'));
+        return view('templ.workshop', compact('workshops'));
     }
 
     
@@ -315,7 +315,7 @@ class WorkshopsController extends Controller
         $workshop->increment('views');
         //$workshop->refresh();
 
-        return view('Workshops.show', compact('workshop'));
+        return view('templ.workshop_details', compact('workshop'));
     }
 
     // Handle like AJAX

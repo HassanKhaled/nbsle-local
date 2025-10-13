@@ -124,11 +124,9 @@
                     <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('browse') }}">Universities</a></li>
                     <li class="nav-item"><a class="nav-link fw-bold" href="{{ route('institutions') }}">Institutes</a></li>
 
-                    @auth()
-                        <li class="nav-item">
-                            <a class="nav-link fw-bold" href="{{ route('workshops.index') }}">Workshops</a>
-                        </li>
-                    @endauth
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold" href="{{ route('workshops.index') }}">Workshops</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link fw-bold" href="/contact">Contact Us</a></li>
 
                     @guest

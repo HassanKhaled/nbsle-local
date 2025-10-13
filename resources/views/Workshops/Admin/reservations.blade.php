@@ -1,7 +1,6 @@
-@extends('templ.head')
-
-@section('tmplt-contnt')
-<div class="container py-5 mt-5">
+@extends('loggedTemp.head')
+@section('loggedContent')
+<div class="container-fluid py-5 mt-5">
     {{-- Page Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
         <h2 class="fw-bold text-dark mb-0">

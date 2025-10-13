@@ -151,6 +151,11 @@ Route::any('/generateSheet',[ExpAndImpController::class,'generateSheet'])->name(
 Route::any('/exporttoExcel/{what}',[ExpAndImpController::class,'exporttoExcel'])->name('exporttoExcel');
 Route::any('/downloadTemplate/{labs}',[ExpAndImpController::class,'downloadTemplate'])->name('downloadTemplate');
 Route::any('/importthat/{item}',[ExpAndImpController::class,'import'])->name('importthat');
+ // Workshops Users
+Route::get('/workshops', [WorkshopsController::class, 'listWorkshops'])->name('workshops.index');
+Route::get('/workshops/{id}', [WorkshopsController::class, 'showWorkshop'])->name('workshops.show');
+Route::post('/workshops/{id}/like', [WorkshopsController::class, 'likeWorkshop'])->name('workshops.like'); 
+
 
 Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
@@ -167,7 +172,8 @@ Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
     Route::put('/news/{news}', [NewsController::class, 'update'])->name('news.update');
     Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
     Route::delete('/news-images/{id}', [NewsController::class, 'destroyImage'])->name('newsImages.destroy');
-    Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');  
+    Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show'); 
+   
 });
 
 Route::group(['middleware' => ['auth']], function() {
@@ -222,7 +228,7 @@ Route::group(['middleware' => ['auth']], function() {
         return App\Models\fac_uni::where('uni_id', $uniId)->orderBy('name')->get(['id','name']);
     })->name('admin.faculties.by.uni');
     
-    Route::get('/workshops/reservations', [WorkshopsController::class, 'workshopReservations'])->name('admin.workshops.reservations');
+    Route::get('/workshops/reservations/all', [WorkshopsController::class, 'workshopReservations'])->name('admin.workshops.reservations');
 
     // Workshops Adv. Uni
     Route::get('/UniworkshopSub/{uniID}',[WorkshopsController::class,'GetSemFormUni'])->name('uniworkshop');
@@ -231,11 +237,6 @@ Route::group(['middleware' => ['auth']], function() {
     // Workshops Adv. Faculty
     Route::get('/FacworkshopSub/{uniID}/{facultyID}',[WorkshopsController::class,'GetSemFormFac'])->name('facworkshop');
     Route::post('/FacworkshopSub/{uniID}/{facultyID}/store',[WorkshopsController::class,'storeFacWorkshopDetails']);
-
-    // Workshops Users
-    Route::get('/workshops', [WorkshopsController::class, 'listWorkshops'])->name('workshops.index');
-    Route::get('/workshops/{id}', [WorkshopsController::class, 'showWorkshop'])->name('workshops.show');
-    Route::post('/workshops/{id}/like', [WorkshopsController::class, 'likeWorkshop'])->name('workshops.like');
 
     // Workshops Reg. form
     Route::get('/WorkRegistrationForm/{workshop_id}',[WorkshopsController::class,'GetRegForm'])->name('userworkshop');

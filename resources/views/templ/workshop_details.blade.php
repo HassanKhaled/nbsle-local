@@ -121,5 +121,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
-
+<style>
+    .info-box {
+        background: #f8f9fa;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        transition: all 0.3s ease-in-out;
+    }
+    .info-box:hover {
+        background: #eef4ff;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .news-description {
+        line-height: 1.8;
+        color: #2c3e50;
+    }
+</style>
 @endsection

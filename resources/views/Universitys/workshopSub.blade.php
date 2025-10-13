@@ -1,6 +1,5 @@
-@extends('templ.head')
-
-@section('tmplt-contnt')
+@extends('loggedTemp.head')
+@section('loggedContent')
     {{-- jQuery & Bootstrap --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
