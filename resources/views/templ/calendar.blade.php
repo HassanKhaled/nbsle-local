@@ -128,8 +128,9 @@
                 dayEvents.forEach(event => {
                     const eventEl = document.createElement('div');
                     eventEl.className = 'event-item';
+                    const shortTitle = event.title.length > 20 ? event.title.substring(0, 20) + '...' : event.title;
                     eventEl.style.backgroundColor = event.color;
-                    eventEl.textContent = event.title;
+                    eventEl.textContent = shortTitle;
                     eventEl.onclick = () => showEventDetails(event);
                     dayEl.appendChild(eventEl);
                 });
@@ -172,9 +173,8 @@
         function showEventDetails(event) {
             const modal = new bootstrap.Modal(document.getElementById('eventModal'));
             const title = event.title || '';
-            const shortTitle = title.split(' ').slice(0, 20).join(' ') + (title.split(' ').length > 20 ? '...' : '');
+           const shortTitle = title.length > 100 ? title.substring(0, 20) + '...' : title;
             document.getElementById('eventModalTitle').textContent = shortTitle;
-            // document.getElementById('eventModalTitle').textContent = event.title;
 
             const badgeClass = event.type === 'news' ? 'bg-success' : 'bg-primary';
             const typeText = event.type === 'news' ? 'News' : 'Workshop';
