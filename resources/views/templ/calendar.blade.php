@@ -1,8 +1,5 @@
 
  <!-- <main id="main"> -->
-
-    
-
     <div class="calendar-container">
         <div class="calendar-header">
             <button class="btn btn-primary btn-nav" id="prevMonth">
@@ -174,7 +171,10 @@
 
         function showEventDetails(event) {
             const modal = new bootstrap.Modal(document.getElementById('eventModal'));
-            document.getElementById('eventModalTitle').textContent = event.title;
+            const title = event.title || '';
+            const shortTitle = title.split(' ').slice(0, 20).join(' ') + (title.split(' ').length > 20 ? '...' : '');
+            document.getElementById('eventModalTitle').textContent = shortTitle;
+            // document.getElementById('eventModalTitle').textContent = event.title;
 
             const badgeClass = event.type === 'news' ? 'bg-success' : 'bg-primary';
             const typeText = event.type === 'news' ? 'News' : 'Workshop';
@@ -204,8 +204,8 @@
             }
 
             modalContent += `
-                <div class="mt-3 text-end">
-                    <a href="${detailsUrl}" class="btn btn-primary" target="_blank">
+                <div class="mt-3 text-start">
+                    <a href="${detailsUrl}" class="btn-sm btn-primary p-2" target="_blank">
                         View Details
                     </a>
                 </div>
@@ -216,8 +216,7 @@
         }
 
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-     <style>
+<style>
         .calendar-container {
             max-width: 1200px;
             margin: 0 auto;
