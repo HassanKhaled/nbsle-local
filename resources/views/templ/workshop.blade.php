@@ -3,6 +3,15 @@
 @section('tmplt-contnt')
 
 <main id="main">
+    <section class="breadcrumbs bg-color shadow-lg">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2> Workshops</h2>
+        </div>
+
+      </div>
+    </section>
+
     <section id="workshops" class="py-5">
         <div class="container">
             {{-- Flash messages --}}

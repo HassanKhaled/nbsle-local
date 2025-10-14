@@ -72,10 +72,13 @@
 .navbar-toggler:hover{
     border: white;
 }
-.bg-color{
- background: #1e4356;
 }
-}
+
+ @media (max-width: 991px) {
+        .navbar {
+            background-color: #fff !important;
+        }
+    }
 </style>
 </head>
 <body>
@@ -83,7 +86,7 @@
 
 <header id="header" class="fixed-top">
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg w-100">
+        <nav class="navbar navbar-expand-lg w-100 ">
             <!-- Left Logo -->
             <a class="navbar-brand" href="/">
                 <img src="{{ asset('logo.png') }}" alt="" class="nav-logo">
@@ -216,7 +219,7 @@
                 </div>
                  <div class="col-lg-3 col-md-6 footer-info">
                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d431.79421376621207!2d31.2090246!3d30.0267087!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14584790c4b2d829%3A0xf1fe6627dec178a1!2z2KfZhNio2YbZgyDYp9mE2YLZiNmF2Yog2YTZhNmF2LnYp9mF2YQg2YjYp9mE2KPYrNmH2LLYqSDYp9mE2LnZhNmF2YrYqSDYqNin2YTZhdis2YTYsyDYp9mE2KPYudmE2Yog2YTZhNis2KfZhdi52KfYqg!5e0!3m2!1sen!2seg!4v1758459150299!5m2!1sen!2seg" 
-                    width="400" height="350" 
+                    width="350" height="350" 
                     style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
@@ -249,6 +252,6 @@
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
     <!-- Template Main JS File -->
-    <!-- <script src="assets/js/main.js"></script> -->
+    <script src="assets/js/main.js"></script>
 
 </html>
