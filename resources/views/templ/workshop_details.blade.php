@@ -57,20 +57,53 @@
 
                     <div class="col-md-4 col-12">
                         <div class="border p-3 rounded-3 h-100">
-                            <i class="fas fa-user text-success fs-3 mb-2"></i>
+                            <i class="fas fa-user text-success fs-3 "></i>
                             <div class="fw-bold">Representative</div>
-                            <div class="text-muted">{{ $workshop->rep_name }}</div>
+                            <div class="text-muted">{{ $workshop->rep_name }} - {{ $workshop->rep_email }}</div>
                         </div>
                     </div>
                 </div>
 
                 {{-- Contact --}}
-                <div class="mt-4 text-center">
-                    <i class="fas fa-envelope text-info fs-4"></i>
-                    <p class="mt-2 text-muted">{{ $workshop->rep_email }}</p>
+              
+
+                <div class="card my-3">
+                    <div class="card-header bg-secondary text-white">
+                        <h5>Arabic Lecturers</h5>
+                    </div>
+                    <div class="card-body">
+                        @if(!empty($workshop->Lec_ar_names) && is_array($workshop->Lec_ar_names))
+                            @foreach($workshop->Lec_ar_names as $index => $lecName)
+                                <div class="mb-3 border-bottom pb-2">
+                                    <h6 class="fw-bold">Lecturer {{ $index + 1 }}</h6>
+                                    <p><strong>Name:</strong> {{ $lecName }}</p>
+                                    <p><strong>Details:</strong> {{ $workshop->Lec_ar_details[$index] ?? '—' }}</p>
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-muted">No Arabic lecturers added.</p>
+                        @endif
+                    </div>
+                </div>
+                <div class="card my-3">
+                    <div class="card-header bg-secondary text-white">
+                        <h5>English Lecturers</h5>
+                    </div>
+                    <div class="card-body">
+                        @if(!empty($workshop->Lec_en_names) && is_array($workshop->Lec_en_names))
+                            @foreach($workshop->Lec_en_names as $index => $lecName)
+                                <div class="mb-3 border-bottom pb-2">
+                                    <h6 class="fw-bold">Lecturer {{ $index + 1 }}</h6>
+                                    <p><strong>Name:</strong> {{ $lecName }}</p>
+                                    <p><strong>Details:</strong> {{ $workshop->Lec_en_details[$index] ?? '—' }}</p>
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-muted">No English lecturers added.</p>
+                        @endif
+                    </div>
                 </div>
 
-                {{-- Notes --}}
                 @if($workshop->notes)
                 <div class="mt-4 border rounded-3 bg-light p-3">
                     <h6 class="fw-bold mb-2"><i class="fas fa-sticky-note text-primary me-2"></i>Notes</h6>
