@@ -118,8 +118,8 @@
 <section  class="py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3">Calendar</h2>
-            <p class="lead text-muted">Follow the latest News && Workshops</p>
+            <h2 class="display-5 fw-bold mb-3">Interactive Calender</h2>
+            <p class="lead text-muted">For latest News & Workshops</p>
         </div>
         @include('templ.calendar')
     </div>
