@@ -103,13 +103,13 @@ public function getEvents(Request $request)
                         ->where('end_date', '>=', $endDate);
                   });
         })
-        ->select('id', 'workshop_ar_title', 'st_date', 'end_date', 'place')
+        ->select('id', 'workshop_ar_title', 'workshop_en_title','st_date', 'end_date', 'place')
         ->get()
         ->map(function ($w) {
             return [
                 'id' => 'workshop-' . $w->id,
                 'event_id' =>$w->id,
-                'title' => $w->workshop_ar_title,
+                'title' => !empty($w->workshop_ar_title) ? $w->workshop_ar_title : $w->workshop_en_title,
                 'start' => $w->st_date,
                 'end' => $w->end_date,
                 'location' => $w->place,
