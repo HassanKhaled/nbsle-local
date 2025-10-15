@@ -106,7 +106,7 @@
                     @endguest
                     @if (Route::has('register'))
                         @auth
-                            <li class="nav-item"><a class="nav-link fw-bold" href="/indexHomepage">Home</a></li>
+                            <li class="nav-item"><a class="nav-link fw-bold" href="/">Home</a></li>
                         @endauth
                     @endif
 

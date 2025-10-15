@@ -388,7 +388,7 @@
             // Calculate width across days
             const dayWidth = startRect.width;
             const spanDays = endIndex - startIndex + 1;
-            const width = (spanDays * dayWidth) + ((spanDays - 1) * 1); // +1 for grid gap
+            const width = (spanDays * dayWidth) + ((spanDays - 1) * 1); 
             
             spanEl.style.width = `${width}px`;
             startEl.appendChild(spanEl);
@@ -398,7 +398,7 @@
         function showEventDetails(event) {
             const modal = new bootstrap.Modal(document.getElementById('eventModal'));
             const title = event.title || '';
-            const shortTitle = title.length > 100 ? title.substring(0, 100) + '...' : title;
+            const shortTitle = title.length > 20 ? title.substring(0, 20) + '...' : title;
             document.getElementById('eventModalTitle').textContent = shortTitle;
 
             const badgeClass = event.type === 'news' ? 'bg-success' : 'bg-primary';
