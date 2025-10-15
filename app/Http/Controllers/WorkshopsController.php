@@ -77,6 +77,13 @@ class WorkshopsController extends Controller
     //Workshop Reservations For Admin
     public function workshopReservations()
     {
+        $user = Auth()->user();
+        if($user->hasRole('university')){
+            $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
+                        ->where('uni_id', $user->uni_id)
+                        ->orderBy('id', 'desc')
+                        ->paginate(15);
+        }
         $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
                         ->orderBy('id', 'desc')
                         ->paginate(15);
@@ -85,7 +92,48 @@ class WorkshopsController extends Controller
     }
     
     // Show university workshop submission form
-     
+    public function showUnivWorkshops(Request $request)
+    {
+        $user = Auth()->user();
+        
+        if($user->hasRole('university')){
+             // Base query with eager loads
+            $query = workDetails::with(['university', 'faculty'])->where('Uni_id', $user->uni_id);
+
+            // Search filter (title in Arabic or English)
+            if ($request->filled('search')) {
+                $search = $request->input('search');
+                $query->where(function($q) use ($search) {
+                    $q->where('workshop_ar_title', 'like', "%{$search}%")
+                    ->orWhere('workshop_en_title', 'like', "%{$search}%");
+                });
+            }
+
+            // Faculty filter
+            if ($request->filled('faculty')) {
+                // NOTE: DB column is "Faculty_id"
+                $query->where('Faculty_id', $request->input('faculty'));
+            }
+
+            // Status filter (is_approved boolean)
+            if ($request->filled('status')) {
+                if ($request->input('status') === 'approved') {
+                    $query->where('is_approved', 1);
+                } elseif ($request->input('status') === 'pending') {
+                    $query->where('is_approved', 0);
+                }
+            }
+
+            // Sorting and pagination — withQueryString preserves filters on pagination links
+            $workshops = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+
+            // Dropdown values
+            $universities = universitys::where('id',$user->uni_id)->get();
+            // If a university is selected, restrict faculties to that university
+            $faculties = fac_uni::where('uni_id',$user->uni_id)->orderBy('name')->get();
+        }
+        return view('Universitys.workshopindex', compact('workshops', 'universities', 'faculties'));
+    }
     public function GetSemFormUni($uniID)
     {
         $UniName = universitys::findOrFail($uniID);

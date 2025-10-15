@@ -8,7 +8,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <main id="main">
-        <div class="container">
+        <div class="container py-5">
             @if(session('message'))
                 <div class="alert alert-success">
                     {{ session('message') }}
