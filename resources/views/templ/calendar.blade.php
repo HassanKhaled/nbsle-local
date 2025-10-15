@@ -382,7 +382,7 @@
             spanEl.className = 'event-span';
             spanEl.style.backgroundColor = event.color;
             spanEl.textContent = event.title;
-            spanEl.style.top = '25px';
+            spanEl.style.top = '10px';
             spanEl.onclick = () => showEventDetails(event);
             
             // Calculate width across days
