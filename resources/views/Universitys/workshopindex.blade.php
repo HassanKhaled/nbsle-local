@@ -89,6 +89,7 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Approved</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,6 +108,14 @@
                                     <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>No</span>
                                 @endif
                             </td>
+                            @if(!$workshop->is_approved)
+                            <td>
+                               <a href="{{ route('editWorkshop', ['uniID' => auth()->user()->uni_id, 'id' => $workshop->id]) }}" 
+                                  class="btn btn-sm btn-primary">
+                                    Edit Workshop
+                                </a>
+                            </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>

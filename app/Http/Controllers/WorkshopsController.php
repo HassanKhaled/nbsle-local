@@ -141,6 +141,13 @@ class WorkshopsController extends Controller
 
         return view('Universitys.workshopSub', compact('uniID', 'UniName', 'facultyName'));
     }
+    public function editWorkshop($uniID,$id)
+    {
+        $UniName = universitys::findOrFail($uniID);
+        $facultyName = fac_uni::where('uni_id', $uniID)->get(['id','name','ImagePath']);
+        $workshop = workDetails::findOrFail($id);
+        return view('Universitys.editworkshop', compact('uniID', 'UniName', 'facultyName','id','workshop'));
+    }
 
     /**
      * Show faculty workshop submission form
@@ -273,6 +280,94 @@ class WorkshopsController extends Controller
         \Log::info('Workshop created', $workshop->toArray());
 
         return back()->with('message', 'Workshop Advertisement has been stored successfully.');
+    }
+
+    public function updateWorkshop(Request $request, int $id)
+    {
+        $workshop = workDetails::findOrFail($id);
+
+        // 1. Base Validation
+        $rules = [
+            'optradio'        => 'required|in:arabic,english,bothLan',
+            'WorkshopSDate'   => 'required|date_format:m/d/Y',
+            'WorkshopEDate'   => 'required|date_format:m/d/Y|after:WorkshopSDate',
+            'WorkshopPer'     => 'required|integer|min:1',
+            'WorkshopPl'      => 'required|string|max:100',
+            'WorkshopCname'   => 'required|string|max:100',
+            'WorkshopCphone'  => 'required|string|max:20',
+            'WorkshopCemail'  => 'required|email|max:100',
+            'Wlogo'           => 'nullable|image|max:2048',
+            'nolec'           => 'required|integer|min:1',
+            'nofees'          => 'required|integer|min:1',
+        ];
+
+        // 2. Language-specific validation
+        if ($request->optradio === 'arabic') {
+            $rules['WorkshopArabicName'] = 'required|string|max:100';
+            $rules['Lec_ar_names.*']     = 'required|string|max:100';
+            $rules['Lec_ar_details.*']   = 'required|string|max:255';
+        } elseif ($request->optradio === 'english') {
+            $rules['WorkshopEnglishName'] = 'required|string|max:100';
+            $rules['Lec_en_names.*']      = 'required|string|max:100';
+            $rules['Lec_en_details.*']    = 'required|string|max:255';
+        } elseif ($request->optradio === 'bothLan') {
+            $rules['WorkshopArabicName']  = 'required|string|max:100';
+            $rules['WorkshopEnglishName'] = 'required|string|max:100';
+            $rules['Lec_ar_names.*']      = 'required|string|max:100';
+            $rules['Lec_ar_details.*']    = 'required|string|max:255';
+            $rules['Lec_en_names.*']      = 'required|string|max:100';
+            $rules['Lec_en_details.*']    = 'required|string|max:255';
+        }
+
+        $request->validate($rules);
+
+        // 3. Convert Dates
+        $startDate = Carbon::createFromFormat('m/d/Y', $request->WorkshopSDate)->format('Y-m-d');
+        $endDate   = Carbon::createFromFormat('m/d/Y', $request->WorkshopEDate)->format('Y-m-d');
+
+        // 4. Collect Lecturers arrays directly
+        $lecturers = [
+            'ar_names'   => $request->input('Lec_ar_names', []),
+            'ar_details' => $request->input('Lec_ar_details', []),
+            'en_names'   => $request->input('Lec_en_names', []),
+            'en_details' => $request->input('Lec_en_details', []),
+        ];
+
+        // 5. Handle Logo (optional)
+        $logoPath = $workshop->workshop_logoPath;
+        if ($request->hasFile('Wlogo')) {
+            $logoPath = $this->handleWorkshopLogo($request, $workshop->Uni_id);
+        }
+
+        // 6. Process Fees
+        [$feesTypes, $fees] = $this->processFees($request);
+
+        // 7. Update Record
+        $workshop->update([
+            'Uni_id'            => $request->univ_id,
+            'Faculty_id'        => $request->Facultyid,
+            'workshop_ar_title' => $request->optradio !== 'english' ? $request->WorkshopArabicName : null,
+            'workshop_en_title' => $request->optradio !== 'arabic' ? $request->WorkshopEnglishName : null,
+            'workshop_logoPath' => $logoPath,
+            'no_lecturers'      => $request->nolec,
+            'Lec_ar_names'      => !empty($lecturers['ar_names'])   ? $lecturers['ar_names']   : null,
+            'Lec_en_names'      => !empty($lecturers['en_names'])   ? $lecturers['en_names']   : null,
+            'Lec_ar_details'    => !empty($lecturers['ar_details']) ? $lecturers['ar_details'] : null,
+            'Lec_en_details'    => !empty($lecturers['en_details']) ? $lecturers['en_details'] : null,
+            'workshop_period'   => $request->WorkshopPer,
+            'st_date'           => $startDate,
+            'end_date'          => $endDate,
+            'attendees_types'   => $request->nofees,
+            'fees_types'        => $feesTypes ?? [],
+            'fees_values'       => $fees ?? [],
+            'place'             => $request->WorkshopPl,
+            'rep_name'          => $request->WorkshopCname,
+            'rep_phone'         => $request->WorkshopCphone,
+            'rep_email'         => $request->WorkshopCemail,
+            'notes'             => $request->Wnotes,
+        ]);
+
+        return back()->with('message', 'Workshop updated successfully.');
     }
 
 

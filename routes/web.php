@@ -183,7 +183,8 @@ Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
     Route::get('/UniworkshopSub/{uniID}',[WorkshopsController::class,'GetSemFormUni'])->name('uniworkshop');
     Route::get('/ajax-autocomplete-fname',[WorkshopsController::class,'searchFacultyName']);
     Route::post('/UniworkshopSub/{uniID}/store',[WorkshopsController::class,'storeUniWorkshopDetails']);
-    
+    Route::put('/Uniworkshop/{id}/update', [WorkshopsController::class, 'updateWorkshop'])->name('workshop.update');
+    Route::get('/Uniworkshopedit/{uniID}/{id}',[WorkshopsController::class,'editWorkshop'])->name('editWorkshop');
     Route::get('/adminReservation',[ReservationController::class,'adminReservation'])->name('admin-reservations');
     Route::get('/workshops/reservations/all', [WorkshopsController::class, 'workshopReservations'])->name('admin.workshops.reservations');
 
