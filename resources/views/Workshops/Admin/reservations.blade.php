@@ -34,7 +34,11 @@
                         <tr>
                             <td class="fw-bold text-muted">{{ $i++ }}</td>
                             <td class="fw-semibold text-dark">
-                                {{ $res->workshop->workshop_ar_title ?? $res->workshop->workshop_en_title }}
+                                @if($res->workshop->workshop_ar_title)
+                                    {{$res->workshop->workshop_ar_title}}
+                                @else
+                                    {{$res->workshop->workshop_en_title}}
+                                @endif
                             </td>
                             <td>{{ $res->workshop->university->name ?? '—' }}</td>
                             <td>{{ $res->workshop->faculty->name ?? '—' }}</td>
