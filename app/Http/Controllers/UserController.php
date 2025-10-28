@@ -26,9 +26,9 @@ class UserController extends Controller
         $user_logged = Auth()->user();
         $users = $user_logged;
         if ($user_logged->hasRole('admin')){
-            $users = User::whereIn('role_id',[1,2])->where('id','!=',$user_logged->id)->get();  // role_id =>[(1,admin),(2,university)]
+            $users = User::where('id','!=',$user_logged->id)->get();  // role_id =>[(1,admin),(2,university)]
             $university = universitys::all();
-           // dd($users,$university);
+
             return view('users.index',compact('users','university','user_logged'))
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         }
