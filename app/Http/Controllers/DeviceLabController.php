@@ -140,9 +140,10 @@ class DeviceLabController extends Controller
             $departments = departments::all()->keyBy('id');
             $labs = labs::all()->pluck('id');
 //            $devlab = devices::whereIn('lab_id',$labs)->get();
-            $devlab = devices::whereIn('lab_id',$labs)->paginate(50);
+            $devlab = devices::whereIn('lab_id',$labs)->withCount('reservations')->paginate(50);
             $labs = labs::all()->keyBy('id');
-           // dd($labs);
+            // dd($devlab);
+
             return view('Devices.index',compact('labs','devlab','unis','facs','departments'));
         }
         elseif ($user->hasRole('university')){
@@ -165,7 +166,6 @@ class DeviceLabController extends Controller
             $devlab = devices::whereIn('lab_id',$labs)->get();
             $labs = labs::where('uni_id',$user->uni_id)->where('fac_id','=',$user->fac_id)->pluck('name','id');
         }
-//        dd($labs);
         return view('Devices.index',compact('labs','devlab'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
