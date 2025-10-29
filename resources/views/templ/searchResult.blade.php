@@ -75,6 +75,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="d-flex justify-content-start my-3">
+                    <div class="input-group w-auto">
+                        <label class="input-group-text fw-semibold" for="sortSelect">Filter by:</label>
+                        <select id="sortSelect" class="form-select">
+                            <option value="">Select...</option>
+                            <option value="views_desc">Views (High → Low)</option>
+                            <option value="views_asc">Views (Low → High)</option>
+                            <option value="reservations_desc">Reservations (High → Low)</option>
+                            <option value="reservations_asc">Reservations (Low → High)</option>
+                            <option value="rating_desc">Rating (High → Low)</option>
+                            <option value="rating_asc">Rating (Low → High)</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -177,6 +191,7 @@
             </div>
         </section>
 
+
         <!-- End Search Result -->
     </main>
 
@@ -195,6 +210,44 @@
             }
         }
     </script>
+    <script>
+$(document).ready(function() {
+
+    $('#sortSelect').on('change', function() {
+        const sortValue = $(this).val();
+        const container = $('.portfolio-container');
+        const cards = container.children('.portfolio-wrap').get();
+
+        cards.sort(function(a, b) {
+            const aViews = parseInt($(a).find('.fa-eye').next().text().trim()) || 0;
+            const bViews = parseInt($(b).find('.fa-eye').next().text().trim()) || 0;
+
+            const aReservations = parseInt($(a).find('.fa-calendar-check').next().text().trim()) || 0;
+            const bReservations = parseInt($(b).find('.fa-calendar-check').next().text().trim()) || 0;
+
+            const aRating = parseFloat($(a).find('.fa-star').next().text().trim()) || 0;
+            const bRating = parseFloat($(b).find('.fa-star').next().text().trim()) || 0;
+
+            switch (sortValue) {
+                case 'views_desc': return bViews - aViews;
+                case 'views_asc': return aViews - bViews;
+                case 'reservations_desc': return bReservations - aReservations;
+                case 'reservations_asc': return aReservations - bReservations;
+                case 'rating_desc': return bRating - aRating;
+                case 'rating_asc': return aRating - bRating;
+                default: return 0;
+            }
+        });
+
+        // Re-append sorted cards
+        $.each(cards, function(index, card) {
+            container.append(card);
+        });
+    });
+
+});
+</script>
+
 
     <!-- Vendor JS Files -->
     <script src="{{asset('assets/vendor/aos/aos.js')}}"></script>
