@@ -129,7 +129,7 @@
                                             </div>
                                             <div class="d-flex align-items-center gap-1">
                                                 <i class="fas fa-star text-warning"></i>
-                                                <span>{{ number_format($device->avg_service_quality ?? 0, 1) }}</span>
+                                                <span>{{ number_format($device->avg_service_quality ?? 0, 0) }}/5</span>
                                             </div>
                                         </div>
                                     </div>
@@ -163,7 +163,7 @@
                                             </div>
                                             <div class="d-flex align-items-center gap-1">
                                                 <i class="fas fa-star text-warning"></i>
-                                                <span>{{ number_format($device->avg_service_quality ?? 0, 1) }}</span>
+                                                 <span>{{ number_format($device->avg_service_quality ?? 0, 0) }}/5</span>
                                             </div>
                                         </div>
                                     </div>
