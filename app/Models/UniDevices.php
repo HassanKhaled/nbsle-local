@@ -43,5 +43,10 @@ class UniDevices extends Model
          return $this->belongsTo(UniLabs::class);
     }
 
+    public function reservations()
+    {
+        return $this->hasMany(UniDeviceReservations::class, 'device_id', 'id');
+    }
+
 
 }
