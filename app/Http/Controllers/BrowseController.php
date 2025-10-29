@@ -81,18 +81,17 @@ class BrowseController extends Controller
                                      
              
                 $devices = $devs->join('labs','devices.lab_id','labs.id')
-                ->select('devices.id','devices.lab_id','devices.ImagePath','devices.name','labs.uni_id','labs.fac_id')
-                ->orderBy('labs.uni_id')->get(); 
+                ->select('devices.id','devices.lab_id','devices.ImagePath','devices.name','labs.uni_id','labs.fac_id','devices.views')
+                ->orderBy('labs.uni_id')->withCount('reservations')->get();
 
             $unidevs = UniDevices::query()->where('uni_devices.name', 'like', '%' . $request->search . '%')
                                           ->orwhere('uni_devices.Arabicname', 'like', '%' . $request->search . '%')
                                           ->orwhere('uni_devices.services', 'like', '%' . $request->search . '%')
-                                          ->orwhere('uni_devices.servicesArabic', 'like', '%' . $request->search . '%')
-                                          ->withCount('reservations');
+                                          ->orwhere('uni_devices.servicesArabic', 'like', '%' . $request->search . '%');
 
                                           
             $unidevices = $unidevs->join('uni_labs','uni_devices.lab_id','uni_labs.id')
-                ->select('uni_devices.id','uni_devices.lab_id','uni_devices.ImagePath','uni_devices.name','uni_labs.uni_id')
+                ->select('uni_devices.id','uni_devices.lab_id','uni_devices.ImagePath','uni_devices.name','uni_labs.uni_id', 'uni_devices.views')
                 ->orderBy('uni_labs.uni_id')->withCount('reservations')->get();
             $faculties = \App\Models\fac_uni::all();
             return view('templ/searchResult',compact('unis','devices','searchFor','request','faculties','unidevices'));

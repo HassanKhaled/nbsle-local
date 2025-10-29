@@ -35,6 +35,7 @@ class UniDevices extends Model
         'entry_date',
         'state',
         'price',
+        'views',
     ];
     public function lab()
     {
