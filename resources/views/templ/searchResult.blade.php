@@ -115,6 +115,18 @@
                                         <h6 class="card-title">{{$device->name}}</h6>
                                         <p class="mb-1 text-muted small">{{\App\Models\universitys::find($device->uni_id)->name}}</p>
                                         <p class="mb-0 text-muted small">{{\App\Models\facultys::find($device->fac_id)->name}}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="mb-0 text-muted small d-flex align-items-center gap-1">
+                                                <i class="fas fa-calendar-check text-success"></i>
+                                                <span>Reservations: {{ $device->reservations_count ?? 0 }}</span>
+                                            </p>
+
+                                            <p class="mb-0 text-muted small d-flex align-items-center gap-1">
+                                                <i class="fas fa-eye text-primary"></i>
+                                                <span>Views: {{ $device->views ?? 0 }}</span>
+                                            </p>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -132,6 +144,17 @@
                                         <h6 class="card-title">{{$device->name}}</h6>
                                         <p class="mb-1 text-muted small">{{\App\Models\universitys::find($device->uni_id)->name}}</p>
                                         <p class="mb-0 text-muted small">{{\App\Models\UniLabs::find($device->lab_id)->name}}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="mb-0 text-muted small d-flex align-items-center gap-1">
+                                                <i class="fas fa-calendar-check text-success"></i>
+                                                <span>Reservations: {{ $device->reservations_count ?? 0 }}</span>
+                                            </p>
+
+                                            <p class="mb-0 text-muted small d-flex align-items-center gap-1">
+                                                <i class="fas fa-eye text-primary"></i>
+                                                <span>Views: {{ $device->views ?? 0 }}</span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

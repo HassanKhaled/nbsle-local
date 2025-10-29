@@ -87,12 +87,13 @@ class BrowseController extends Controller
             $unidevs = UniDevices::query()->where('uni_devices.name', 'like', '%' . $request->search . '%')
                                           ->orwhere('uni_devices.Arabicname', 'like', '%' . $request->search . '%')
                                           ->orwhere('uni_devices.services', 'like', '%' . $request->search . '%')
-                                          ->orwhere('uni_devices.servicesArabic', 'like', '%' . $request->search . '%');
+                                          ->orwhere('uni_devices.servicesArabic', 'like', '%' . $request->search . '%')
+                                          ->withCount('reservations');
 
                                           
             $unidevices = $unidevs->join('uni_labs','uni_devices.lab_id','uni_labs.id')
                 ->select('uni_devices.id','uni_devices.lab_id','uni_devices.ImagePath','uni_devices.name','uni_labs.uni_id')
-                ->orderBy('uni_labs.uni_id')->get();
+                ->orderBy('uni_labs.uni_id')->withCount('reservations')->get();
             $faculties = \App\Models\fac_uni::all();
             return view('templ/searchResult',compact('unis','devices','searchFor','request','faculties','unidevices'));
         }
