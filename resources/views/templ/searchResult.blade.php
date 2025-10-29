@@ -115,19 +115,25 @@
                                         <h6 class="card-title">{{$device->name}}</h6>
                                         <p class="mb-1 text-muted small">{{\App\Models\universitys::find($device->uni_id)->name}}</p>
                                         <p class="mb-0 text-muted small">{{\App\Models\facultys::find($device->fac_id)->name}}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="mb-0 text-muted small d-flex align-items-center gap-1">
-                                                <i class="fas fa-calendar-check text-success"></i>
-                                                <span>Reservations: {{ $device->reservations_count ?? 0 }}</span>
-                                            </p>
-
-                                            <p class="mb-0 text-muted small d-flex align-items-center gap-1">
-                                                <i class="fas fa-eye text-primary"></i>
-                                                <span>Views: {{ $device->views ?? 0 }}</span>
-                                            </p>
-                                        </div>
 
                                     </div>
+                                    <div class="card-footer bg-light border-0 mt-auto py-2">
+                                        <div class="d-flex justify-content-around align-items-center text-muted small">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="fas fa-eye text-primary"></i>
+                                                <span>{{ $device->views ?? 0 }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="fas fa-calendar-check text-success"></i>
+                                                <span>{{ $device->reservations_count ?? 0 }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="fas fa-star text-warning"></i>
+                                                <span>{{ number_format($device->avg_service_quality ?? 0, 1) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         @endforeach
@@ -144,18 +150,24 @@
                                         <h6 class="card-title">{{$device->name}}</h6>
                                         <p class="mb-1 text-muted small">{{\App\Models\universitys::find($device->uni_id)->name}}</p>
                                         <p class="mb-0 text-muted small">{{\App\Models\UniLabs::find($device->lab_id)->name}}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="mb-0 text-muted small d-flex align-items-center gap-1">
-                                                <i class="fas fa-calendar-check text-success"></i>
-                                                <span>Reservations: {{ $device->reservations_count ?? 0 }}</span>
-                                            </p>
-
-                                            <p class="mb-0 text-muted small d-flex align-items-center gap-1">
+                                    </div>
+                                    <div class="card-footer bg-light border-0 mt-auto py-2">
+                                        <div class="d-flex justify-content-around align-items-center text-muted small">
+                                            <div class="d-flex align-items-center gap-1">
                                                 <i class="fas fa-eye text-primary"></i>
-                                                <span>Views: {{ $device->views ?? 0 }}</span>
-                                            </p>
+                                                <span>{{ $device->views ?? 0 }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="fas fa-calendar-check text-success"></i>
+                                                <span>{{ $device->reservations_count ?? 0 }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="fas fa-star text-warning"></i>
+                                                <span>{{ number_format($device->avg_service_quality ?? 0, 1) }}</span>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         @endforeach

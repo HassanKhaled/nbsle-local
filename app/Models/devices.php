@@ -50,4 +50,16 @@ class devices extends Model
     {
         return $this->hasMany(Reservation::class, 'device_id');
     }
+
+    public function ratings()
+{
+    return $this->hasManyThrough(
+        \App\Models\DeviceRating::class, // final model
+        \App\Models\Reservation::class,  // intermediate model
+        'device_id',   // Foreign key on reservations table
+        'reservation_id', // Foreign key on device_ratings table
+        'id',           // Local key on devices table
+        'id'            // Local key on reservations table
+    );
+}
 }

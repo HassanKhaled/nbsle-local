@@ -48,6 +48,16 @@ class UniDevices extends Model
     {
         return $this->hasMany(ReservationUniLab::class, 'device_id', 'id');
     }
-
+     public function ratings()
+    {
+        return $this->hasManyThrough(
+            \App\Models\DeviceRatingUniLab::class, // final model
+            \App\Models\ReservationUniLab::class,  // intermediate model
+            'device_id',   // Foreign key on reservations table
+            'reservation_id', // Foreign key on device_ratings table
+            'id',           // Local key on devices table
+            'id'            // Local key on reservations table
+        );
+    }
 
 }
