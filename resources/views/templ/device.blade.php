@@ -205,7 +205,7 @@
                                                 <i class="fas fa-cogs me-1"></i>Service
                                             </th>
                                             <th class="fw-bold text-end">
-                                                <i class="fas fa-dollar-sign me-1"></i>Cost
+                                                <i class="fa-solid fa-sterling-sign me-1"></i>Cost
                                             </th>
                                         </tr>
                                     </thead>
