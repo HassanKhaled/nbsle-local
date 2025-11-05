@@ -275,12 +275,12 @@ class Reportcontroller extends Controller
                     $lab->data_quality_description = "البيانات دقيقة، كاملة، ومحدثة باستمرار. تعكس مستوى عالٍ من الاحترافية والموثوقية.";
                     $lab->Proposed_proposal = "استدامة الجودة: الحفاظ على الآليات الحالية للتدقيق والتحديث، ومتابعة آراء المستخدمين.";
 
-                } elseif ($lab->data_quality_index < 89 && $lab->data_quality_index >= 80) {
+                } elseif ($lab->data_quality_index <= 90 && $lab->data_quality_index >= 80) {
                     $lab->data_quality="جيد جداً";
                     $lab->data_quality_description = "البيانات جيدة بشكل عام، لكن قد توجد بعض النواقص الطفيفة في الاكتمال أو الحداثة.";
                     $lab->Proposed_proposal = "تحسين مستمر: التركيز على معالجة النواقص البسيطة، مثل إدخال الصور أو تحديث البيانات القديمة.";
 
-                } elseif ($lab->data_quality_index < 79 && $lab->data_quality_index >= 60) {
+                } elseif ($lab->data_quality_index < 80 && $lab->data_quality_index >= 60) {
                     $lab->data_quality="مقبول";
                     $lab->data_quality_description = "البيانات مقبولة، لكنها تحتاج إلى مجهود كبير لتحسينها. توجد ثغرات واضحة في الاكتمال أو الحداثة.";
                     $lab->Proposed_proposal = "خطة تحسين فورية: وضع خطة عمل محددة لمعالجة نقاط الضعف الرئيسية، مع توفير الموارد اللازمة.";
@@ -293,7 +293,7 @@ class Reportcontroller extends Controller
         }
        
 
-      $labCount = max(count($labs), 1); // avoid division by zero
+        $labCount = max(count($labs), 1); // avoid division by zero
         $totalDevicesCount = max($labs->sum('devices_count'), 1);
 
         $stats = [
@@ -319,24 +319,26 @@ class Reportcontroller extends Controller
 
         ];
             if ($stats['totalDataQualityIndex'] > 90) {
-                $stats['totalDataQuality']="ممتاز";
+                $stats['totalDataQuality'] = "ممتاز";
                 $stats['totalDataQuality_description'] = "البيانات دقيقة، كاملة، ومحدثة باستمرار. تعكس مستوى عالٍ من الاحترافية والموثوقية.";
                 $stats['Proposed_proposal'] = "استدامة الجودة: الحفاظ على الآليات الحالية للتدقيق والتحديث، ومتابعة آراء المستخدمين.";
 
-                } elseif ($stats['totalDataQualityIndex'] < 89 && $stats['totalDataQualityIndex'] >= 80) {
-                    $stats['totalDataQuality']="جيد جداً";
-                    $stats['totalDataQuality_description'] = "البيانات جيدة بشكل عام، لكن قد توجد بعض النواقص الطفيفة في الاكتمال أو الحداثة.";
-                    $stats['Proposed_proposal'] = "تحسين مستمر: التركيز على معالجة النواقص البسيطة، مثل إدخال الصور أو تحديث البيانات القديمة.";
+            } elseif ($stats['totalDataQualityIndex'] <= 90 && $stats['totalDataQualityIndex'] >= 80) {
+                $stats['totalDataQuality'] = "جيد جداً";
+                $stats['totalDataQuality_description'] = "البيانات جيدة بشكل عام، لكن قد توجد بعض النواقص الطفيفة في الاكتمال أو الحداثة.";
+                $stats['Proposed_proposal'] = "تحسين مستمر: التركيز على معالجة النواقص البسيطة، مثل إدخال الصور أو تحديث البيانات القديمة.";
 
-                } elseif ($stats['totalDataQualityIndex'] < 79 && $stats['totalDataQualityIndex'] >= 60) {
-                    $stats['totalDataQuality']="مقبول";
-                    $stats['totalDataQuality_description'] = "البيانات مقبولة، لكنها تحتاج إلى مجهود كبير لتحسينها. توجد ثغرات واضحة في الاكتمال أو الحداثة.";
-                    $stats['Proposed_proposal'] = "خطة تحسين فورية: وضع خطة عمل محددة لمعالجة نقاط الضعف الرئيسية، مع توفير الموارد اللازمة.";
-                } else {
-                    $stats['totalDataQuality']="ضعيف";
-                    $stats['totalDataQuality_description'] ="البيانات غير موثوقة إلى حد كبير، وربما تكون قديمة أو غير مكتملة. لا يمكن الاعتماد عليها بشكل كامل.";
-                    $stats['Proposed_proposal'] = "إعادة هيكلة شاملة: تتطلب الموقف تدخلاً جذرياً لإعادة جمع وتحديث البيانات من البداية، مع مراجعة شاملة لآليات الإدخال والتدقيق.";
-                }
+            } elseif ($stats['totalDataQualityIndex'] < 80 && $stats['totalDataQualityIndex'] >= 60) {
+                $stats['totalDataQuality'] = "مقبول";
+                $stats['totalDataQuality_description'] = "البيانات مقبولة، لكنها تحتاج إلى مجهود كبير لتحسينها. توجد ثغرات واضحة في الاكتمال أو الحداثة.";
+                $stats['Proposed_proposal'] = "خطة تحسين فورية: وضع خطة عمل محددة لمعالجة نقاط الضعف الرئيسية، مع توفير الموارد اللازمة.";
+
+            } else {
+                $stats['totalDataQuality'] = "ضعيف";
+                $stats['totalDataQuality_description'] = "البيانات غير موثوقة إلى حد كبير، وربما تكون قديمة أو غير مكتملة. لا يمكن الاعتماد عليها بشكل كامل.";
+                $stats['Proposed_proposal'] = "إعادة هيكلة شاملة: تتطلب الموقف تدخلاً جذرياً لإعادة جمع وتحديث البيانات من البداية، مع مراجعة شاملة لآليات الإدخال والتدقيق.";
+            }
+
         return view('loggedTemp.reports', compact(
             'labs',
             'universities',
