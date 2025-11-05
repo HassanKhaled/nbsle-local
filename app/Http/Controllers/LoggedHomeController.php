@@ -109,9 +109,12 @@ class loggedHomeController extends Controller
 
 public function index_homepage()
 {
-    if (auth()->user()->hasRole('visitor')){  return redirect()->route('home');}
-    if (auth()->user()->hasRole('admin')){  return redirect()->route('home');}
     $stables = $this->stables();
+    if (auth()->user()->hasRole('visitor') || $stables['user']->hasRole('university') 
+        || $stables['user']->hasRole('faculty') || $stables['user']->hasRole('department'))
+    {  return redirect()->route('home');}
+    if (auth()->user()->hasRole('admin')){  return redirect()->route('home');}
+    
 
 
     if ($stables['user']->hasRole('university'))
