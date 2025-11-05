@@ -222,7 +222,7 @@ class Reportcontroller extends Controller
                         ->withMax('devices as last_entry_date', 'entry_date') // آخر تاريخ دخول جهاز
                         ->get();
             }
- dd($labs);
+
         foreach ($labs as $lab) {
             $devicesCount = max($lab->devices_count, 1); 
             $lab->image_upload_indicator = ($lab->devices_with_image_count / $devicesCount) * 100;
