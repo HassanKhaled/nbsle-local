@@ -53,6 +53,21 @@
                                             <span class="form-bar"></span>
                                             <label class="float-label">Manufacturer</label>
                                         </div>
+                                        <div class="form-group form-primary">
+                                            <input type="year" name="ManufactureYear" class="form-control" value="{{ old('ManufactureYear',$dev->ManufactureYear) }}">
+                                            <span class="form-bar"></span>
+                                            <label class="float-label">ManufactureYear</label>
+                                        </div>
+                                        <div class="form-group form-primary">
+                                            <input type="number" min="0" max="1" name="MaintenanceContract" class="form-control" value="{{ old('MaintenanceContract',$dev->MaintenanceContract) }}">
+                                            <span class="form-bar"></span>
+                                            <label class="float-label">MaintenanceContract</label>
+                                        </div>
+                                         <div class="form-group form-primary">
+                                            <input type="text" name="ManufactureCountry" class="form-control" value="{{ old('ManufactureCountry',$dev->ManufactureCountry) }}">
+                                            <span class="form-bar"></span>
+                                            <label class="float-label">ManufactureCountry</label>
+                                        </div>
                                         <div class="form-group form-primary" id="website">
                                             <input type="text" name="description" class="form-control" value="{{ old('description',$dev->description)}}">
                                             <span class="form-bar"></span>

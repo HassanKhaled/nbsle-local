@@ -337,6 +337,9 @@ class DeviceLabController extends Controller
             'state'=>'required',
             'lab_id'=>'required',
             'ManufactureWebsite'=>'nullable',
+            'ManufactureYear'=>'nullable|digits:4',
+            'MaintenanceContract'=>'nullable|in:0,1',
+            'ManufactureCountry'=>'nullable',
         ]);
         $costs = $request['cost'];
         $services = $request['services'];

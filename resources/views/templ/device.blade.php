@@ -59,20 +59,20 @@
                 <div class="card shadow-lg border-0 rounded-3 mt-4">
                     <div class="card-body">
                        <div class="d-flex justify-content-center gap-4 mb-4">
-    <!-- Reservations Card -->
-    <div class="text-center p-3">
-        <i class="fas fa-calendar-check text-primary fs-3 mb-2"></i>
-        <h6 class="mb-0">Reservations</h6>
-        <strong class="fs-5 text-dark">{{ $reservationCount }}</strong>
-    </div>
+                            <!-- Reservations Card -->
+                            <div class="text-center p-3">
+                                <i class="fas fa-calendar-check text-primary fs-3 mb-2"></i>
+                                <h6 class="mb-0">Reservations</h6>
+                                <strong class="fs-5 text-dark">{{ $reservationCount }}</strong>
+                            </div>
 
-    <!-- Views Card -->
-    <div class="text-center p-3">
-        <i class="fas fa-eye text-success fs-3 mb-2"></i>
-        <h6 class="mb-0">Views</h6>
-        <strong class="fs-5 text-dark">{{ $dev->views }}</strong>
-    </div>
-</div>
+                            <!-- Views Card -->
+                            <div class="text-center p-3">
+                                <i class="fas fa-eye text-success fs-3 mb-2"></i>
+                                <h6 class="mb-0">Views</h6>
+                                <strong class="fs-5 text-dark">{{ $dev->views }}</strong>
+                            </div>
+                        </div>
                         {{-- Main overall rating (service_quality) --}}
                         <div class="text-center mb-5">
                             <h5 class="fw-bold">{{ __("ratings.service_quality") }}</h5>
