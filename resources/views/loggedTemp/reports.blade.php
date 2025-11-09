@@ -26,7 +26,7 @@
             <form method="GET" action="{{ route('reports.index') }}" class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">University</label>
-                    <select name="university_id" class="form-control" onchange="this.form.submit()">
+                    <select name="university_id" class="form-control" onchange="this.form.submit()" id="universitySelect">
                         <option value="all" {{ $universityId == 'all' ? 'selected' : '' }}>-- All Universities --</option>
                         @foreach($universities as $uni)
                             <option value="{{ $uni->id }}" {{ $universityId == $uni->id ? 'selected' : '' }}>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Faculty</label>
-                    <select name="faculty_id" class="form-control" onchange="this.form.submit()">
+                    <select name="faculty_id" class="form-control" onchange="this.form.submit()" id="facultySelect">
                         <option value="all" {{ $facultyId == 'all' ? 'selected' : '' }}>-- All Faculties --</option>
                         @foreach($faculties as $fac)
                             <option value="{{ $fac->fac_id }}" {{ $facultyId == $fac->fac_id ? 'selected' : '' }}>
@@ -279,6 +279,17 @@ document.getElementById("exportExcel").addEventListener("click", function () {
     var workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Labs Report");
     XLSX.writeFile(workbook, "labs_report.xlsx");
+});
+
+// Reset faculty when university changes
+document.getElementById("universitySelect").addEventListener("change", function() {
+    document.getElementById("facultySelect").value = "all";
+    document.getElementById("filterForm").submit();
+});
+
+// Auto-submit on faculty change
+document.getElementById("facultySelect").addEventListener("change", function() {
+    document.getElementById("filterForm").submit();
 });
 </script>
 
