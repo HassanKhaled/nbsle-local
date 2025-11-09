@@ -544,15 +544,26 @@
                     <table class="main-table">
                         <tbody>
                             @foreach($labs as $lab)
-                                @php
-                                    $stars = match($lab->data_quality) {
-                                        'ممتاز' => 5,
-                                        'جيد جداً' => 4,
-                                        'مقبول' => 3,
-                                        'ضعيف' => 2,
-                                        default => 0,
-                                    };
+                               @php
+                                    switch ($lab->data_quality) {
+                                        case 'ممتاز':
+                                            $stars = 5;
+                                            break;
+                                        case 'جيد جداً':
+                                            $stars = 4;
+                                            break;
+                                        case 'مقبول':
+                                            $stars = 3;
+                                            break;
+                                        case 'ضعيف':
+                                            $stars = 2;
+                                            break;
+                                        default:
+                                            $stars = 0;
+                                            break;
+                                    }
                                 @endphp
+
                                 <tr>
                                     <td class="lab-name-cell">{{ $lab->name }}</td>
                                     <td>
