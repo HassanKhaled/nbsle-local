@@ -8,7 +8,7 @@
         display: inline-flex;
         align-items: center;
         padding: 6px 12px;
-        border-radius: 20px;
+        border-radius: 10px;
         font-weight: bold;
         color: white;
         font-size: 0.95rem;
@@ -89,16 +89,14 @@
         flex-grow: 1;
     }
 
-    .column-group {
-        background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    .column-group{
+        background: #456F82;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         order: -1;
         cursor: pointer;
         position: relative;
-        border-radius: 12px 12px 0 0;
-        margin: 0 4px;
-        transform: scale(0.96);
         box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        width: 100%;
     }
 
     .column-group:hover:not(.active) {
@@ -109,13 +107,12 @@
 
     .column-group.active {
         display: flex;
-        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        background:#0A1F29;
         animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         order: 0 !important;
         margin: 0;
         border-radius: 0;
-        transform: scale(1);
-        box-shadow: 0 6px 16px rgba(39, 174, 96, 0.3);
+        /* transform: scale(1); */
     }
 
     .column-group-content {
@@ -152,6 +149,8 @@
         background: rgba(0,0,0,0.1);
         border-right: 1px solid rgba(255,255,255,0.2);
         border-bottom: 3px solid rgba(255,255,255,0.4);
+        color:#6DB136 !important;
+
     }
 
     .column-group.active .column-tab:last-child {
@@ -176,7 +175,7 @@
     .main-table td {
         vertical-align: middle;
         text-align: center;
-        padding: 12px 10px;
+        padding: 6px 10px;
         border: 1px solid #dee2e6;
         background: #f8f9fa;
     }
@@ -563,7 +562,6 @@
                                             break;
                                     }
                                 @endphp
-
                                 <tr>
                                     <td class="lab-name-cell">{{ $lab->name }}</td>
                                     <td>
@@ -577,8 +575,26 @@
                                         </div>
                                     </td>
                                     <td>{{ $lab->data_quality }}</td>
-                                    <td>{{ Str::limit($lab->data_quality_description, 20, '...') }}</td>
-                                    <td>{{ Str::limit($lab->Proposed_proposal, 20, '...') }}</td>
+                                    <td>
+                                        <span 
+                                            data-toggle="tooltip" 
+                                            data-placement="top" 
+                                            title="{{ $lab->data_quality_description }}">
+                                            {{ Str::limit($lab->data_quality_description, 20, '...') }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span 
+                                            data-toggle="tooltip" 
+                                            data-placement="top" 
+                                            title="{{ $lab->Proposed_proposal }}">
+                                            {{ Str::limit($lab->Proposed_proposal, 20, '...') }}
+                                        </span>
+                                    </td>
+
+                                        
+
                                     <td>{{ number_format($lab->image_upload_indicator, 2) }}%</td>
                                     <td>{{ number_format($lab->data_completeness_full, 2) }}%</td>
                                 </tr>
@@ -790,7 +806,12 @@ const FormManager = {
         }
     }
 };
-
+ document.addEventListener('DOMContentLoaded', function () {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
 // Initialize all modules when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     PageManager.init();
