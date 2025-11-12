@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\devices;
 use App\Models\fac_uni;
 use App\Models\facultys;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Exports\UniversityRankExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
+
 class Reportcontroller extends Controller
 {
 
@@ -27,7 +30,7 @@ class Reportcontroller extends Controller
     //         $universityId = $request->input('university_id', 'all');
     //         $facultyId    = $request->input('faculty_id', 'all');
     //         $universities = universitys::all();
-          
+
     //     }
     //     $faculties = $universityId !== 'all'
     //                 ? fac_uni::where('uni_id', $universityId)->get()
@@ -158,7 +161,7 @@ class Reportcontroller extends Controller
     //             ->withMax('devices as last_entry_date', 'entry_date');   
     //             $labs = $labsQuery->get()->merge($labsQuery2->get()); 
     //         }
-           
+
     //         else if ($universityId!=="all" && $facultyId !== 'all') {
     //             $labsQuery = Labs::query();
     //             if ($universityId) {
@@ -289,9 +292,9 @@ class Reportcontroller extends Controller
     //                 $lab->data_quality_description ="البيانات غير موثوقة إلى حد كبير، وربما تكون قديمة أو غير مكتملة. لا يمكن الاعتماد عليها بشكل كامل.";
     //                 $lab->Proposed_proposal = "إعادة هيكلة شاملة: تتطلب الموقف تدخلاً جذرياً لإعادة جمع وتحديث البيانات من البداية، مع مراجعة شاملة لآليات الإدخال والتدقيق.";
     //             }
-            
+
     //     }
-       
+
 
     //     $labCount = max(count($labs), 1); // avoid division by zero
     //     $totalDevicesCount = max($labs->sum('devices_count'), 1);
@@ -351,22 +354,22 @@ class Reportcontroller extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        
+
         // Initialize filters
         [$universityId, $facultyId, $universities] = $this->initializeFilters($user, $request);
-        
+
         // Get faculties based on university
         $faculties = $this->getFaculties($universityId);
-        
+
         // Get labs with device counts
         $labs = $this->getLabsWithDeviceCounts($universityId, $facultyId, $faculties);
-        
+
         // Calculate metrics for each lab
         $this->calculateLabMetrics($labs);
-        
+
         // Calculate overall statistics
         $stats = $this->calculateOverallStats($labs);
-        
+
         return view('loggedTemp.reports', compact(
             'labs',
             'universities',
@@ -391,7 +394,7 @@ class Reportcontroller extends Controller
             $facultyId = $request->input('faculty_id', 'all');
             $universities = universitys::all();
         }
-        
+
         return [$universityId, $facultyId, $universities];
     }
 
@@ -413,23 +416,23 @@ class Reportcontroller extends Controller
         if ($universityId === 'all' && $facultyId === 'all') {
             return $this->getAllLabs();
         }
-        
+
         if ($universityId !== 'all' && $faculties->isEmpty()) {
             return $this->getUniversityLabs($universityId);
         }
-        
+
         if ($universityId !== 'all' && $facultyId === 'all') {
             return $this->getAllUniversityLabs($universityId);
         }
-        
+
         if ($universityId !== 'all' && $facultyId !== 'all') {
             return $this->getSpecificLabs($universityId, $facultyId);
         }
-        
+
         if ($facultyId !== 'all' && $universityId === 'all') {
             return $this->getFacultyLabs($facultyId);
         }
-        
+
         return collect();
     }
 
@@ -440,7 +443,7 @@ class Reportcontroller extends Controller
     {
         $uniLabs = $this->applyDeviceCountsQuery(UniLabs::query())->get();
         $labs = $this->applyDeviceCountsQuery(Labs::query())->get();
-        
+
         return $uniLabs->merge($labs);
     }
 
@@ -462,11 +465,11 @@ class Reportcontroller extends Controller
         $uniLabs = $this->applyDeviceCountsQuery(
             UniLabs::query()->where('uni_id', $universityId)
         )->get();
-        
+
         $labs = $this->applyDeviceCountsQuery(
             Labs::query()->where('uni_id', $universityId)
         )->get();
-        
+
         return $labs->merge($uniLabs);
     }
 
@@ -478,7 +481,7 @@ class Reportcontroller extends Controller
         $query = Labs::query()
             ->where('uni_id', $universityId)
             ->where('fac_id', $facultyId);
-        
+
         return $this->applyDeviceCountsQuery($query)->get();
     }
 
@@ -499,34 +502,34 @@ class Reportcontroller extends Controller
     {
         return $query->withCount([
             'devices as devices_count',
-            'devices as devices_with_name_count' => fn($q) => 
-                $q->whereNotNull('name')->where('name', '!=', ''),
+            'devices as devices_with_name_count' => fn($q) =>
+            $q->whereNotNull('name')->where('name', '!=', ''),
             'devices as devices_with_image_count' => fn($q) =>
-                $q->whereNotNull('ImagePath')
+            $q->whereNotNull('ImagePath')
                 ->where('ImagePath', '!=', '')
                 ->where('ImagePath', 'not like', '%No_Image.png%'),
-            'devices as devices_with_model_count' => fn($q) => 
-                $q->whereNotNull('model')->where('model', '!=', ''),
-            'devices as devices_with_cost_count' => fn($q) => 
-                $q->whereNotNull('cost')->where('cost', '!=', ''),
-            'devices as devices_with_price_count' => fn($q) => 
-                $q->whereNotNull('price')->where('price', '!=', ''),
-            'devices as devices_with_services_count' => fn($q) => 
-                $q->whereNotNull('services')->where('services', '!=', ''),
-            'devices as devices_with_description_count' => fn($q) => 
-                $q->whereNotNull('description')->where('description', '!=', ''),
-            'devices as devices_with_manufacturer_count' => fn($q) => 
-                $q->whereNotNull('manufacturer')->where('manufacturer', '!=', ''),
-            'devices as devices_with_manufacture_year_count' => fn($q) => 
-                $q->whereNotNull('ManufactureYear')->where('ManufactureYear', '!=', ''),
-            'devices as devices_with_maintenance_contract_count' => fn($q) => 
-                $q->whereNotNull('MaintenanceContract')->whereIn('MaintenanceContract', [0, 1]),
-            'devices as devices_with_manufacture_country_count' => fn($q) => 
-                $q->whereNotNull('ManufactureCountry')->where('ManufactureCountry', '!=', ''),
-            'devices as devices_with_manufacture_website_count' => fn($q) => 
-                $q->whereNotNull('ManufactureWebsite')->where('ManufactureWebsite', '!=', ''),
-            'devices as available_devices_count' => fn($q) => 
-                $q->where('state', 'available'),
+            'devices as devices_with_model_count' => fn($q) =>
+            $q->whereNotNull('model')->where('model', '!=', ''),
+            'devices as devices_with_cost_count' => fn($q) =>
+            $q->whereNotNull('cost')->where('cost', '!=', ''),
+            'devices as devices_with_price_count' => fn($q) =>
+            $q->whereNotNull('price')->where('price', '!=', ''),
+            'devices as devices_with_services_count' => fn($q) =>
+            $q->whereNotNull('services')->where('services', '!=', ''),
+            'devices as devices_with_description_count' => fn($q) =>
+            $q->whereNotNull('description')->where('description', '!=', ''),
+            'devices as devices_with_manufacturer_count' => fn($q) =>
+            $q->whereNotNull('manufacturer')->where('manufacturer', '!=', ''),
+            'devices as devices_with_manufacture_year_count' => fn($q) =>
+            $q->whereNotNull('ManufactureYear')->where('ManufactureYear', '!=', ''),
+            'devices as devices_with_maintenance_contract_count' => fn($q) =>
+            $q->whereNotNull('MaintenanceContract')->whereIn('MaintenanceContract', [0, 1]),
+            'devices as devices_with_manufacture_country_count' => fn($q) =>
+            $q->whereNotNull('ManufactureCountry')->where('ManufactureCountry', '!=', ''),
+            'devices as devices_with_manufacture_website_count' => fn($q) =>
+            $q->whereNotNull('ManufactureWebsite')->where('ManufactureWebsite', '!=', ''),
+            'devices as available_devices_count' => fn($q) =>
+            $q->where('state', 'available'),
         ])->withMax('devices as last_entry_date', 'entry_date');
     }
 
@@ -537,22 +540,22 @@ class Reportcontroller extends Controller
     {
         foreach ($labs as $lab) {
             $devicesCount = max($lab->devices_count, 1);
-            
+
             // Image upload indicator
             $lab->image_upload_indicator = ($lab->devices_with_image_count / $devicesCount) * 100;
-            
+
             // Data completeness
             $lab->data_completeness_full = $this->calculateDataCompleteness($lab, $devicesCount);
-            
+
             // KPI update score
             $lab->kpi_update = $this->calculateKPIUpdate($lab);
-            
+
             // Data quality index
-            $lab->data_quality_index = 
-                (0.5 * $lab->data_completeness_full) + 
-                (0.2 * $lab->image_upload_indicator) + 
+            $lab->data_quality_index =
+                (0.5 * $lab->data_completeness_full) +
+                (0.2 * $lab->image_upload_indicator) +
                 (0.3 * $lab->kpi_update);
-            
+
             // Assign quality rating
             $this->assignQualityRating($lab, $lab->data_quality_index);
         }
@@ -578,10 +581,10 @@ class Reportcontroller extends Controller
             $lab->devices_with_manufacture_website_count,
             $lab->available_devices_count,
         ];
-        
+
         $total = count($fieldCounts);
         $zeros = collect($fieldCounts)->filter(fn($value) => $value == 0)->count();
-        
+
         return 100 - ($zeros / $total) * 100;
     }
 
@@ -592,17 +595,17 @@ class Reportcontroller extends Controller
     {
         $devices = $lab->devices;
         $devicesCount = $devices->count();
-        
+
         if ($devicesCount === 0) {
             return 0;
         }
-        
+
         $pointsSum = 0;
         $currentYear = now()->year;
-        
+
         foreach ($devices as $device) {
             $date = $device->updated_at ?? $device->entry_date;
-            
+
             if ($date) {
                 $year = \Carbon\Carbon::parse($date)->year;
                 $diff = $currentYear - $year;
@@ -610,7 +613,7 @@ class Reportcontroller extends Controller
                 $pointsSum += $score;
             }
         }
-        
+
         return $pointsSum / $devicesCount;
     }
 
@@ -677,12 +680,12 @@ class Reportcontroller extends Controller
     {
         $labCount = max(count($labs), 1);
         $totalDevicesCount = max($labs->sum('devices_count'), 1);
-        
-        $totalDataQualityIndex = 
-            (0.5 * $labs->sum('data_completeness_full') / $labCount) + 
-            (0.2 * $labs->sum('image_upload_indicator') / $labCount) + 
+
+        $totalDataQualityIndex =
+            (0.5 * $labs->sum('data_completeness_full') / $labCount) +
+            (0.2 * $labs->sum('image_upload_indicator') / $labCount) +
             (0.3 * $labs->sum('kpi_update') / $labCount);
-        
+
         $stats = [
             'totalDevices' => $labs->sum('devices_count'),
             'totalLabs' => $labs->count(),
@@ -704,16 +707,17 @@ class Reportcontroller extends Controller
             'totalKPIUpdate' => ($labs->sum('kpi_update') / $labCount),
             'totalDataQualityIndex' => $totalDataQualityIndex
         ];
-        
+
         // Add quality rating to stats array
         $qualityRating = $this->getQualityRatingArray($totalDataQualityIndex);
         $stats = array_merge($stats, $qualityRating);
-        
+
         return $stats;
     }
 
     public function calculateUniversityRanks()
     {
+
         $universities = universitys::all();
 
         $allLabs = collect();
@@ -726,7 +730,7 @@ class Reportcontroller extends Controller
                     'devices as devices_count',
                     'devices as devices_with_name_count' => fn($q) => $q->whereNotNull('name')->where('name', '!=', ''),
                     'devices as devices_with_image_count' => fn($q) =>
-                        $q->whereNotNull('ImagePath')
+                    $q->whereNotNull('ImagePath')
                         ->where('ImagePath', '!=', '')
                         ->where('ImagePath', 'not like', '%No_Image.png%'),
                     'devices as devices_with_model_count' => fn($q) => $q->whereNotNull('model')->where('model', '!=', ''),
@@ -748,7 +752,7 @@ class Reportcontroller extends Controller
                     'devices as devices_count',
                     'devices as devices_with_name_count' => fn($q) => $q->whereNotNull('name')->where('name', '!=', ''),
                     'devices as devices_with_image_count' => fn($q) =>
-                        $q->whereNotNull('ImagePath')
+                    $q->whereNotNull('ImagePath')
                         ->where('ImagePath', '!=', '')
                         ->where('ImagePath', 'not like', '%No_Image.png%'),
                     'devices as devices_with_model_count' => fn($q) => $q->whereNotNull('model')->where('model', '!=', ''),
@@ -786,7 +790,7 @@ class Reportcontroller extends Controller
                     $lab->devices_with_manufacture_website_count,
                     $lab->available_devices_count,
                 ];
-           
+
                 $total = count($fieldCounts);
                 $zeros = collect($fieldCounts)->filter(fn($value) => $value == 0)->count();
                 $lab->data_completeness_full = 100 - ($zeros / $total) * 100;
@@ -809,8 +813,8 @@ class Reportcontroller extends Controller
                 $lab->kpi_update = $devicesCount > 0 ? $pointsSum / $devicesCount : 0;
 
                 $lab->data_quality_index = (0.5 * $lab->data_completeness_full)
-                                        + (0.2 * $lab->image_upload_indicator)
-                                        + (0.3 * $lab->kpi_update);
+                    + (0.2 * $lab->image_upload_indicator)
+                    + (0.3 * $lab->kpi_update);
             }
 
             $averageIndex = $labs->avg('data_quality_index') ?? 0;
@@ -824,12 +828,14 @@ class Reportcontroller extends Controller
 
         $sortedUniversities = $allLabs->sortByDesc('average_quality_index')->values();
         $sortedUniversities = $sortedUniversities
-                                ->values()
-                                ->map(function ($uni, $index) {
-                                    $uni['rank'] = $index + 1;
-                                    return $uni;
-                                });
+            ->values()
+            ->map(function ($uni, $index) {
+                $uni['rank'] = $index + 1;
+                return $uni;
+            });
 
+
+        Log::info($sortedUniversities->toArray());
 
         return Excel::download(new UniversityRankExport($sortedUniversities->toArray()), 'university_ranks.xlsx');
 
@@ -837,5 +843,149 @@ class Reportcontroller extends Controller
         //     'university_ranks' => $sortedUniversities->values(),
         // ]);
     }
+    // In your Reportcontroller.php
 
+    public function calculateUniversityRanksHome()
+    {
+        $universities = universitys::all();
+        $allLabs = collect();
+
+        foreach ($universities as $university) {
+            $universityId = $university->id;
+
+            $labsQuery = Labs::query()->where('uni_id', $universityId)
+                ->withCount([
+                    'devices as devices_count',
+                    'devices as devices_with_name_count' => fn($q) => $q->whereNotNull('name')->where('name', '!=', ''),
+                    'devices as devices_with_image_count' => fn($q) =>
+                    $q->whereNotNull('ImagePath')
+                        ->where('ImagePath', '!=', '')
+                        ->where('ImagePath', 'not like', '%No_Image.png%'),
+                    'devices as devices_with_model_count' => fn($q) => $q->whereNotNull('model')->where('model', '!=', ''),
+                    'devices as devices_with_cost_count' => fn($q) => $q->whereNotNull('cost')->where('cost', '!=', ''),
+                    'devices as devices_with_price_count' => fn($q) => $q->whereNotNull('price')->where('price', '!=', ''),
+                    'devices as devices_with_services_count' => fn($q) => $q->whereNotNull('services')->where('services', '!=', ''),
+                    'devices as devices_with_description_count' => fn($q) => $q->whereNotNull('description')->where('description', '!=', ''),
+                    'devices as devices_with_manufacturer_count' => fn($q) => $q->whereNotNull('manufacturer')->where('manufacturer', '!=', ''),
+                    'devices as devices_with_manufacture_year_count' => fn($q) => $q->whereNotNull('ManufactureYear')->where('ManufactureYear', '!=', ''),
+                    'devices as devices_with_maintenance_contract_count' => fn($q) => $q->whereNotNull('MaintenanceContract')->where('MaintenanceContract', '!=', ''),
+                    'devices as devices_with_manufacture_country_count' => fn($q) => $q->whereNotNull('ManufactureCountry')->where('ManufactureCountry', '!=', ''),
+                    'devices as devices_with_manufacture_website_count' => fn($q) => $q->whereNotNull('ManufactureWebsite')->where('ManufactureWebsite', '!=', ''),
+                    'devices as available_devices_count' => fn($q) => $q->where('state', 'available'),
+                ])
+                ->withMax('devices as last_entry_date', 'entry_date');
+
+            $labsQuery2 = UniLabs::query()->where('uni_id', $universityId)
+                ->withCount([
+                    'devices as devices_count',
+                    'devices as devices_with_name_count' => fn($q) => $q->whereNotNull('name')->where('name', '!=', ''),
+                    'devices as devices_with_image_count' => fn($q) =>
+                    $q->whereNotNull('ImagePath')
+                        ->where('ImagePath', '!=', '')
+                        ->where('ImagePath', 'not like', '%No_Image.png%'),
+                    'devices as devices_with_model_count' => fn($q) => $q->whereNotNull('model')->where('model', '!=', ''),
+                    'devices as devices_with_cost_count' => fn($q) => $q->whereNotNull('cost')->where('cost', '!=', ''),
+                    'devices as devices_with_price_count' => fn($q) => $q->whereNotNull('price')->where('price', '!=', ''),
+                    'devices as devices_with_services_count' => fn($q) => $q->whereNotNull('services')->where('services', '!=', ''),
+                    'devices as devices_with_description_count' => fn($q) => $q->whereNotNull('description')->where('description', '!=', ''),
+                    'devices as devices_with_manufacturer_count' => fn($q) => $q->whereNotNull('manufacturer')->where('manufacturer', '!=', ''),
+                    'devices as devices_with_manufacture_year_count' => fn($q) => $q->whereNotNull('ManufactureYear')->where('ManufactureYear', '!=', ''),
+                    'devices as devices_with_maintenance_contract_count' => fn($q) => $q->whereNotNull('MaintenanceContract')->where('MaintenanceContract', '!=', ''),
+                    'devices as devices_with_manufacture_country_count' => fn($q) => $q->whereNotNull('ManufactureCountry')->where('ManufactureCountry', '!=', ''),
+                    'devices as devices_with_manufacture_website_count' => fn($q) => $q->whereNotNull('ManufactureWebsite')->where('ManufactureWebsite', '!=', ''),
+                    'devices as available_devices_count' => fn($q) => $q->where('state', 'available'),
+                ])
+                ->withMax('devices as last_entry_date', 'entry_date');
+
+            $labs = $labsQuery->get()->merge($labsQuery2->get());
+
+            foreach ($labs as $lab) {
+                $devicesCount = max($lab->devices_count, 1);
+                $lab->image_upload_indicator = ($lab->devices_with_image_count / $devicesCount) * 100;
+
+                $fieldCounts = [
+                    $lab->devices_with_name_count,
+                    $lab->devices_with_image_count,
+                    $lab->devices_with_model_count,
+                    $lab->devices_with_cost_count,
+                    $lab->devices_with_price_count,
+                    $lab->devices_with_services_count,
+                    $lab->devices_with_description_count,
+                    $lab->devices_with_manufacturer_count,
+                    $lab->devices_with_manufacture_year_count,
+                    $lab->devices_with_maintenance_contract_count,
+                    $lab->devices_with_manufacture_country_count,
+                    $lab->devices_with_manufacture_website_count,
+                    $lab->available_devices_count,
+                ];
+
+                $total = count($fieldCounts);
+                $zeros = collect($fieldCounts)->filter(fn($value) => $value == 0)->count();
+                $lab->data_completeness_full = 100 - ($zeros / $total) * 100;
+
+                $devices = $lab->devices;
+                $pointsSum = 0;
+                $devicesCount = $devices->count();
+                $currentYear = now()->year;
+
+                foreach ($devices as $device) {
+                    $date = $device->updated_at ?? $device->entry_date;
+                    if ($date) {
+                        $year = \Carbon\Carbon::parse($date)->year;
+                        $diff = $currentYear - $year;
+                        $score = max(0, 100 - ($diff * 10));
+                        $pointsSum += $score;
+                    }
+                }
+
+                $lab->kpi_update = $devicesCount > 0 ? $pointsSum / $devicesCount : 0;
+
+                $lab->data_quality_index = (0.5 * $lab->data_completeness_full)
+                    + (0.2 * $lab->image_upload_indicator)
+                    + (0.3 * $lab->kpi_update);
+            }
+
+            $averageIndex = $labs->avg('data_quality_index') ?? 0;
+
+            $allLabs->push([
+                'university_id' => $universityId,
+                'university_name' => $university->name,
+                'average_quality_index' => round($averageIndex, 2),
+            ]);
+        }
+
+        $sortedUniversities = $allLabs->sortByDesc('average_quality_index')->values();
+        $sortedUniversities = $sortedUniversities
+            ->values()
+            ->map(function ($uni, $index) {
+                $uni['rank'] = $index + 1;
+                return $uni;
+            });
+
+        Log::info($sortedUniversities->toArray());
+
+        // Return only the sorted universities array
+        return $sortedUniversities->toArray();
+    }
+    public function getOverallStats(Request $request)
+    {
+        $user = auth()->user();
+
+        // Initialize filters
+        [$universityId, $facultyId, $universities] = $this->initializeFilters($user, $request);
+
+        // Get faculties based on university
+        $faculties = $this->getFaculties($universityId);
+
+        // Get labs with device counts
+        $labs = $this->getLabsWithDeviceCounts($universityId, $facultyId, $faculties);
+
+        // Calculate metrics for each lab
+        $this->calculateLabMetrics($labs);
+
+        // Calculate overall statistics
+        $stats = $this->calculateOverallStats($labs);
+
+        return response()->json($stats);
+    }
 }

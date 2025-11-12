@@ -125,79 +125,32 @@
         </div>
     </section>
 
-    <section class="services py-5">
+    <section class="services">
         <div class="container">
-            <h2 class="text-center mb-5 text-dark font-weight-light">Top Universities by Rank</h2>
-
             <div class="row">
-                
-
                 @foreach($enrichedData as $university)
-                <div class="col-sm-3 mb-4">
-                    {{-- col-sm-3 ensures 4 items per row on screens size 'sm' and up. --}}
-                    {{-- ANCHOR LINK: The entire card is wrapped in the <a> tag, using the 'website' data and opening in a new tab. --}}
-                    <a href="{{ $university['website'] }}" target="_blank" class="university-card-link">
-                        <div class="university-card d-flex align-items-center justify-content-center position-relative">
-                            <div class="card-content">
-
-                                <img
-                                    src="https://nbsle.scu.eg/{{ $university['ImagePath'] }}"
-                                    alt="University Logo"
-                                    class="card-image img-fluid"
-                                    onerror="this.onerror=null; this.src='https://placehold.co/90x90/555/ffffff?text=Logo';" {{-- Fallback image --}}>
-
-                                <p class="university-rank">
-                                    #{{ $university["rank"] }}
-                                </p>
-                            </div>
+                {{--
+                    Use col-3: 12 / 3 = 4. This means exactly 4 columns per row.
+                    For your 10 universities, the rows will be: 4, 4, and then 2. 
+                    If you had 12 universities, it would be a perfect 4x3 grid!
+                --}}
+                <div class="col-sm-3 mb-4 d-flex justify-content-center">
+                    <div class="university-card">
+                        <div class="card-content text-center">
+                            <img
+                                src="https://nbsle.scu.eg/{{ $university['ImagePath'] }}"
+                                alt="University Logo"
+                                class="card-image img-fluid">
+                            <p class="university-rank small font-weight-bold mt-2">
+                             #{{ $university["rank"] }}
+                            </p>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 @endforeach
             </div>
         </div>
     </section>
-
-    {{-- Bootstrap JS dependencies (needed for certain components, though not strictly for this layout) --}}
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" xintegrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5j4J2n" crossorigin="anonymous"></script>
-
-    <script>
-        // JAVASCRIPT FOR REVEAL ANIMATION (Intersection Observer)
-
-        // Select all the cards to observe
-        const cards = document.querySelectorAll('.university-card');
-
-        // Options for the observer (when to trigger the callback)
-        const observerOptions = {
-            root: null, // relative to the viewport
-            rootMargin: '0px',
-            threshold: 0.2 // Trigger when 20% of the item is visible
-        };
-
-        // The callback function executed when the observed element enters/exits the viewport
-        const cardObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                // If the card is intersecting (visible), add the animation class
-                if (entry.isIntersecting) {
-                    // Use a short delay based on the card's position (for a staggered effect)
-                    const index = Array.from(cards).indexOf(entry.target);
-                    entry.target.style.transitionDelay = `${index * 0.08}s`;
-
-                    entry.target.classList.add('card-visible');
-
-                    // Stop observing once it's visible to save performance
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        // Start observing each card
-        cards.forEach(card => {
-            cardObserver.observe(card);
-        });
-    </script>
-
     <section class="services">
         <div class="container">
             <div class="row justify-content-center">

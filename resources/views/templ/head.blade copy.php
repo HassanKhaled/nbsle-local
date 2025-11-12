@@ -42,138 +42,61 @@
     <script defer src="{{asset('js/counter.js')}}"></script>
     @endif
     <style>
-        /* BASE STYLES & ANIMATION SETUP */
-        :root {
-            --primary-blue: #007bff;
-            --light-bg: #f8f9fa;
-        }
-
-        body {
-            background-color: var(--light-bg);
-            padding: 30px;
-        }
-
-        /* ---------------------------------- */
-        /* 1. UNIVERSITY CARD STYLES (Enhanced) */
-        /* ---------------------------------- */
-
-        .university-card-link {
-            /* Make the entire card block clickable */
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
         .university-card {
-            width: 100%;
-            /* Take full width of the Bootstrap column */
-            max-width: 250px;
-            /* Maximum size for a logo card */
-            height: 100%;
-            border: 1px solid #e9ecef;
+            /* Card dimensions and appearance */
+            width: 300px;
+            min-height: 250px;
+            border: 1px solid #ddd;
             border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-            /* Stronger shadow */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             background-color: #fff;
             padding: 20px;
-            /* Animation preparation */
-            transition: all 0.3s ease-in-out;
-            overflow: hidden;
-            /* Hide the rank tag overflow on hover */
+            margin: 20px;
+            /* For presentation */
 
-            /* Reveal animation initial state */
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
+            /* Flexbox for centering the entire content block vertically and horizontally */
+            display: flex;
+            align-items: center;
+            /* Vertical centering */
+            justify-content: center;
+            /* Horizontal centering */
         }
-
-        /* Hover Animation: Lift and Shadow */
-        .university-card-link:hover .university-card {
-            transform: translateY(-5px) scale(1.02);
-            /* Lift slightly */
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-            /* Deep shadow */
-            border-color: var(--primary-blue);
-            /* Highlight border color */
-        }
-
-        /* ---------------------------------- */
-        /* 2. IMAGE STYLES (Enhanced) */
-        /* ---------------------------------- */
 
         .card-content {
+            /* Flexbox to stack items inside the card: logo on top, rank below */
             display: flex;
             flex-direction: column;
             align-items: center;
+            /* Center the image and text horizontally within the content area */
             text-align: center;
+            /* Ensures text is centered */
         }
 
         .card-image {
-            width: 90px;
-            height: 90px;
+            /* Style for the university logo */
+            width: 100px;
+            /* Adjust size as needed */
+            height: 100px;
+            /* Adjust size as needed */
             border-radius: 50%;
-            object-fit: contain;
-            /* Changed to contain for better logo visibility */
-            padding: 5px;
-            /* Inner padding */
-            background-color: var(--light-bg);
-            border: 4px solid var(--primary-blue);
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
-            transition: all 0.4s ease;
+            /* Makes the image a circle */
+            object-fit: cover;
+            /* Ensures image covers the area without distortion */
+            margin-bottom: 15px;
+            /* Space between image and rank */
+            border: 3px solid #0056b3;
+            /* A nice border for emphasis */
         }
-
-        /* Hover Animation: Rotate Image */
-        .university-card-link:hover .card-image {
-            border-color: #ffc107;
-            /* Change color on hover */
-            transform: rotate(5deg) scale(1.1);
-        }
-
-        /* ---------------------------------- */
-        /* 3. RANK STYLES (Enhanced and Animated) */
-        /* ---------------------------------- */
 
         .university-rank {
-            /* Position Rank absolutely for a "tag" look */
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: #0056b3;
-            /* Using a darker blue for better contrast */
-            color: white;
-            padding: 5px 10px;
-            border-top-right-radius: 12px;
-            border-bottom-left-radius: 12px;
-            font-size: 0.9em;
-            font-weight: 600;
+            /* Styling for the rank text */
+            font-family: sans-serif;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
             margin: 0;
-            z-index: 10;
-            transition: background-color 0.3s ease;
+            /* Remove default paragraph margins */
         }
-
-        /* Hover Animation: Change Rank Color */
-        .university-card-link:hover .university-rank {
-            background-color: #dc3545;
-        }
-
-        /* ---------------------------------- */
-        /* 4. JAVASCRIPT REVEAL CLASS */
-        /* ---------------------------------- */
-        .card-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        /* ---------------------------------- */
-        /* 5. FIX MARGINS (Critical for Layout) */
-        /* ---------------------------------- */
-        /* Override the old margin style to rely on Bootstrap's spacing utilities */
-        .university-card {
-            margin: 0 !important;
-        }
-
 
         /* Mobile Screen */
         @media (max-width: 768px) {

@@ -37,8 +37,8 @@ class LoginController extends Controller
 
         $user->loginCount++;
         $user->save();
-
     }
+ 
     public function logout()
     {
         auth()->logout();
