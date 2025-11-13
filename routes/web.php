@@ -114,7 +114,7 @@ Route::get('/', function () {
         $university = $universities->get($rank['university_id']);
         return array_merge(
             (array) $rank,
-            $university?->toArray() ?? []
+            $university ? $university->toArray() : []
         );
     })->toArray();
 
