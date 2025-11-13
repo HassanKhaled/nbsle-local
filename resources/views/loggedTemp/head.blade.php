@@ -52,7 +52,7 @@
                     <a class="mobile-menu waves-effect waves-light" id="mobile-collapse" href="#">
                         <svg xmlns="http://www.w3.org/2000/svg" class="mt-3" width="36" height="36" viewBox="0 0 24 24" style="fill: rgba(253, 251, 251, 1);"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg>
                     </a>
-                    <a href="/indexHomepage">
+                    <a href="/">
                         <i class='bx bxs-home bx-md' style='color:#eef2f3'  ></i>
                     </a>
                 </div>
