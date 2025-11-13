@@ -130,37 +130,25 @@
             <h2 class="text-center mb-5 text-dark font-weight-light">Top Universities by Rank</h2>
 
             <div class="row">
+                
+
                 @foreach($enrichedData as $university)
                 <div class="col-sm-3 mb-4">
-                    {{-- Generate the new route URL --}}
-                    <a
-                        href="{{ route('browseuniversity', [
-                       'id' => $university['id'], 
-                       // Slugify the name for a clean, URL-friendly string
-                       'uniname' => Illuminate\Support\Str::slug($university['name'])
-                   ]) }}"
-                        class="university-card-link">
+                    {{-- col-sm-3 ensures 4 items per row on screens size 'sm' and up. --}}
+                    {{-- ANCHOR LINK: The entire card is wrapped in the <a> tag, using the 'website' data and opening in a new tab. --}}
+                    <a href="{{ $university['website'] }}" target="_blank" class="university-card-link">
                         <div class="university-card d-flex align-items-center justify-content-center position-relative">
                             <div class="card-content">
 
-                                {{-- University Logo --}}
                                 <img
                                     src="https://nbsle.scu.eg/{{ $university['ImagePath'] }}"
-                                    alt="{{ $university['name'] }} Logo"
+                                    alt="University Logo"
                                     class="card-image img-fluid"
                                     onerror="this.onerror=null; this.src='https://placehold.co/90x90/555/ffffff?text=Logo';" {{-- Fallback image --}}>
 
-                                {{-- University Rank --}}
                                 <p class="university-rank">
                                     #{{ $university["rank"] }}
                                 </p>
-
-                                {{-- University Name Section (New) --}}
-                                <div class="university-name-container">
-                                    <p class="english-name">{{ $university['name'] }}</p>
-                                    <p class="arabic-name">{{ $university['Arabicname'] }}</p>
-                                </div>
-
                             </div>
                         </div>
                     </a>
@@ -170,7 +158,6 @@
         </div>
     </section>
 
-    resources/views/templ/index.blade.php
     {{-- Bootstrap JS dependencies (needed for certain components, though not strictly for this layout) --}}
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" xintegrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5j4J2n" crossorigin="anonymous"></script>
