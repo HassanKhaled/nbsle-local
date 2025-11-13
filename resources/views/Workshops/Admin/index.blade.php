@@ -7,9 +7,22 @@
         <h2 class="fw-bold mb-0">
             <i class="fas fa-chalkboard-teacher text-primary me-2"></i> Manage Workshops
         </h2>
-        <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+        <!-- <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-arrow-left me-1"></i> Back
-        </a>
+        </a> -->
+       <div class="d-flex align-items-center gap-2">
+        <select id="universitySelect" class="form-control form-control-sm" style="width: auto;">
+            <option value="">اختر الجامعة</option>
+            @foreach ($universities as $university)
+                <option value="{{ $university->id }}">{{ $university->name }}</option>
+            @endforeach
+        </select>
+
+            <a href="#" id="addWorkshopBtn" class="btn btn-sm btn-primary disabled" aria-disabled="true">
+                إضافة ورشة
+            </a>
+        </div>
+
     </div>
 
     {{-- Flash Message --}}
@@ -117,6 +130,14 @@
                                     <span class="text-muted"><i class="fas fa-lock me-1"></i> Confirmed</span>
                                 @endif
                             </td>
+                            @if(!$workshop->is_approved)
+                                <td>
+                                <a href="{{ route('editWorkshop', ['uniID' => $workshop->Uni_id, 'id' => $workshop->id]) }}" 
+                                    class="btn btn-sm btn-primary">
+                                        Edit Workshop
+                                    </a>
+                                </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
@@ -178,5 +199,23 @@
         }
     });
 </script>
+<script>
+    document.getElementById('universitySelect').addEventListener('change', function () {
+        const uniId = this.value;
+        const btn = document.getElementById('addWorkshopBtn');
+
+        if (uniId) {
+            // Update the href dynamically based on the selected university ID
+            btn.href = "{{ route('uniworkshop', ':id') }}".replace(':id', uniId);
+            btn.classList.remove('disabled');
+            btn.removeAttribute('aria-disabled');
+        } else {
+            btn.href = "#";
+            btn.classList.add('disabled');
+            btn.setAttribute('aria-disabled', 'true');
+        }
+    });
+</script>
+
 
 @endsection
