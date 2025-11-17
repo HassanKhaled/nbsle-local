@@ -242,6 +242,7 @@
                         @endif
 
                         <!-- Booking Button -->
+                        @if($dev->state === "available")
                         <div class="text-center">
                             <a href="{{route('reservation',[$dev->id,$dev->lab_id,$central,$uni_id,$uniname])}}" 
                                class="btn btn-warning btn-lg px-5 py-3 rounded-pill shadow-sm">
@@ -249,6 +250,7 @@
                                 <span class="fw-bold">BOOK NOW</span>
                             </a>
                         </div>
+                        @endif
                     </div>
                 </div>
 
