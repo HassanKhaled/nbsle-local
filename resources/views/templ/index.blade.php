@@ -127,8 +127,8 @@
 
     <section class="services py-5">
         <div class="container">
-            <h2 class="text-center mb-5 text-dark font-weight-light">Top Universities by Rank</h2>
-
+            
+            <h2 class="text-center mb-5 text-dark font-weight-light">Data Quality Rank</h2>
             <div class="row">
                 @foreach($enrichedData as $university)
                 <div class="col-sm-3 mb-4">
