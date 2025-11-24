@@ -178,6 +178,8 @@
         padding: 6px 10px;
         border: 1px solid #dee2e6;
         background: #f8f9fa;
+        font-size: 0.95rem;
+        font-weight: bold;
     }
 
     .main-table tbody tr:nth-child(even) td:not(.lab-name-cell) {
@@ -547,15 +549,19 @@
                                     switch ($lab->data_quality) {
                                         case 'ممتاز':
                                             $stars = 5;
+                                            $icon = '🥇';
                                             break;
                                         case 'جيد جداً':
                                             $stars = 4;
+                                            $icon = '👍';
                                             break;
                                         case 'مقبول':
                                             $stars = 3;
+                                            $icon = '✍️';
                                             break;
                                         case 'ضعيف':
                                             $stars = 2;
+                                            $icon = '⚠️';
                                             break;
                                         default:
                                             $stars = 0;
@@ -574,7 +580,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{{ $lab->data_quality }}</td>
+                                    <td>{{ $lab->data_quality }}    <span style="font-size: 1.1em;">{{ $icon }}</span> </td>
                                     <td>
                                         <span 
                                             data-toggle="tooltip" 
