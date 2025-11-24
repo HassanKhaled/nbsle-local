@@ -431,6 +431,44 @@
     .table-responsive::-webkit-scrollbar-thumb:hover {
         background: #229954;
     }
+
+    /* //////// */
+    .my-tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.my-tooltip .tooltip-box {
+    position: absolute;
+    top: -10px; /* adjust vertical position */
+    left: 110%; /* adjust horizontal position */
+    background: #1e4356;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    width: 600px; /* customize size */
+    font-size: 0.75rem;
+    z-index: 9999;
+    display: none;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Tooltip arrow */
+.my-tooltip .tooltip-box::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: -7px;
+    border-width: 7px;
+    border-style: solid;
+    border-color: transparent #1e4356 transparent transparent;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 </style>
 
 <div class="container-fluid py-4">
@@ -583,20 +621,21 @@
                                     </td>
                                     <td>{{ $lab->data_quality }}    <span style="font-size: 1.1em;">{{ $icon }}</span> </td>
                                     <td>
-                                        <span 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="{{ $lab->data_quality_description }}">
-                                            {{ Str::limit($lab->data_quality_description, 20, '...') }}
+                                        <span class="my-tooltip">
+                                            {{ Str::limit($lab->data_quality_description, 25, '...') }}
+                                            <div class="tooltip-box">
+                                                {{ $lab->data_quality_description }}
+                                            </div>
                                         </span>
+
                                     </td>
 
                                     <td>
-                                        <span 
-                                            data-toggle="tooltip" 
-                                            data-placement="top" 
-                                            title="{{ $lab->Proposed_proposal }}">
-                                            {{ Str::limit($lab->Proposed_proposal, 20, '...') }}
+                                        <span class="my-tooltip">
+                                            {{ Str::limit($lab->Proposed_proposal, 25, '...') }}
+                                            <div class="tooltip-box">
+                                                {{ $lab->Proposed_proposal }}
+                                            </div>
                                         </span>
                                     </td>
 
@@ -813,12 +852,12 @@ const FormManager = {
         }
     }
 };
- document.addEventListener('DOMContentLoaded', function () {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
-    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-        new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+document.querySelectorAll('.my-tooltip').forEach(el => {
+    const box = el.querySelector('.tooltip-box');
+    el.addEventListener('mouseenter', () => box.style.display = 'block');
+    el.addEventListener('mouseleave', () => box.style.display = 'none');
 });
+
 // Initialize all modules when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     PageManager.init();
