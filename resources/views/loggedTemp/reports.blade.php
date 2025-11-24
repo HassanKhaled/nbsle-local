@@ -77,6 +77,7 @@
         position: sticky;
         left: 0;
         z-index: 10;
+        font-size: 0.85rem !important;
     }
 
     /* Remaining Columns */
