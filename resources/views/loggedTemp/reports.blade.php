@@ -441,7 +441,7 @@
 .my-tooltip .tooltip-box {
     position: absolute;
     top: -10px; /* adjust vertical position */
-    left: 110%; /* adjust horizontal position */
+    left: 80%; /* adjust horizontal position */
     background: #1e4356;
     color: white;
     padding: 10px 14px;
