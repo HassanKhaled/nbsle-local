@@ -136,17 +136,59 @@ class WorkshopsController extends Controller
     }
     public function GetSemFormUni($uniID)
     {
-        $UniName = universitys::findOrFail($uniID);
-        $facultyName = fac_uni::where('uni_id', $uniID)->get(['id','name','ImagePath']);
+        $UniName = universitys::find($uniID);
+
+        if (!$UniName) {
+            $UniName = (object)[
+                'id' => 0,
+                'name' => 'المجلس الأعلى للجامعات'
+            ];
+
+            // facultyName يجب أن يكون Collection من عنصر واحد
+            $facultyName = collect([
+                (object)[
+                    'id' => 0,
+                    'name' => 'المجلس الأعلى للجامعات'
+                ]
+            ]);
+        } else {
+            $facultyName = fac_uni::where('uni_id', $uniID)
+                                ->get(['id','name','ImagePath']);
+        }
 
         return view('Universitys.workshopSub', compact('uniID', 'UniName', 'facultyName'));
     }
-    public function editWorkshop($uniID,$id)
+
+   public function editWorkshop($uniID, $id)
     {
-        $UniName = universitys::findOrFail($uniID);
-        $facultyName = fac_uni::where('uni_id', $uniID)->get(['id','name','ImagePath']);
+        if ($uniID == 0) {
+            $UniName = (object)[
+                'id' => 0,
+                'name' => 'المجلس الأعلى للجامعات'
+            ];
+
+            $facultyName = collect([
+                (object)[
+                    'id' => 0,
+                    'name' => 'المجلس الأعلى للجامعات',
+                    'ImagePath' => null
+                ]
+            ]);
+        } 
+        
+        else {
+            $UniName = universitys::findOrFail($uniID);
+
+            $facultyName = fac_uni::where('uni_id', $uniID)
+                                ->get(['id', 'name', 'ImagePath']);
+        }
+
+        // الورشة
         $workshop = workDetails::findOrFail($id);
-        return view('Universitys.editworkshop', compact('uniID', 'UniName', 'facultyName','id','workshop'));
+
+        return view('Universitys.editworkshop', compact(
+            'uniID', 'UniName', 'facultyName', 'id', 'workshop'
+        ));
     }
 
     /**
@@ -174,11 +216,16 @@ class WorkshopsController extends Controller
     /**
      * Store workshop for a University (faculty name provided in request)
      */
-    public function storeUniWorkshopDetails(Request $request, $uni_id)
+   public function storeUniWorkshopDetails(Request $request, $uni_id)
     {
+        if ($uni_id == 0) {
+            return $this->storeWorkshop($request, $uni_id, 0);
+        }
+
+        // في حالة الجامعة موجودة
         $faculty = fac_uni::where('uni_id', $uni_id)
-                          ->where('name', $request->FacultyName)
-                          ->firstOrFail();
+                        ->where('name', $request->FacultyName)
+                        ->firstOrFail();
 
         return $this->storeWorkshop($request, $uni_id, $faculty->id);
     }
@@ -200,7 +247,7 @@ class WorkshopsController extends Controller
         $rules = [
             'optradio'        => 'required|in:arabic,english,bothLan',
             'WorkshopSDate'   => 'required|date_format:m/d/Y',
-            'WorkshopEDate'   => 'required|date_format:m/d/Y|after:WorkshopSDate',
+            'WorkshopEDate'   => 'required|date_format:m/d/Y',
             'WorkshopPer'     => 'required|integer|min:1',
             'WorkshopPl'      => 'required|string|max:100',
             'WorkshopCname'   => 'required|string|max:100',
@@ -290,7 +337,7 @@ class WorkshopsController extends Controller
         $rules = [
             'optradio'        => 'required|in:arabic,english,bothLan',
             'WorkshopSDate'   => 'required|date_format:m/d/Y',
-            'WorkshopEDate'   => 'required|date_format:m/d/Y|after:WorkshopSDate',
+            'WorkshopEDate'   => 'required|date_format:m/d/Y',
             'WorkshopPer'     => 'required|integer|min:1',
             'WorkshopPl'      => 'required|string|max:100',
             'WorkshopCname'   => 'required|string|max:100',

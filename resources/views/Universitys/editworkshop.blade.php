@@ -62,13 +62,26 @@
                                 <div class="form-group row">
                                     <label class="col-md-4 col-form-label text-md-right">Faculty Name</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" name="Facultyid" required>
-                                            @foreach($facultyName as $faculty)
-                                                <option value="{{ $faculty->id }}" {{ $workshop->Faculty_id == $faculty->id ? 'selected' : '' }}>
-                                                    {{ $faculty->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+
+                                        @if ($UniName->id == 0)
+                                            {{-- جامعة = 0 → كليّة ثابتة --}}
+                                            <input type="text" class="form-control" 
+                                                value="{{ $facultyName->first()->name }}" readonly>
+
+                                            <input type="hidden" name="Facultyid" 
+                                                value="{{ $facultyName->first()->id }}">
+                                        @else
+                                            {{-- جامعة عادية → قائمة اختيار --}}
+                                            <select class="form-control" name="Facultyid" required>
+                                                @foreach($facultyName as $faculty)
+                                                    <option value="{{ $faculty->id }}"
+                                                        {{ $workshop->Faculty_id == $faculty->id ? 'selected' : '' }}>
+                                                        {{ $faculty->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endif
+
                                     </div>
                                 </div>
 

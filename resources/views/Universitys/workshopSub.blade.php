@@ -45,19 +45,26 @@
                                             <input type="text" name="Uniname" class="form-control"  
                                                    value="{{ $UniName->name }}" readonly>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group row">
-                                        <label class="col-md-4 col-form-label text-md-right">Faculty Name<span class="text-danger">*</span></label>
-                                        <div class="col-md-6">
-                                            <select class="form-control" name="FacultyName" required>
-                                                <option value="" disabled selected hidden>Select a Faculty</option>
-                                                @foreach($facultyName as $faculty)
-                                                    <option value="{{ $faculty->name }}">{{ $faculty->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
                                     </div>
+                                   @if ($UniName->id == 0)
+                                        <div class="col-md-6 d-none">
+                                            <input type="text" name="FacultyName" class="form-control"
+                                                value="{{ $facultyName->first()->name }}" readonly>
+                                        </div>
+                                    @else
+                                        <div class="form-group row">
+                                            <label class="col-md-4 col-form-label text-md-right">Faculty Name</label>
+                                            <div class="col-md-6">
+                                                <select class="form-control" name="FacultyName" required>
+                                                    <option value="" disabled selected hidden>Select a Faculty</option>
+                                                    @foreach($facultyName as $faculty)
+                                                        <option value="{{ $faculty->name }}">{{ $faculty->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    @endif
 
                                     <hr>
                                     {{-- Workshop Basic Info --}}

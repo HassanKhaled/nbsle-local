@@ -13,7 +13,9 @@
        <div class="d-flex align-items-center gap-2">
         <select id="universitySelect" class="form-control form-control-sm" style="width: auto;">
             <option value="">اختر الجامعة</option>
+            <option value="0">المجلس الأعلى للجامعات</option>
             @foreach ($universities as $university)
+                
                 <option value="{{ $university->id }}">{{ $university->name }}</option>
             @endforeach
         </select>
