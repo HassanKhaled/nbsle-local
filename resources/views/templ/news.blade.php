@@ -90,7 +90,7 @@
                             </div>
 
                             <div class="text-center mt-4">
-                                <a href="{{ route('home') }}" class="btn btn-outline-primary btn-lg px-4">
+                                <a href="{{ route('homepage') }}" class="btn btn-outline-primary btn-lg px-4">
                                     <i class="fas fa-arrow-left me-2"></i> Back to News
                                 </a>
                             </div>
