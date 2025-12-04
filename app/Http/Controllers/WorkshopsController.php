@@ -9,6 +9,8 @@ use App\Models\universitys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+ use App\Exports\WorkshopRegistrationExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WorkshopsController extends Controller
 {
@@ -89,6 +91,11 @@ class WorkshopsController extends Controller
                         ->paginate(15);
 
         return view('Workshops.Admin.reservations', compact('reservations'));
+    }
+   
+    public function exportAllReservations()
+    {
+        return Excel::download(new WorkshopRegistrationExport(), 'all_workshop_reservations.xlsx');
     }
     
     // Show university workshop submission form
@@ -536,16 +543,17 @@ class WorkshopsController extends Controller
      */
     public function storeRegistrationDetails(Request $request)
     {
-        //dd($request);
         $data = $request->validate([
             'workshop_id' => 'required|exists:workshops_details,id',
-            'uni_id'      => 'required|exists:universitys,id',
-            'fac_id'      => 'required|exists:fac_uni,fac_id',
+            'uni_id'      => 'required',
+            'fac_id'      => 'required',
             'PartName'    => 'required|string|max:300',
             'partGender'  => 'required|string|max:100',
             'partEmail'   => 'nullable|email|max:100',
             'partType'    => 'required|string|max:100',
             'parSubType'  => 'nullable|string|max:100',
+            'national_id' => 'nullable|string|max:20',
+            'phone'       => 'nullable|string|max:20',
         ]);
 
         if ($data['partType'] === 'Employee') {
@@ -561,6 +569,8 @@ class WorkshopsController extends Controller
             'email'         => $data['partEmail'],
             'par_type'      => $data['partType'],
             'par_sub_type'  => $data['parSubType'],
+            'national_id'   => $data['national_id'], // NEW
+            'phone'         => $data['phone'],    
         ]);
 
         return back()->with('message', 'Participant registered successfully for this workshop.');

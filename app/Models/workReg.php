@@ -21,6 +21,8 @@ class WorkReg extends Model
         'email',
         'par_type',
         'par_sub_type',
+        'national_id',
+        'phone',
     ];
 
     // A registration belongs to a workshop

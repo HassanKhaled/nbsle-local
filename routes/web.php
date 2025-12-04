@@ -227,6 +227,9 @@ Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
     Route::get('/Uniworkshopedit/{uniID}/{id}', [WorkshopsController::class, 'editWorkshop'])->name('editWorkshop');
     Route::get('/adminReservation', [ReservationController::class, 'adminReservation'])->name('admin-reservations');
     Route::get('/workshops/reservations/all', [WorkshopsController::class, 'workshopReservations'])->name('admin.workshops.reservations');
+    Route::get('/workshops/export/all', [WorkshopsController::class, 'exportAllReservations'])
+    ->name('workshops.export.all');
+
 });
 Route::group(['middleware' => ['auth', 'role:admin']], function () {
     // Reservation Of Admin Faculty

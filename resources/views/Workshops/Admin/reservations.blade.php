@@ -9,6 +9,11 @@
         <span class="badge rounded-pill bg-gradient bg-primary px-3 py-2">
             <i class="fas fa-list me-1"></i> Total: {{ $reservations->total() }}
         </span>
+      
+    <a href="{{ route('workshops.export.all') }}" 
+    class="btn btn-success btn-lg mb-3">
+        <i class="bi bi-file-earmark-excel-fill"></i> Download All Reservations
+    </a>
     </div>
 
     <div class="card border-0 shadow-lg">
@@ -47,7 +52,7 @@
                                 @if(strtolower($res->gender) === 'male')
                                     <span class="badge bg-info rounded"><i class="fas fa-mars me-1"></i> Male</span>
                                 @elseif(strtolower($res->gender) === 'female')
-                                    <span class="badge bg-pink rounded"><i class="fas fa-venus me-1"></i> Female</span>
+                                    <span class="badge bg-success rounded"><i class="fas fa-venus me-1"></i> Female</span>
                                 @else
                                     <span class="badge bg-secondary rounded">N/A</span>
                                 @endif
