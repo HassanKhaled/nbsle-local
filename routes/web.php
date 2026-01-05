@@ -139,8 +139,22 @@ Route::get('/home', function () {
     ]);
     $visitsCount = \App\Models\Visit::where('page', 'home')->count();
 
+    // Call the function
+    $controller = new \App\Http\Controllers\Reportcontroller();
+    $universityRanks = array_slice($controller->calculateUniversityRanksHome(), 0, 8);
+    $ids = collect($universityRanks)->pluck('university_id')->toArray();
+    $universities = universitys::whereIn('id', $ids)->get()->keyBy('id');
+
+    $enrichedData = collect($universityRanks)->map(function ($rank) use ($universities) {
+        $university = $universities->get($rank['university_id']);
+        return array_merge(
+            (array) $rank,
+            $university ? $university->toArray() : []
+        );
+    })->toArray();
+    
     //    $devices = \App\Models\devices::sum('num_units')+ \App\Models\UniDevices::sum('num_units');
-    return view('templ/index', compact('universitys', 'institutes', 'labs', 'devices', 'news', 'visitsCount'));
+    return view('templ/index', compact('universitys', 'institutes', 'labs', 'devices', 'news', 'visitsCount', 'enrichedData'));
 })->name('home');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
