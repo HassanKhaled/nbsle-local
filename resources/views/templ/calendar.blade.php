@@ -77,8 +77,6 @@
             text-overflow: ellipsis;
             transition: opacity 0.2s;
             z-index: 10;
-            left: 8px;
-            right: 8px;
         }
         .event-span:hover {
             opacity: 0.8;
@@ -170,6 +168,9 @@
                 padding: 1px 3px;
                 margin-bottom: 2px;
             }
+        }
+        .calendar-grid {
+            position: relative;
         }
     </style>
 </head>
@@ -268,6 +269,7 @@
         function renderCalendar() {
             const calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
+            window.calendarFirstDay = new Date(currentYear, currentMonth, 1).getDay();
 
             dayNames.forEach(day => {
                 const header = document.createElement('div');
@@ -348,7 +350,7 @@
                         renderSpanningEvent(event, startDay, endDay, dayElements);
                     } else {
                         // Single day event
-                        const dayIndex = startDay - 1;
+                        const dayIndex = calendarFirstDay + startDay - 1;
                         if (dayElements[dayIndex]) {
                             const eventEl = document.createElement('div');
                             eventEl.className = 'event-item';
@@ -364,35 +366,49 @@
         }
 
         function renderSpanningEvent(event, startDay, endDay, dayElements) {
-            const startIndex = startDay - 1;
-            const endIndex = Math.min(endDay - 1, dayElements.length - 1);
-            
-            if (!dayElements[startIndex]) return;
-            
-            const startEl = dayElements[startIndex];
-            const endEl = dayElements[endIndex];
-            
-            if (!endEl) return;
-            
-            // Calculate position
-            const startRect = startEl.getBoundingClientRect();
-            const endRect = endEl.getBoundingClientRect();
-            
-            const spanEl = document.createElement('div');
-            spanEl.className = 'event-span';
-            spanEl.style.backgroundColor = event.color;
-            spanEl.textContent = event.title;
-            spanEl.style.top = '10px';
-            spanEl.onclick = () => showEventDetails(event);
-            
-            // Calculate width across days
-            const dayWidth = startRect.width;
-            const spanDays = endIndex - startIndex + 1;
-            const width = (spanDays * dayWidth) + ((spanDays - 1) * 1); 
-            
-            spanEl.style.width = `${width}px`;
-            startEl.appendChild(spanEl);
-            startEl.style.position = 'relative';
+            const calendar = document.getElementById('calendar');
+            const calendarRect = calendar.getBoundingClientRect();
+
+            const startIndex = calendarFirstDay + startDay - 1;
+            const endIndex = calendarFirstDay + endDay - 1;
+
+            let currentIndex = startIndex;
+            let stackOffset = 0;
+
+            while (currentIndex <= endIndex) {
+                const startEl = dayElements[currentIndex];
+                if (!startEl) {
+                    currentIndex++;
+                    continue;
+                }
+
+                const startRow = Math.floor(currentIndex / 7);
+                const rowEndIndex = Math.min(startRow * 7 + 6, endIndex);
+                const endEl = dayElements[rowEndIndex];
+                if (!endEl) break;
+
+                // Calculate position
+                const startRect = startEl.getBoundingClientRect();
+                const endRect = endEl.getBoundingClientRect();
+
+                const spanEl = document.createElement('div');
+                spanEl.className = 'event-span';
+                spanEl.style.backgroundColor = event.color;
+                spanEl.textContent = event.title;
+                spanEl.onclick = () => showEventDetails(event);
+
+                // positioning
+                spanEl.style.left = `${startRect.left - calendarRect.left}px`;
+                spanEl.style.width = `${endRect.right - startRect.left - 6}px`;
+                const baseTop = startRect.top - calendarRect.top + 25;
+                spanEl.style.top = `${baseTop + stackOffset}px`;
+
+                // append to calendar grid (not day cell)
+                calendar.appendChild(spanEl);
+
+                stackOffset += 22; // allow stacking if multiple spans overlap
+                currentIndex = rowEndIndex + 1;
+            }
         }
 
         function showEventDetails(event) {
