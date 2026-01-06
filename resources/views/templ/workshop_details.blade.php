@@ -57,9 +57,9 @@
 
                     <div class="col-md-4 col-12">
                         <div class="border p-3 rounded-3 h-100">
-                            <i class="fas fa-user text-success fs-3 "></i>
-                            <div class="fw-bold">Representative</div>
-                            <div class="text-muted">{{ $workshop->rep_name }} - {{ $workshop->rep_email }}</div>
+                            <i class="fas fa-location-dot text-success fs-3 "></i>
+                            <div class="fw-bold">Place</div>
+                            <div class="text-muted">{{ $workshop->place }}</div>
                         </div>
                     </div>
                 </div>

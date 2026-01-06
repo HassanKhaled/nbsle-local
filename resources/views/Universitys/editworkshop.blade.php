@@ -128,10 +128,21 @@
                                         @endif
                                     </div>
                                 </div>
+                                {{-- Banner --}}
+                                <div class="form-group row">
+                                    <label class="col-md-4 col-form-label text-md-right">Workshop Banner</label>
+                                    <div class="col-md-6">
+                                        <input type="file" name="Wbanner" accept=".bmp,.svg,.jpg,.png,.gif">
+                                        @if($workshop->workshop_bannerPath)
+                                            <div class="mt-2">
+                                                <img src="{{ asset($workshop->workshop_bannerPath) }}" width="200" alt="Workshop Banner">
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
 
                                 {{-- Lecturers --}}
-                                <hr>
-                                <legend>Lecturers</legend>
+                                <!-- <legend>Lecturers</legend>
                                 <div class="form-group row">
                                     <label class="col-md-4 col-form-label text-md-right">No. of Lecturers</label>
                                     <div class="col-md-5">
@@ -147,12 +158,12 @@
                                         @enderror
                                         <div id="lecContainer" class="mt-3"></div>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 {{-- Workshop Dates --}}
                                 <hr>
                                 <legend>Workshop Dates</legend>
-                                <div class="form-group row">
+                                <!-- <div class="form-group row">
                                     <label class="col-md-4 col-form-label text-md-right">Workshop Period</label>
                                     <div class="col-md-6">
                                         <input type="number" name="WorkshopPer" class="form-control" value="{{ $workshop->workshop_period }}">
@@ -169,7 +180,60 @@
                                     <div class="col-md-6">
                                         <input type="text" name="WorkshopEDate" id="WorkshopEDate" class="form-control datepicker" value="{{ \Carbon\Carbon::parse($workshop->end_date)->format('m/d/Y') }}">
                                     </div>
-                                </div>
+                                </div> -->
+                                <div class="form-group row">
+                                        <label class="col-md-4 col-form-label text-md-right">Workshop Period (days)<span class="text-danger">*</span></label>
+                                        <div class="col-md-5">
+                                            <div class="input-group">
+                                                <input type="number" name="nolec" id="nolec" value="{{ $workshop->no_lecturers }}" class="form-control" required>
+                                                <div class="input-group-append">
+                                                    <button type="button" class="btn btn-info" onclick="generateLec()">Set</button>
+                                                </div>
+                                            </div>
+                                            <!-- <div id="lecName" class="mt-2"></div>
+                                            <div id="lecAcDet" class="mt-2"></div>
+                                            <div id="SessName" class="mt-2"></div>
+                                            <div id="SessDet" class="mt-2"></div>
+                                            <div id="lecName2" class="mt-2"></div>
+                                            <div id="lecAcDet2" class="mt-2"></div>
+                                            <div id="SessName2" class="mt-2"></div>
+                                            <div id="SessDet2" class="mt-2"></div> -->
+                                            <div id="lecWrapper"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-4 col-form-label text-md-right">
+                                            Starting Date & Time<span class="text-danger">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-6 pr-1">
+                                                    <input type="text" name="WorkshopSDate" id="WorkshopSDate" class="form-control datepicker" placeholder="MM/DD/YYYY" value="{{ \Carbon\Carbon::parse($workshop->st_date)->format('m/d/Y') }}"required>
+                                                </div>
+                                                <div class="col-6 pl-1">
+                                                    <input type="time" name="WorkshopSTime" id="WorkshopSTime" class="form-control"  value="{{ \Carbon\Carbon::parse($workshop->st_date)->format('H:i') }}"required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-4 col-form-label text-md-right">
+                                            Ending Date & Time<span class="text-danger">*</span>
+                                        </label>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-6 pr-1">
+                                                    <input type="text" name="WorkshopEDate" id="WorkshopEDate" class="form-control datepicker" placeholder="MM/DD/YYYY" value="{{ \Carbon\Carbon::parse($workshop->end_date)->format('m/d/Y') }}"  required>
+                                                </div>
+                                                <div class="col-6 pl-1">
+                                                    <input type="time" name="WorkshopETime" id="WorkshopETime" class="form-control" value="{{ \Carbon\Carbon::parse($workshop->end_date)->format('H:i') }}"  required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                 {{-- Fees --}}
                                 <hr>
@@ -251,10 +315,15 @@
 
 <script>
     // Pass saved lecturer data to JS
-    const savedArNames = @json($workshop->Lec_ar_names ?? []);
-    const savedArDetails = @json($workshop->Lec_ar_details ?? []);
-    const savedEnNames = @json($workshop->Lec_en_names ?? []);
-    const savedEnDetails = @json($workshop->Lec_en_details ?? []);
+const savedArNames        = @json($workshop->Lec_ar_names ?? []);
+const savedArDetails     = @json($workshop->Lec_ar_details ?? []);
+const savedArSessTitles  = @json($workshop->Ses_ar_title ?? []);
+const savedArSessDetails = @json($workshop->Ses_ar_details ?? []);
+
+const savedEnNames        = @json($workshop->Lec_en_names ?? []);
+const savedEnDetails     = @json($workshop->Lec_en_details ?? []);
+const savedEnSessTitles  = @json($workshop->Ses_en_title ?? []);
+const savedEnSessDetails = @json($workshop->Ses_en_details ?? []);
  console.log(savedArNames);
     // Datepicker
     $('.datepicker').datepicker({
@@ -263,27 +332,77 @@
         todayHighlight: true
     });
 
-    // Lecturers
-    function generateLec() {
-        let count = parseInt($('#nolec').val());
-        const container = $('#lecContainer');
-        container.empty();
-        for (let i = 0; i < count; i++) {
-            const arName = savedArNames[i] ?? '';
-            const arDetail = savedArDetails[i] ?? '';
-            const enName = savedEnNames[i] ?? '';
-            const enDetail = savedEnDetails[i] ?? '';
+      // Lecturers
+      function generateLec() {
+            let count = parseInt($('#nolec').val());
+            $('#lecWrapper').empty();
 
-            container.append(`
-                <div class="p-2 mb-2 border rounded">
-                    <input type="text" class="form-control mb-2" name="Lec_ar_names[]" value="${arName}" placeholder="Arabic Name">
-                    <input type="text" class="form-control mb-2" name="Lec_ar_details[]" value="${arDetail}" placeholder="Arabic Details">
-                    <input type="text" class="form-control mb-2" name="Lec_en_names[]" value="${enName}" placeholder="English Name">
-                    <input type="text" class="form-control" name="Lec_en_details[]" value="${enDetail}" placeholder="English Details">
-                </div>
-            `);
+            for (let i = 0; i < count; i++) {
+
+                let mode = $('input[name=optradio]:checked').val();
+                let block = `<div class="card mb-3 p-3 border">
+                                <h6 class="fw-bold mb-2">Day ${i + 1}</h6>`;
+
+                /* ================= ARABIC ================= */
+                if (mode === 'arabic' || mode === 'bothLan') {
+                    block += `
+                        <input class="form-control mb-2"
+                            name="LecturerArabicName${i}"
+                            placeholder="اسم المحاضر في اليوم ${i + 1}"
+                            value="${savedArNames[i] ?? ''}"
+                            required>
+
+                        <input class="form-control mb-2"
+                            name="LecturerDetailsInAr${i}"
+                            placeholder="تفاصيل المحاضر"
+                            value="${savedArDetails[i] ?? ''}">
+
+                        <input class="form-control mb-2"
+                            name="SessionTitleAr${i}"
+                            placeholder="عنوان الجلسة"
+                            value="${savedArSessTitles[i] ?? ''}"
+                            required>
+
+                        <input class="form-control mb-2"
+                            name="SessionDetailsAr${i}"
+                            placeholder="تفاصيل الجلسة"
+                            value="${savedArSessDetails[i] ?? ''}"
+                            required>
+                    `;
+                }
+
+                /* ================= ENGLISH ================= */
+                if (mode === 'english' || mode === 'bothLan') {
+                    block += `
+                        <input class="form-control mb-2"
+                            name="LecturerEnglishName${i}"
+                            placeholder="Lecturer Name"
+                            value="${savedEnNames[i] ?? ''}"
+                            required>
+
+                        <input class="form-control mb-2"
+                            name="LecturerDetailsInEng${i}"
+                            placeholder="Lecturer Details"
+                            value="${savedEnDetails[i] ?? ''}">
+
+                        <input class="form-control mb-2"
+                            name="SessionTitleEn${i}"
+                            placeholder="Session Title"
+                            value="${savedEnSessTitles[i] ?? ''}"
+                            required>
+
+                        <input class="form-control mb-2"
+                            name="SessionDetailsEn${i}"
+                            placeholder="Session Details"
+                            value="${savedEnSessDetails[i] ?? ''}"
+                            required>
+                    `;
+                }
+
+                block += `</div>`;
+                $('#lecWrapper').append(block);
+            }
         }
-    }
 
     // Fees
     function generateFees() {
