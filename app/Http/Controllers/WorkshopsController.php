@@ -549,11 +549,15 @@ class WorkshopsController extends Controller
             'fac_id'      => 'required',
             'PartName'    => 'required|string|max:300',
             'partGender'  => 'required|string|max:100',
-            'partEmail'   => 'nullable|email|max:100',
+            'partEmail'   => 'required|email|max:100',
             'partType'    => 'required|string|max:100',
-            'parSubType'  => 'nullable|string|max:100',
-            'national_id' => 'nullable|string|max:20',
-            'phone'       => 'nullable|string|max:20',
+            'parSubType'  => 'required|string|max:100',
+            'national_id' => 'required|unique:workshop_reg|string|max:14',
+            'phone' => [
+            'required',
+            'regex:/^01(0|1|2|5)[0-9]{8}$/'
+        ],
+
         ]);
 
         if ($data['partType'] === 'Employee') {

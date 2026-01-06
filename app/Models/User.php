@@ -34,6 +34,8 @@ class User extends Authenticatable
         'loginCount',
 //        'phone',
 //        'central'
+        'institution_name' ,
+        'national_id'
     ];
 
     /*** The attributes that should be hidden for arrays.*/
