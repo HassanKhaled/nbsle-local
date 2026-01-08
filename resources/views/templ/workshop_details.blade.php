@@ -18,15 +18,15 @@
 
             {{-- Header Cover Image --}}
             <div class="position-relative" style="height: 300px; overflow: hidden;">
-                <img src="{{ $workshop->workshop_logoPath ? asset($workshop->workshop_logoPath) : asset('images/default-workshop.png') }}" 
+                <img src="{{ $workshop->workshop_logoPath ? asset($workshop->workshop_bannerPath) : asset('images/default-workshop.png') }}" 
                      class="w-100 h-100 object-fit-cover" 
                      alt="{{ $workshop->workshop_en_title ?? $workshop->workshop_ar_title }}">
                 <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
                 <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
-                    <h2 class="fw-bold mb-2">{{ $workshop->workshop_en_title ?? $workshop->workshop_ar_title }}</h2>
+                    <!-- <h2 class="fw-bold mb-2">{{ $workshop->workshop_en_title ?? $workshop->workshop_ar_title }}</h2>
                     <p class="mb-0">
                         <i class="fas fa-map-marker-alt text-warning me-2"></i>{{ $workshop->place }}
-                    </p>
+                    </p> -->
                 </div>
             </div>
 
@@ -67,7 +67,7 @@
                 {{-- Contact --}}
               
 
-                <div class="card my-3">
+                <!-- <div class="card my-3">
                     <div class="card-header bg-secondary text-white">
                         <h5>Arabic Lecturers</h5>
                     </div>
@@ -102,7 +102,106 @@
                             <p class="text-muted">No English lecturers added.</p>
                         @endif
                     </div>
+                </div> -->
+               @php
+    $total = $workshop->no_lecturers ?? 0;
+
+    $hasAr = is_array($workshop->Lec_ar_names) && count($workshop->Lec_ar_names);
+    $hasEn = is_array($workshop->Lec_en_names) && count($workshop->Lec_en_names);
+@endphp
+
+@if($total > 0)
+    @for($i = 0; $i < $total; $i++)
+        <div class="card my-4 shadow">
+
+            <div class="card-header bg-dark text-white text-center">
+                <h5 class="mb-0  text-white" >Day {{ $i + 1 }}</h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+                       {{-- English Card --}}
+                    @if($hasEn && !empty($workshop->Lec_en_names[$i]))
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-success h-100" dir="ltr">
+                                <div class="card-header bg-success text-white text-center">
+                                    Session Details
+                                </div>
+                                <div class="card-body">
+
+                                    <p><strong>Speaker Name:</strong>
+                                        {{ $workshop->Lec_en_names[$i] }}
+                                    </p>
+
+                                    <p><strong>Speaker Information:</strong>
+                                        {{ $workshop->Lec_en_details[$i] ?? '—' }}
+                                    </p>
+
+                                    <p><strong>Session Title:</strong>
+                                        {{ $workshop->Ses_en_title[$i] ?? '—' }}
+                                    </p>
+
+                                    <p><strong>Session Description:</strong>
+                                        {{ $workshop->Ses_en_details[$i] ?? '—' }}
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    {{-- Arabic Card --}}
+                    @if($hasAr && !empty($workshop->Lec_ar_names[$i]))
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-success h-100" dir="rtl">
+                                <div class="card-header bg-success text-white text-center">
+                                    تفاصيل الجلسة 
+                                </div>
+                                <div class="card-body text-right">
+
+                                    <p ><strong>اسم المحاضر:</strong>
+                                        {{ $workshop->Lec_ar_names[$i] }}
+                                    </p>
+
+                                    <p><strong> معلومات عن المحاضر:</strong>
+                                        {{ $workshop->Lec_ar_details[$i] ?? '—' }}
+                                    </p>
+
+                                    <p><strong>عنوان الجلسة:</strong>
+                                        {{ $workshop->Ses_ar_title[$i] ?? '—' }}
+                                    </p>
+
+                                    <p><strong>وصف الجلسة:</strong>
+                                        {{ $workshop->Ses_ar_details[$i] ?? '—' }}
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                   
+
+                    {{-- No Data --}}
+                    @if(
+                        empty($workshop->Lec_ar_names[$i]) &&
+                        empty($workshop->Lec_en_names[$i])
+                    )
+                        <div class="col-12">
+                            <p class="text-muted text-center">
+                                No data available for this day
+                            </p>
+                        </div>
+                    @endif
+
                 </div>
+            </div>
+        </div>
+    @endfor
+@else
+    <p class="text-muted text-center">No lecturers added.</p>
+@endif
+
 
                 @if($workshop->notes)
                 <div class="mt-4 border rounded-3 bg-light p-3">
