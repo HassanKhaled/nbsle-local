@@ -35,7 +35,12 @@ class WorkDetails extends Model
         'notes',
         'likes',
         'views',
-        'is_approved'
+        'is_approved',
+        'Ses_ar_title',
+        'Ses_en_title',
+        'Ses_ar_details',
+        'Ses_en_details',
+        'workshop_bannerPath'
     ];
 
     protected $dates = ['st_date', 'end_date'];
@@ -68,6 +73,10 @@ class WorkDetails extends Model
         'Lec_en_names'   => 'array',
         'Lec_ar_details' => 'array',
         'Lec_en_details' => 'array',
+        'Ses_ar_title'   => 'array',
+        'Ses_en_title'   => 'array',
+        'Ses_ar_details' => 'array',
+        'Ses_en_details' => 'array',
         'fees_types'     => 'array',
         'fees_values'    => 'array',
         'is_approved'    => 'boolean',
