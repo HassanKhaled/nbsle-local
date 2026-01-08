@@ -55,26 +55,61 @@
                                                         </div>
                                                     </td>
                                                     <td style="">{{$user->phone}}</td>
-                                                    @if($user_logged->hasRole('admin'))
-                                                    <td>
-                                                        <div class="d-inline-block align-middle">
-                                                            <div class="d-inline-block">
-                                                                <h6 style="word-wrap: break-word;white-space: pre-wrap;word-break: break-word;">{{\App\Models\universitys::find($user->uni_id) == null?"":\App\Models\universitys::find($user->uni_id)['name']}} Admin</h6>
-                                                                {{-- <h6 style="word-wrap: break-word;white-space: pre-wrap;word-break: break-word;">{{ $user->uni_id == null ? "":\App\Models\universitys::find($user->uni_id)['name']}} Admin</h6>
- --}}
-                                                                {{-- <td>{{\App\Models\departments::find($user->dept_id) == null?"___ ":\App\Models\departments::find($user->dept_id)['name']}}</td> --}}
-                                                            </div>
-                                                        </div>
+                                                        @if($user_logged->hasRole('admin'))
+                                                        <td class="text-center align-middle">
+                                                            <div class="d-flex flex-column justify-content-center align-items-center">
 
-                                                    </td>
+                                                                @if($user->role->name == "visitor")
+                                                                    <h6 class="fw-bold mb-1"
+                                                                        style="word-wrap: break-word; white-space: pre-wrap; word-break: break-word;">
+                                                                        Visitor
+                                                                    </h6>
+                                                                @endif
+
+                                                                @php
+                                                                    $uni = \App\Models\universitys::find($user->uni_id);
+                                                                    $fac = \App\Models\facultys::find($user->fac_id);
+                                                                    $dep = \App\Models\departments::find($user->dept_id);
+                                                                @endphp
+
+                                                                @if($user->role->name == "university" && $uni)
+                                                                    <h6 class="fw-bold mb-1">
+                                                                        University
+                                                                    </h6>
+                                                                    <div class="text-muted small">
+                                                                        {{ $uni->name }}
+                                                                    </div>
+                                                                @endif
+
+                                                                @if($user->role->name == "faculty" && $fac)
+                                                                    <h6 class="fw-bold mb-1">
+                                                                        Faculty
+                                                                    </h6>
+                                                                    <div class="text-muted small">
+                                                                        {{ $fac->name }}
+                                                                    </div>
+                                                                @endif
+
+                                                                @if($user->role->name == "department" && $dep)
+                                                                    <h6 class="fw-bold mb-1">
+                                                                        Department
+                                                                    </h6>
+                                                                    <div class="text-muted small">
+                                                                        {{ $dep->name }}
+                                                                    </div>
+                                                                @endif
+
+                                                            </div>
+                                                        </td>
+
                                                     @endif
                                                     @if($user_logged->hasRole('university'))
-                                                    <td>{{\App\Models\facultys::find($user->fac_id) == null?"University ":\App\Models\facultys::find($user->fac_id)['name']}} Admin</td>
+                                                    <td>{{\App\Models\facultys::find($user->fac_id) == null?"University ":\App\Models\facultys::find($user->fac_id)['name']}} {{  $user->role->name }}</td>
                                                    {{--  <td>{{\App\Models\departments::find($user->dept_id) == null?"___ ":\App\Models\departments::find($user->dept_id)['name']}}</td> --}}
                                                     @endif
                                                     @if($user_logged->hasRole('faculty'))
                                                     {{-- <td>{{\App\Models\departments::find($user->dept_id) == null?"Faculty ":\App\Models\departments::find($user->dept_id)['name']}} Admin</td> --}}
-                                                    <td>{{\App\Models\departments::find($user->dept_id) == null?"Faculty ":"Department "}} Admin</td>
+                                                    <td>{{\App\Models\departments::find($user->dept_id) == null?"Faculty ":"Department "}} {{  $user->role->name }}</td>
                                                     <td>{{\App\Models\departments::find($user->dept_id) == null?"___ ":\App\Models\departments::find($user->dept_id)['name']}}</td>
                                                     @endif
                                                     <td>

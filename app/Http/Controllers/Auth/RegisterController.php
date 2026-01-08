@@ -50,14 +50,18 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-//        dd($data);
+        // dd($data)
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
+            'national_id' => 'required|unique:users|string|max:14',
 //            'telephone' => ['required', 'string', 'min:11', 'max:11', 'unique:users'],
 //            'governate' => ['string', 'max:255'],
+            /// if affilation is of type others then institute_name be sent with a value
+            'institution_name' => 'required_if:affiliation,others|string|max:255',
+
             'university' =>['integer'],
             'faculty'=>['integer']
         ]);
@@ -71,12 +75,16 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-//        dd($data);
+   // dd($data);
         $user = User::create([
             'name' => $data['name'],
             'username' =>$data['username'],
             'email' => $data['email'],
-//            'phone' => $data['telephone'],
+            'institution_name' => $data['institution_name'] ?? null,
+            'national_id'      => $data['national_id'],
+            'uni_id' =>  $data['uni_id'] ?? null,
+            'fac_id' =>  $data['fac_id'] ?? null,
+//          'phone' => $data['telephone'],
             'password_hashed'=>$data['password'],
             'password' => Hash::make($data['password']),
             'role_id'=>'5',
