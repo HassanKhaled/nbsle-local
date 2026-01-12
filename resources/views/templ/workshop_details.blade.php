@@ -36,7 +36,8 @@
                                 {{ \Carbon\Carbon::parse($workshop->st_date)->format('d M Y') }}
                             </div>
                              <div class="text-muted">
-                                {{ \Carbon\Carbon::parse($workshop->st_date)->format('H:i') }}
+                                {{ \Carbon\Carbon::parse($workshop->st_date)->format('H:i') }} -
+                                {{ \Carbon\Carbon::parse($workshop->end_date)->format('H:i') }}
                             </div>
                         </div>
                     </div>
@@ -49,6 +50,7 @@
                                 {{ \Carbon\Carbon::parse($workshop->end_date)->format('d M Y') }}
                             </div>
                              <div class="text-muted">
+                                 {{ \Carbon\Carbon::parse($workshop->st_date)->format('H:i') }} -
                                 {{ \Carbon\Carbon::parse($workshop->end_date)->format('H:i') }}
                             </div>
                         </div>
