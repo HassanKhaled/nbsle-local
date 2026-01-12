@@ -35,6 +35,9 @@
                             <div class="text-muted">
                                 {{ \Carbon\Carbon::parse($workshop->st_date)->format('d M Y') }}
                             </div>
+                             <div class="text-muted">
+                                {{ \Carbon\Carbon::parse($workshop->st_date)->format('H:i') }}
+                            </div>
                         </div>
                     </div>
 
@@ -44,6 +47,9 @@
                             <div class="fw-bold">End Date</div>
                             <div class="text-muted">
                                 {{ \Carbon\Carbon::parse($workshop->end_date)->format('d M Y') }}
+                            </div>
+                             <div class="text-muted">
+                                {{ \Carbon\Carbon::parse($workshop->end_date)->format('H:i') }}
                             </div>
                         </div>
                     </div>
@@ -58,44 +64,7 @@
                 </div>
 
                 {{-- Contact --}}
-              
-
-                <!-- <div class="card my-3">
-                    <div class="card-header bg-secondary text-white">
-                        <h5>Arabic Lecturers</h5>
-                    </div>
-                    <div class="card-body">
-                        @if(!empty($workshop->Lec_ar_names) && is_array($workshop->Lec_ar_names))
-                            @foreach($workshop->Lec_ar_names as $index => $lecName)
-                                <div class="mb-3 border-bottom pb-2">
-                                    <h6 class="fw-bold">Lecturer {{ $index + 1 }}</h6>
-                                    <p><strong>Name:</strong> {{ $lecName }}</p>
-                                    <p><strong>Details:</strong> {{ $workshop->Lec_ar_details[$index] ?? '—' }}</p>
-                                </div>
-                            @endforeach
-                        @else
-                            <p class="text-muted">No Arabic lecturers added.</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="card my-3">
-                    <div class="card-header bg-secondary text-white">
-                        <h5>English Lecturers</h5>
-                    </div>
-                    <div class="card-body">
-                        @if(!empty($workshop->Lec_en_names) && is_array($workshop->Lec_en_names))
-                            @foreach($workshop->Lec_en_names as $index => $lecName)
-                                <div class="mb-3 border-bottom pb-2">
-                                    <h6 class="fw-bold">Lecturer {{ $index + 1 }}</h6>
-                                    <p><strong>Name:</strong> {{ $lecName }}</p>
-                                    <p><strong>Details:</strong> {{ $workshop->Lec_en_details[$index] ?? '—' }}</p>
-                                </div>
-                            @endforeach
-                        @else
-                            <p class="text-muted">No English lecturers added.</p>
-                        @endif
-                    </div>
-                </div> -->
+            
                @php
     $total = $workshop->no_lecturers ?? 0;
 

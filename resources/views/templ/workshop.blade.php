@@ -43,14 +43,14 @@
                                              class="card-img-top" 
                                              loading="lazy">
 
-                                        <div class="date-box position-absolute top-0 start-0 bg-primary text-white text-center p-2">
+                                        <div class="date-box position-absolute bottom--25 start-5 bg-primary text-white text-center p-2">
                                             <h5 class="mb-0">{{ \Carbon\Carbon::parse($workshop->st_date)->format('d') }}</h5>
                                             <small>{{ \Carbon\Carbon::parse($workshop->st_date)->format('M') }}</small>
                                         </div>
                                     </a>
                                 </div>
 
-                                <div class="card-body d-flex flex-column">
+                                <div class="card-body d-flex flex-column mt-4">
                                     <h5 class="fw-bold mb-2">
                                         {{ $workshop->workshop_ar_title ?? $workshop->workshop_en_title }}
                                     </h5>
