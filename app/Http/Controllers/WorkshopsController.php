@@ -720,7 +720,7 @@ class WorkshopsController extends Controller
             'partEmail'   => 'required|email|max:100',
             'partType'    => 'required|string|max:100',
             'parSubType'  => 'required|string|max:100',
-            'national_id' => 'required|unique:workshop_reg|string|max:14',
+            'national_id' => 'required|string|max:14',
             'phone' => [
             'required',
             'regex:/^01(0|1|2|5)[0-9]{8}$/'
