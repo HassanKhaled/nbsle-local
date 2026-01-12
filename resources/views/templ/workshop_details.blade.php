@@ -17,17 +17,10 @@
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
             {{-- Header Cover Image --}}
-            <div class="position-relative" style="height: 300px; overflow: hidden;">
+            <div class="position-relative">
                 <img src="{{ $workshop->workshop_logoPath ? asset($workshop->workshop_bannerPath) : asset('images/default-workshop.png') }}" 
-                     class="w-100 h-100 object-fit-cover" 
-                     alt="{{ $workshop->workshop_en_title ?? $workshop->workshop_ar_title }}">
-                <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
-                <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
-                    <!-- <h2 class="fw-bold mb-2">{{ $workshop->workshop_en_title ?? $workshop->workshop_ar_title }}</h2>
-                    <p class="mb-0">
-                        <i class="fas fa-map-marker-alt text-warning me-2"></i>{{ $workshop->place }}
-                    </p> -->
-                </div>
+                      class="w-100 h-100 object-fit-contain"
+                     alt="{{ $workshop->workshop_en_title ?? $workshop->workshop_ar_title }}"> 
             </div>
 
             {{-- Body --}}
