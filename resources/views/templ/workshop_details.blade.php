@@ -35,9 +35,9 @@
                             <div class="text-muted">
                                 {{ \Carbon\Carbon::parse($workshop->st_date)->format('d M Y') }}
                             </div>
-                             <div class="text-muted">
-                                {{ \Carbon\Carbon::parse($workshop->st_date)->format('H:i') }} AM -
-                                {{ \Carbon\Carbon::parse($workshop->end_date)->format('H:i') }} PM
+                            <div class="text-muted">
+                                {{ \Carbon\Carbon::parse($workshop->st_date)->format('h:i A') }} -
+                                {{ \Carbon\Carbon::parse($workshop->end_date)->format('h:i A') }}
                             </div>
                         </div>
                     </div>
@@ -49,9 +49,9 @@
                             <div class="text-muted">
                                 {{ \Carbon\Carbon::parse($workshop->end_date)->format('d M Y') }}
                             </div>
-                             <div class="text-muted">
-                                {{ \Carbon\Carbon::parse($workshop->st_date)->format('H:i') }} AM -
-                                {{ \Carbon\Carbon::parse($workshop->end_date)->format('H:i') }} PM 
+                            <div class="text-muted">
+                                {{ \Carbon\Carbon::parse($workshop->st_date)->format('h:i A') }} -
+                                {{ \Carbon\Carbon::parse($workshop->end_date)->format('h:i A') }}
                             </div>
                         </div>
                     </div>
