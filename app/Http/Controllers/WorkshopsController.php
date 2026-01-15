@@ -712,15 +712,42 @@ class WorkshopsController extends Controller
     
         // take values from Users table already registered with in case nothing
         // in workshop_reg data else take workshop_reg data
-        $saved_name        = $participantRegistration?->name        ?? $authUser->name;
-        $saved_email       = $participantRegistration?->email       ?? $authUser->email;
-        $saved_national_id = $participantRegistration?->national_id ?? $authUser->national_id;
-        $saved_uni_id      = $participantRegistration?->uni_id      ?? $authUser->uni_id;
-        $saved_fac_id      = $participantRegistration?->fac_id      ?? $authUser->fac_id;
-        $saved_par_type      = $participantRegistration?->par_type      ?? $authUser->par_type;
-        $saved_par_sub_type      = $participantRegistration?->par_sub_type      ?? $authUser->par_sub_type;
-        $saved_gender      = $participantRegistration?->gender      ?? $authUser->gender;
-        $saved_phone = $participantRegistration?->phone ;
+       $saved_name = isset($participantRegistration) && isset($participantRegistration->name)
+    ? $participantRegistration->name
+    : $authUser->name;
+
+        $saved_email = isset($participantRegistration) && isset($participantRegistration->email)
+            ? $participantRegistration->email
+            : $authUser->email;
+
+        $saved_national_id = isset($participantRegistration) && isset($participantRegistration->national_id)
+            ? $participantRegistration->national_id
+            : $authUser->national_id;
+
+        $saved_uni_id = isset($participantRegistration) && isset($participantRegistration->uni_id)
+            ? $participantRegistration->uni_id
+            : $authUser->uni_id;
+
+        $saved_fac_id = isset($participantRegistration) && isset($participantRegistration->fac_id)
+            ? $participantRegistration->fac_id
+            : $authUser->fac_id;
+
+        $saved_par_type = isset($participantRegistration) && isset($participantRegistration->par_type)
+            ? $participantRegistration->par_type
+            : $authUser->par_type;
+
+        $saved_par_sub_type = isset($participantRegistration) && isset($participantRegistration->par_sub_type)
+            ? $participantRegistration->par_sub_type
+            : $authUser->par_sub_type;
+
+        $saved_gender = isset($participantRegistration) && isset($participantRegistration->gender)
+            ? $participantRegistration->gender
+            : $authUser->gender;
+
+        $saved_phone = isset($participantRegistration) && isset($participantRegistration->phone)
+            ? $participantRegistration->phone
+            : $authUser->phone;
+
        // dd( $saved_fac_id );
         return view('Users.PartregistrationForm', [
             'saved_name'        => $saved_name,
