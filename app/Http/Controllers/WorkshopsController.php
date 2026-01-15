@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth; 
 use App\Models\fac_uni;
 use App\Models\workDetails;
 use App\Models\workReg;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
  use App\Exports\WorkshopRegistrationExport;
+use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 
 class WorkshopsController extends Controller
@@ -698,11 +700,41 @@ class WorkshopsController extends Controller
      */
     public function GetRegForm($workshopId)
     {
-        $workshop = workDetails::findOrFail($workshopId);
+
+        $workshop = WorkDetails::findOrFail($workshopId);
+
+        $authUser = Auth::user();
+
+        // Try to find a participant data in for this user by name and email
+        $participantRegistration = WorkReg::where('national_id', $authUser->national_id)
+        ->where('workshop_id', $workshopId)
+        ->first();
+    
+        // take values from Users table already registered with in case nothing
+        // in workshop_reg data else take workshop_reg data
+        $saved_name        = $participantRegistration?->name        ?? $authUser->name;
+        $saved_email       = $participantRegistration?->email       ?? $authUser->email;
+        $saved_national_id = $participantRegistration?->national_id ?? $authUser->national_id;
+        $saved_uni_id      = $participantRegistration?->uni_id      ?? $authUser->uni_id;
+        $saved_fac_id      = $participantRegistration?->fac_id      ?? $authUser->fac_id;
+        $saved_par_type      = $participantRegistration?->par_type      ?? $authUser->par_type;
+        $saved_par_sub_type      = $participantRegistration?->par_sub_type      ?? $authUser->par_sub_type;
+        $saved_gender      = $participantRegistration?->gender      ?? $authUser->gender;
+        $saved_phone = $participantRegistration?->phone ;
+       // dd( $saved_fac_id );
         return view('Users.PartregistrationForm', [
-            'workshop' => $workshop,
-            'uniID'    => $workshop->Uni_id,
-            'facID'    => $workshop->Faculty_id,
+            'saved_name'        => $saved_name,
+            'saved_email'       => $saved_email,
+            'saved_national_id' => $saved_national_id,
+            'saved_uni_id'      =>$saved_uni_id,
+            'saved_fac_id'      =>$saved_fac_id,
+            'saved_par_type'     => $saved_par_type,
+            'saved_par_sub_type' =>  $saved_par_sub_type,
+            'saved_gender' =>  $saved_gender, 
+            'saved_phone' => $saved_phone ,
+            'workshop'    => $workshop,
+            'uniID'       => $workshop->Uni_id,
+            'facID'       => $workshop->Faculty_id,
         ]);
     }
 
@@ -711,40 +743,99 @@ class WorkshopsController extends Controller
      */
     public function storeRegistrationDetails(Request $request)
     {
+       // dd($request->all());
+         // it means the box is
+    if ($request->input('isUpdated') == '1') {
+        // Full validation if user wants to edit
         $data = $request->validate([
             'workshop_id' => 'required|exists:workshops_details,id',
-            'uni_id'      => 'required',
-            'fac_id'      => 'required',
             'PartName'    => 'required|string|max:300',
             'partGender'  => 'required|string|max:100',
             'partEmail'   => 'required|email|max:100',
             'partType'    => 'required|string|max:100',
             'parSubType'  => 'required|string|max:100',
+            'uni_id'      => 'required|integer',
+            'fac_id'      => 'required|integer',
             'national_id' => 'required|string|max:14',
-            'phone' => [
-            'required',
-            'regex:/^01(0|1|2|5)[0-9]{8}$/'
-        ],
-
+            'phone'       => [
+                'required',
+                'regex:/^01(0|1|2|5)[0-9]{8}$/'
+            ],
         ]);
+
+         WorkReg::updateOrCreate(
+            [
+                'workshop_id' => $data['workshop_id'],
+            ],
+            [
+                'uni_id'       => $data['uni_id'],
+                'fac_id'       => $data['fac_id'],
+                'full_name'    => $data['PartName'],
+                'gender'       => $data['partGender'],
+                'email'        => $data['partEmail'],
+                'par_type'     => $data['partType'],
+                'par_sub_type' => $data['parSubType'],
+                'phone'        => $data['phone'],
+                'national_id'  => $data['national_id']
+            ]
+        );
+        
+        
+    } else {
+        if (
+            $request->input('isUpdated') == '0' &&
+            collect($request->keys())->diff(['_token' , 'workshop_id', 'isUpdated'])->isEmpty()
+        ) {
+            return back()->with('message', 'Participant registered successfully for this workshop.');
+        }
+        // Only validate essential fields if no edit in the workshop
+        $data = $request->validate([
+            'workshop_id' => 'required|exists:workshops_details,id',
+            'partGender'  => 'required|string|max:100',
+            'phone'       => [
+                'required',
+                'regex:/^01(0|1|2|5)[0-9]{8}$/'
+            ],
+            'partType'    => 'required|string|max:100',
+            'parSubType'  => 'required|string|max:100',
+        ]);
+        $authUser = auth::User() ;
+        /// data that are taken from authUser are already validated in Registeration phase 
+        /// i dont need to validate them again
+        WorkReg::create([
+            'workshop_id'  => $data['workshop_id'],
+            'uni_id'       => $authUser->uni_id ,
+            'fac_id'       => $authUser->fac_id,
+            'full_name'    => $authUser->name,
+            'gender'       => $data['partGender'],
+            'email'        => $authUser->email,
+            'par_type'     => $data['partType'],
+            'par_sub_type' => $data['parSubType'],
+            'phone'        => $data['phone'],
+            'national_id'  => $authUser->national_id
+        ]);
+        
+    }
 
         if ($data['partType'] === 'Employee') {
-            $data['parSubType'] = 'Employee';
+                $data['parSubType'] = 'Employee';
         }
-
-        workReg::create([
-            'workshop_id'   => $data['workshop_id'],
-            'uni_id'        => $data['uni_id'],
-            'fac_id'        => $data['fac_id'],
-            'full_name'     => $data['PartName'],
-            'gender'        => $data['partGender'],
-            'email'         => $data['partEmail'],
-            'par_type'      => $data['partType'],
-            'par_sub_type'  => $data['parSubType'],
-            'national_id'   => $data['national_id'], // NEW
-            'phone'         => $data['phone'],    
-        ]);
-
+   
+     
+        // Only update User table if critical fields (name, email, national_id, uni_id, fac_id) are present and changed
+        if (!empty($data['PartName']) && !empty($data['partEmail']) && !empty($data['national_id']) && !empty($data['uni_id']) && !empty($data['fac_id'])) {
+            
+            /// validate uni , fac , name , email , national id
+            User::where('national_id', $data['national_id'])
+                ->update([
+                    'uni_id'        => $data['uni_id'],
+                    'fac_id'        => $data['fac_id'],
+                    'name'          => $data['PartName'],
+                    'email'         => $data['partEmail'],
+                    'log_email'     => $data['partEmail'],
+                    'national_id'   => $data['national_id'],
+                ]);
+        }
         return back()->with('message', 'Participant registered successfully for this workshop.');
     }
 }

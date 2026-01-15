@@ -245,6 +245,9 @@ Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
     ->name('workshops.export.all');
 
 });
+
+Route::get('/getFacultiesByUnivId/{univ_id}', [FacUniController::class, 'getAllFacultiesById'])->name('getFacultiesByUnivId');
+
 Route::group(['middleware' => ['auth', 'role:admin']], function () {
     // Reservation Of Admin Faculty
     Route::post('/adminReservation/{id}/confirm', [ReservationController::class, 'confirm'])->name('confirm');
@@ -295,4 +298,6 @@ Route::group(['middleware' => ['auth']], function () {
     // Workshops Reg. form
     Route::get('/WorkRegistrationForm/{workshop_id}', [WorkshopsController::class, 'GetRegForm'])->name('userworkshop');
     Route::post('/WorkRegistrationForm/store', [WorkshopsController::class, 'storeRegistrationDetails'])->name('storeworkshop');
+
+
 });

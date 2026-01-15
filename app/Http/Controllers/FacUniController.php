@@ -168,4 +168,13 @@ class FacUniController extends Controller
         return redirect()->route('FacUni.index')
             ->with('success','Faculty deleted successfully');
     }
+
+    public function getAllFacultiesById($uni_id)
+    {
+        // Get all faculties for the selected university
+        $faculties = fac_uni::where('uni_id', $uni_id)->get(['id', 'name']);
+
+        return response()->json($faculties); // return as JSON
+    }
+    
 }

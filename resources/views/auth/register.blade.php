@@ -447,21 +447,12 @@
                                             <label for="faculty" class="lab-form-label">{{ __('Faculty') }}</label>
                                             <div class="position-relative">
                                                 <i class='bx bx-book-open input-icon'></i>
-                                                <label hidden>{{$faculty = \App\Models\fac_uni::all()}}</label>
                                                 <select id="faculty" 
-                                                        class="form-control lab-form-control lab-select with-icon @error('faculty') is-invalid @enderror" 
+                                                        class="form-control lab-form-control lab-select with-icon" 
                                                         name="fac_id"
                                                         disabled>
                                                     <option value="">Select Your Faculty</option>
-                                                    @foreach($faculty as $fac)
-                                                        <option value="{{$fac->id}}" {{ old('faculty') == $fac->id ? 'selected' : '' }}>{{$fac->name}}</option>
-                                                    @endforeach
                                                 </select>
-                                                @error('faculty')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                                @enderror
                                                 <small class="text-danger" id="faculty-error" style="display: none; font-weight: 600;"></small>
                                             </div>
                                         </div>
@@ -505,8 +496,51 @@
 
 <script src="//code.jquery.com/jquery.js"></script>
 <script>
+
+
+
+
     // Enhanced form submission with loading animation and validation
     $(document).ready(function() {
+
+        document.getElementById('university').addEventListener('change', function() {
+    const uniId = this.value;
+    const facultySelect = document.getElementById('faculty');
+
+            if (uniId) {
+                // Show loading state
+                facultySelect.disabled = true;
+                facultySelect.innerHTML = '<option>Loading...</option>';
+
+                fetch('/getFacultiesByUnivId/' + uniId)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        facultySelect.disabled = false;
+                        facultySelect.innerHTML = '<option value="">Select Your Faculty</option>';
+
+                        data.forEach(faculty => {
+                            const option = document.createElement('option');
+                            option.value = faculty.id;
+                            option.textContent = faculty.name;
+                            facultySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        facultySelect.disabled = true;
+                        facultySelect.innerHTML = '<option value="">Error loading faculties</option>';
+                        console.error('Error fetching faculties:', error);
+                    });
+
+            } else {
+                facultySelect.disabled = true;
+                facultySelect.innerHTML = '<option value="">Select Your Faculty</option>';
+            }
+        });
         // Clear all error messages
         function clearErrors() {
             $('.text-danger').hide();
