@@ -52,67 +52,130 @@
                 <p class="lead text-muted">Follow the latest unit activities</p>
             </div>
 
-            @foreach($news->chunk(3) as $newsChunk)
-            <div class="row mb-4">
-                @foreach($newsChunk as $item)
-                <div class="col-md-4 mb-4">
-                    <div class="card news-card h-100 border-0 shadow-sm animate__animated">
-                        <div class="position-relative">
-                            <a href="">
-                                <img src="{{ $item->img_path ? asset('storage/' . $item->img_path) : asset('images/default-news.png') }}"
-                                    alt="{{ $item->title }}"
-                                    class="card-img-top"
-                                    loading="lazy" />
-                                <div class="date-box">
-                                    <h5 class="mb-0 text-white">{{ $item->publish_date->format('d') }}</h5>
-                                    <small class="text-white">{{ $item->publish_date->format('M') }}</small>
+            @foreach($items->chunk(3) as $row)
+                <div class="row mb-4">
+
+                    @foreach($row as $item)
+                        <div class="col-md-4 mb-4">
+
+                            {{-- NEWS CARD --}}
+                            @if($item->type === 'news')
+                                {{-- ⬇️ EXACT SAME NEWS CARD CODE YOU ALREADY HAVE --}}
+                                <div class="card news-card h-100 border-0 shadow-sm animate__animated">
+                                    <div class="position-relative">
+                                        <a href="">
+                                            <img src="{{ $item->img_path ? asset('storage/' . $item->img_path) : asset('images/default-news.png') }}"
+                                                alt="{{ $item->title }}"
+                                                class="card-img-top"
+                                                loading="lazy" />
+                                            <div class="date-box">
+                                                <h5 class="mb-0 text-white">{{ $item->publish_date->format('d') }}</h5>
+                                                <small class="text-white">{{ $item->publish_date->format('M') }}</small>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div class="card-body mt-3">
+                                        <div class="d-flex justify-content-between align-items-center py-2">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-map-marker-alt me-1 text-success"></i>
+                                                <span class="mb-0 text-muted">{{ $item->location }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <i class="far fa-clock me-1 text-primary"></i>
+                                                <span class="mb-0 text-muted">{{ \Carbon\Carbon::parse($item->time)->format('h:i A') }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h5 class="text-bold mb-0">{{ $item->title }}</h5>
+                                            <span class="text-muted">{{ Str::limit($item->desc, 100) }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-muted d-flex align-items-center me-3">
+                                                <i class="fas fa-eye text-primary me-1"></i>
+                                                {{ $item->views }}
+                                            </span>
+
+                                            <button class="btn-like btn btn-outline-success btn-sm d-flex align-items-center" data-id="{{ $item->id }}">
+                                                <i class="fas fa-thumbs-up me-1"></i>
+                                                <span id="likes-{{ $item->id }}">{{ $item->likes }}</span>
+                                            </button>
+
+                                            <a href="{{ route('news.public.details', $item) }}"
+                                            class="btn btn-primary d-flex align-items-center">
+                                                <span class="me-1">Details</span>
+                                                <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </a>
+                            @endif
+
+                            {{-- WORKSHOP CARD --}}
+                            @if($item->type === 'workshop')
+                                {{-- ⬇️ EXACT SAME WORKSHOP CARD CODE YOU ALREADY HAVE --}}
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="position-relative">
+                                        <a href="{{ route('workshops.show', $item->id) }}">
+                                            <img src="{{ $item->workshop_logoPath ? asset($item->workshop_logoPath) : asset('images/default-workshop.png') }}"
+                                                alt="{{ $item->workshop_ar_title ?? $item->workshop_en_title }}"
+                                                class="card-img-top"
+                                                loading="lazy">
+
+                                            <div class="date-box">
+                                                <h5 class="mb-0 text-white">{{ \Carbon\Carbon::parse($item->st_date)->format('d') }}</h5>
+                                                <small>{{ \Carbon\Carbon::parse($item->st_date)->format('M') }}</small>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div class="card-body d-flex flex-column mt-4">
+                                        <h5 class="fw-bold mb-2">
+                                            {{ $item->workshop_ar_title ?? $item->workshop_en_title }}
+                                        </h5>
+                                        <p class="text-muted mb-3">
+                                            {{ Str::limit($item->notes, 100) }}
+                                        </p>
+
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="text-muted">
+                                                <i class="fas fa-map-marker-alt me-1 text-success"></i>
+                                                {{ $item->place }}
+                                            </span>
+                                            <span class="text-muted">
+                                                <i class="far fa-calendar me-1 text-success"></i>
+                                                {{ \Carbon\Carbon::parse($item->st_date)->format('d M Y') }}
+                                            </span>
+                                        </div>
+
+                                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                                            <span class="text-muted">
+                                                <i class="fas fa-eye text-success me-1"></i>
+                                                {{ $item->views }}
+                                            </span>
+
+                                            <button class="btn-like1 btn btn-outline-success btn-sm d-flex align-items-center"
+                                                    data-id="{{ $item->id }}">
+                                                <i class="fas fa-thumbs-up me-1"></i>
+                                                <span id="likes-{{ $item->id }}">{{ $item->likes }}</span>
+                                            </button>
+
+                                            <a href="{{ route('workshops.show', $item->id) }}"
+                                            class="btn btn-primary btn-sm d-flex align-items-center">
+                                                <span class="me-1">Details</span>
+                                                <i class="fas fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
                         </div>
+                    @endforeach
 
-                        <div class="card-body mt-3">
-                            <div class="d-flex justify-content-between align-items-center py-2">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-map-marker-alt me-1 text-success"></i>
-                                    <span class="mb-0 text-muted">{{ $item->location }}</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <i class="far fa-clock me-1 text-primary"></i>
-                                    <span class="mb-0 text-muted">{{ \Carbon\Carbon::parse($item->time)->format('h:i A') }}</span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <h5 class="text-bold mb-0">
-                                    {{ $item->title }}
-                                </h5>
-                                <span class="text-muted">{{ Str::limit($item->desc, 100) }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted d-flex align-items-center me-3">
-                                    <i class="fas fa-eye text-primary me-1"></i>
-                                    {{ $item->views }}
-                                </span>
-
-                                <button class="btn-like d-flex align-items-center"
-                                    data-id="{{ $item->id }}">
-                                    <i class="fas fa-thumbs-up me-1"></i>
-                                    <span id="likes-{{ $item->id }}">{{ $item->likes }}</span>
-                                </button>
-
-                                <a href="{{ route('news.public.details', $item) }}"
-                                    class="btn btn-primary d-flex align-items-center">
-                                    <span class="me-1">Details</span>
-                                    <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-
-                        </div>
-
-                    </div>
                 </div>
-                @endforeach
-            </div>
             @endforeach
+
         </div>
     </section>
     <section class="py-5">
@@ -259,100 +322,98 @@
         </div>
     </section>
 </main><!-- End #main -->
-<style>
-    /* ===== صندوق التاريخ ===== */
-    .date-box {
-        position: absolute;
-        bottom: -25px;
-        /* نصه تحت الصورة */
-        left: 10px;
-        background-color: #1a8d29ff;
-        /* اللون الجديد */
-        color: #fff;
-        padding: 5px;
-        border-radius: 6px;
-        text-align: center;
-        width: 60px;
-        /* أكبر شوية */
-        height: 60px;
-        /* أكبر شوية */
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        line-height: 1;
-        z-index: 2;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .date-box h5 {
-        font-size: 18px;
-        /* أكبر */
-        font-weight: bold;
-        margin: 0;
-    }
-
-    .date-box small {
-        font-size: 12px;
-        /* أكبر */
-        text-transform: uppercase;
-
-    }
-
-    .btn-like {
-        border: none;
-        background: transparent;
-        color: #41A451 !important;
-        /* رمادي افتراضي */
-        font-size: 1.1rem;
-        /* حجم النص */
-        transition: all 0.2s ease-in-out;
-        cursor: pointer;
-    }
-
-    .btn-like i {
-        font-size: 1.2rem;
-        /* تكبير الأيقونة */
-    }
-
-    .btn-like:hover {
-        color: #0d6efd;
-        /* لون primary عند الهوفر */
-    }
-
-    .carousel-image {
-        object-fit: cover;
-        /* ensures image covers the area */
-    }
-
-    @media (max-width: 768px) {
-        .carousel-image {
-            height: 40vh;
-            /* reduce height on tablets */
-        }
-    }
-
-    @media (max-width: 576px) {
-        .carousel-image {
-            height: 30vh;
-            /* smaller height on phones */
-        }
-    }
-</style>
-<!-- Vendor JS Files -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script>
-    $(document).on('click', '.btn-like', function() {
-        var newsId = $(this).data('id');
-        var url = "{{ url('/news') }}/" + newsId + "/like";
+document.addEventListener("DOMContentLoaded", () => {
+    const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-        $.post(url, {
-            _token: "{{ csrf_token() }}"
-        }, function(data) {
-            $("#likes-" + newsId).text(data.likes);
+    // جميع أزرار اللايك
+    document.querySelectorAll(".btn-like, .btn-like1").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const id = btn.dataset.id;
+            let type = btn.classList.contains('btn-like1') ? 'workshops' : 'news';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/${type}/${id}/like`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": csrf,
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.likes !== undefined) {
+                        document.getElementById(`likes-${id}`).textContent = data.likes;
+                    }
+                } else {
+                    console.error("Error:", res.statusText);
+                    alert("Something went wrong. Please try again.");
+                }
+            } catch(err) {
+                console.error(err);
+                alert("Something went wrong. Please try again.");
+            } finally {
+                btn.disabled = false;
+            }
         });
     });
+});
 </script>
+<style>
+    /* ===== Date Box ===== */
+.date-box {
+    position: absolute;
+    bottom: -25px;
+    left: 10px;
+    background-color: #1a8d29ff; /* للـ news */
+    color: #fff;
+    padding: 5px;
+    border-radius: 6px;
+    text-align: center;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    z-index: 2;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.date-box h5 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.date-box small {
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+/* ===== Like Button ===== */
+.btn-like, .btn-like1 {
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-like i, .btn-like1 i {
+    font-size: 1.2rem;
+}
+
+.btn-like:hover, .btn-like1:hover {
+    color: #0d6efd;
+}
+
+</style>
 
 @endsection

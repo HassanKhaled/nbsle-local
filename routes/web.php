@@ -24,6 +24,7 @@ use App\Http\Controllers\DeviceRatingController;
 use App\Http\Controllers\Reportcontroller;
 use App\Http\Controllers\WorkshopsController;
 use App\Models\universitys;
+use Illuminate\Support\Collection;
 
 /*
 |--------------------------------------------------------------------------
@@ -118,12 +119,33 @@ Route::get('/', function () {
         );
     })->toArray();
 
+       $workshops = App\Models\workDetails::where('is_approved', 1)
+                ->where('end_date', '>=', Carbon\Carbon::now())
+                ->orderBy('st_date', 'desc')
+                ->get();
 
     
 // dd($enrichedData);
    
 
-    return view('templ/index', compact('universitys', 'institutes', 'labs', 'devices', 'news', 'visitsCount', 'enrichedData'));
+           $items = collect()
+                    ->merge(
+                        $news->map(function ($item) {
+                            $item->type = 'news';
+                            $item->row_date = $item->publish_date;
+                            return $item;
+                        })
+                    )
+                    ->merge(
+                        $workshops->map(function ($item) {
+                            $item->type = 'workshop';
+                            $item->row_date = $item->st_date;
+                            return $item;
+                        })
+                    )
+                    ->sortByDesc('row_date')
+                    ->values();
+    return view('templ/index', compact('universitys', 'institutes', 'labs', 'devices', 'news', 'visitsCount', 'enrichedData','workshops','items'));
 })->name('homepage');
 
 Route::get('/home', function () {
