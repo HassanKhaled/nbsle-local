@@ -2,7 +2,6 @@
 
 @section('tmplt-contnt')
 <main id="main">
-
     {{-- 🔹 Hero Section with Cover Image --}}
     <section class="hero-section text-center text-white position-relative" style="
         background: url('{{ $workshop->cover ?? asset('images/workshop-default.jpg') }}') center/cover no-repeat;
@@ -58,21 +57,31 @@
                         </div>
 
                         <div class="p-4 p-md-5">
+                        
                             <form id="registrationForm" action="{{ route('storeworkshop') }}" method="POST" enctype="multipart/form-data" novalidate>
                                 @csrf
 
                                 {{-- Hidden fields --}}
                                 <input type="hidden" name="workshop_id" value="{{ $workshop->id }}">
-                                <input type="hidden" name="uni_id" value="{{ $workshop->Uni_id }}">
-                                <input type="hidden" name="fac_id" value="{{ $workshop->Faculty_id }}">
 
                                 {{-- Participant Info Section --}}
                                 <div class="mb-4">
+                                    
                                     <h5 class="fw-semibold mb-3 pb-2" style="border-bottom: 2px solid #0d6efd; display: inline-block;">
                                         <i class="bi bi-person-fill me-2"></i>Participant Information
                                     </h5>
 
                                     <div class="row g-3">
+                                         {{-- 🔹 Edit Data Checkbox --}}
+                                        <div class="alert alert-info d-flex align-items-center mb-4" style="background-color: #e7f3ff; border-left: 4px solid #0d6efd;">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="enableEditCheckbox" style="cursor: pointer; width: 20px; height: 20px;">
+                                                    <label class="form-check-label ms-2" for="enableEditCheckbox" style="cursor: pointer; font-weight: 500; color: red;">
+                                                        <i class="bi bi-pencil-square me-2"></i>
+                                                        In case you want to update any of the data you registered with, check this box
+                                                    </label>
+                                                </div>
+                                        </div>
                                         {{-- Full Name --}}
                                         <div class="col-12">
                                             <label class="form-label fw-semibold">
@@ -81,10 +90,11 @@
                                             <input type="text" 
                                                    id="PartName"
                                                    name="PartName" 
-                                                   class="form-control form-control-lg" 
-                                                   value="{{ old('PartName') }}" 
+                                                   class="form-control form-control-lg editable-field" 
+                                                   value="{{ old('PartName', $saved_name) }}" 
                                                    placeholder="Enter your full name"
-                                                   style="border-radius: 8px;">
+                                                   style="border-radius: 8px;"
+                                                   {{ $saved_name ? 'disabled' : '' }}>
                                             <small class="text-danger error-message" id="PartName-error"></small>
                                         </div>
 
@@ -93,10 +103,14 @@
                                             <label class="form-label fw-semibold">
                                                 Gender <span class="text-danger">*</span>
                                             </label>
-                                            <select id="partGender" name="partGender" class="form-select form-select-lg" style="border-radius: 8px;">
-                                                <option value="" disabled selected>Select Gender</option>
-                                                <option value="female" {{ old('partGender') == 'female' ? 'selected' : '' }}>Female</option>
-                                                <option value="male" {{ old('partGender') == 'male' ? 'selected' : '' }}>Male</option>
+                                            <select id="partGender" 
+                                                    name="partGender" 
+                                                    class="form-select form-select-lg editable-field" 
+                                                    style="border-radius: 8px;"
+                                                    {{ $saved_gender ? 'disabled' : '' }}>
+                                                <option value="" disabled {{ !old('partGender', $saved_gender) ? 'selected' : '' }}>Select Gender</option>
+                                                <option value="female" {{ old('partGender', $saved_gender) == 'female' ? 'selected' : '' }}>Female</option>
+                                                <option value="male" {{ old('partGender', $saved_gender) == 'male' ? 'selected' : '' }}>Male</option>
                                             </select>
                                             <small class="text-danger error-message" id="partGender-error"></small>
                                         </div>
@@ -109,10 +123,11 @@
                                             <input type="email" 
                                                    id="partEmail"
                                                    name="partEmail" 
-                                                   class="form-control form-control-lg" 
-                                                   value="{{ old('partEmail') }}"
+                                                   class="form-control form-control-lg editable-field" 
+                                                   value="{{ old('partEmail', $saved_email) }}"
                                                    placeholder="example@email.com"
-                                                   style="border-radius: 8px;">
+                                                   style="border-radius: 8px;"
+                                                   {{ $saved_email ? 'disabled' : '' }}>
                                             <small class="text-danger error-message" id="partEmail-error"></small>
                                         </div>
 
@@ -124,10 +139,12 @@
                                             <input type="text" 
                                                    id="national_id"
                                                    name="national_id" 
-                                                   class="form-control form-control-lg" 
-                                                   value="{{ old('national_id') }}"
+                                                   class="form-control form-control-lg editable-field" 
+                                                   value="{{ old('national_id', $saved_national_id) }}"
                                                    placeholder="Enter your national ID"
-                                                   style="border-radius: 8px;">
+                                                   maxlength="14"
+                                                   style="border-radius: 8px;"
+                                                   {{ $saved_national_id ? 'disabled' : '' }}>
                                             <small class="text-danger error-message" id="national_id-error"></small>
                                         </div>
 
@@ -139,13 +156,62 @@
                                             <input type="text" 
                                                    id="phone"
                                                    name="phone" 
-                                                   class="form-control form-control-lg" 
-                                                   value="{{ old('phone') }}"
+                                                   class="form-control form-control-lg editable-field" 
+                                                   value="{{ old('phone' , $saved_phone) }}"
                                                    placeholder="01012345678"
                                                    maxlength="11"
-                                                   style="border-radius: 8px;">
+                                                   style="border-radius: 8px;"
+                                                   {{ $saved_phone ? 'disabled' : '' }}
+                                                   >
+
                                             <small class="text-danger error-message" id="phone-error"></small>
                                         </div>
+
+                                        {{-- University and Faculty Dropdowns --}}
+                                        <div class="col-md-6">
+                                            <label for="university" class="form-label fw-semibold">
+                                                {{ __('University') }} <span class="text-danger">*</span>
+                                            </label>
+                                            @php
+                                                $unis = \App\Models\universitys::all();
+                                            @endphp
+                                            <select id="university" 
+                                                    class="form-select form-select-lg editable-field @error('uni_id') is-invalid @enderror" 
+                                                    name="uni_id"
+                                                    style="border-radius: 8px;"
+                                                    {{ $saved_uni_id ? 'disabled' : '' }}>
+                                                <option value="">Select Your University</option>
+                                                @foreach($unis as $uni)
+                                                    <option value="{{$uni->id}}" {{ old('uni_id', $saved_uni_id) == $uni->id ? 'selected' : '' }}>{{$uni->name}}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('uni_id')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                            <small class="text-danger error-message" id="university-error"></small>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="faculty" class="form-label fw-semibold">
+                                                {{ __('Faculty') }} <span class="text-danger">*</span>
+                                            </label>
+                                            <select id="faculty" 
+                                                    class="form-select form-select-lg editable-field @error('fac_id') is-invalid @enderror" 
+                                                    name="fac_id"
+                                                    style="border-radius: 8px;"
+                                                    {{ $saved_fac_id ? 'disabled' : '' }}>
+                                                <option value="">Select Your Faculty</option>
+                                            </select>
+                                            @error('fac_id')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                            <small class="text-danger error-message" id="faculty-error"></small>
+                                        </div>
+
 
                                         {{-- Participant Type --}}
                                         <div class="col-12">
@@ -154,19 +220,23 @@
                                             </label>
                                             <select id="partType" 
                                                     name="partType" 
-                                                    class="form-select form-select-lg" 
+                                                    class="form-select form-select-lg editable-field" 
                                                     onchange="updateSubType()" 
-                                                    style="border-radius: 8px;">
-                                                <option value="" disabled selected>Select Type</option>
-                                                <option value="Student" {{ old('partType') == 'Student' ? 'selected' : '' }}>Student</option>
-                                                <option value="Staff" {{ old('partType') == 'Staff' ? 'selected' : '' }}>Staff</option>
-                                                <option value="Employee" {{ old('partType') == 'Employee' ? 'selected' : '' }}>Employee</option>
+                                                    style="border-radius: 8px;"
+                                                    {{ $saved_par_type ? 'disabled' : '' }}>
+                                                <option value="" disabled {{ !old('partType', $saved_par_type) ? 'selected' : '' }}>Select Type</option>
+                                                <option value="Student" {{ old('partType', $saved_par_type) == 'Student' ? 'selected' : '' }}>Student</option>
+                                                <option value="Staff" {{ old('partType', $saved_par_type) == 'Staff' ? 'selected' : '' }}>Staff</option>
+                                                <option value="Employee" {{ old('partType', $saved_par_type) == 'Employee' ? 'selected' : '' }}>Employee</option>
                                             </select>
                                             <small class="text-danger error-message" id="partType-error"></small>
                                             <div id="PartTypeCategory" class="mt-3"></div>
                                         </div>
                                     </div>
                                 </div>
+                               
+
+                                <input type="hidden" id="isUpdated" name="isUpdated" value="0">
 
                                 {{-- Submit Button --}}
                                 <div class="text-center mt-5 pt-3" style="border-top: 1px solid #e9ecef;">
@@ -193,6 +263,144 @@
 
 {{-- 🔹 JavaScript --}}
 <script>
+
+const facultySelect = document.getElementById('faculty');
+    const uniSelect = document.getElementById('university');
+
+    const savedFacId = "{{ $saved_fac_id ?? '' }}";
+    const uniId = uniSelect.value; // Current university
+
+    // Async function to fetch and set faculties
+    async function fetchAndSetFaculty(univId, selectId, preselectId = null) {
+        const facultySelect = document.getElementById(selectId);
+
+        if (!univId) {
+            facultySelect.disabled = true;
+            facultySelect.innerHTML = '<option value="">Select Your Faculty</option>';
+            return;
+        }
+
+        facultySelect.disabled = true;
+        facultySelect.innerHTML = '<option>Loading...</option>';
+
+        try {
+            const response = await fetch('/getFacultiesByUnivId/' + univId);
+            if (!response.ok) throw new Error('Network response was not ok');
+
+            const data = await response.json();
+
+            facultySelect.innerHTML = '<option value="">Select Your Faculty</option>';
+
+            data.forEach(faculty => {
+                const option = document.createElement('option');
+                option.value = faculty.id;
+                option.textContent = faculty.name;
+
+                if (preselectId && faculty.id == preselectId) {
+                    option.selected = true;
+                    facultySelect.disabled = true; // disable if preselected
+                }
+
+                facultySelect.appendChild(option);
+            });
+
+            if (!preselectId) {
+                facultySelect.disabled = false;
+            }
+        } catch (err) {
+            facultySelect.disabled = true;
+            facultySelect.innerHTML = '<option value="">Error loading faculties</option>';
+            console.error('Error fetching faculties:', err);
+        }
+    }
+
+    
+     // Initial load: fetch faculty if uniId and savedFacId exist
+     if (uniId && savedFacId) {
+        fetchAndSetFaculty(uniId, 'faculty', savedFacId);
+    }
+
+    // On university change: fetch faculties normally
+    uniSelect.addEventListener('change', function() {
+        fetchAndSetFaculty(this.value, 'faculty');
+    });
+
+
+// Store initial saved values from backend
+const savedValues = {
+    name: "{{ $saved_name ?? '' }}",
+    email: "{{ $saved_email ?? '' }}",
+    national_id: "{{ $saved_national_id ?? '' }}",
+    uni_id: "{{ $saved_uni_id ?? '' }}",
+    fac_id: "{{ $saved_fac_id ?? '' }}",
+    par_type: "{{ $saved_par_type ?? '' }}",
+    par_sub_type: "{{ $saved_par_sub_type ?? '' }}",
+    gender: "{{ $saved_gender ?? '' }}",
+    phone: "{{ $saved_phone ?? '' }}"
+};
+// Restore subtype on page load if there was a saved value - IMMEDIATE
+if (savedValues.par_type) {
+        updateSubType();
+}
+
+
+const enableEditCheckbox = document.getElementById('enableEditCheckbox');
+const editableFields = document.querySelectorAll('.editable-field');
+const isUpdatedInput = document.getElementById('isUpdated');
+
+    enableEditCheckbox.addEventListener('change', function() {
+        editableFields.forEach(field => {
+            if (this.checked) {
+                // Enable all editable fields
+                field.disabled = false;
+                field.style.backgroundColor = '#ffffff';
+            } else {
+                // Disable only fields that had saved values
+                if (shouldBeDisabled(field)) {
+                    field.disabled = true;
+                    field.style.backgroundColor = '#e9ecef';
+                }
+            }
+        });
+       
+        isUpdatedInput.value = this.checked ? '1' : '0';
+
+        // Also handle parSubType field
+        const subTypeField = document.getElementById('parSubType');
+        if (subTypeField) {
+            if (this.checked) {
+                subTypeField.disabled = false;
+                subTypeField.style.backgroundColor = '#ffffff';
+            } else if (savedValues.par_sub_type) {
+                subTypeField.disabled = true;
+                subTypeField.style.backgroundColor = '#e9ecef';
+            }
+        }
+    });
+
+    // Set initial disabled styling
+    editableFields.forEach(field => {
+        if (field.disabled) {
+            field.style.backgroundColor = '#e9ecef';
+        }
+    });
+function shouldBeDisabled(field) {
+    const fieldId = field.id;
+    
+    // Check if field has a saved value
+    if (fieldId === 'PartName' && savedValues.name) return true;
+    if (fieldId === 'partEmail' && savedValues.email) return true;
+    if (fieldId === 'national_id' && savedValues.national_id) return true;
+    if (fieldId === 'university' && savedValues.uni_id) return true;
+    if (fieldId === 'faculty' && savedValues.fac_id) return true;
+    if (fieldId === 'partType' && savedValues.par_type) return true;
+    if (fieldId === 'partGender' && savedValues.gender) return true;
+    if (fieldId === 'phone' && savedValues.phone) return true;
+    if (fieldId === 'parSubType' && savedValues.par_sub_type) return true;
+
+    return false;
+}
+
 function updateSubType() {
     let type = document.getElementById("partType").value;
     let container = document.getElementById("PartTypeCategory");
@@ -216,25 +424,32 @@ function updateSubType() {
     let select = document.createElement("select");
     select.id = "parSubType";
     select.name = "parSubType";
-    select.className = "form-select form-select-lg";
+    select.className = "form-select form-select-lg editable-field";
     select.style.borderRadius = "8px";
 
     if (type === "Student") {
         select.innerHTML = `
-            <option value="" disabled selected>Select Student Category</option>
-            <option value="BSc Student">BSc Student</option>
-            <option value="Diploma Student">Diploma Student</option>
-            <option value="MSc Student">MSc Student</option>
-            <option value="PhD Student">PhD Student</option>
+            <option value="" disabled ${!savedValues.par_sub_type ? 'selected' : ''}>Select Student Category</option>
+            <option value="BSc Student" ${savedValues.par_sub_type === 'BSc Student' ? 'selected' : ''}>BSc Student</option>
+            <option value="Diploma Student" ${savedValues.par_sub_type === 'Diploma Student' ? 'selected' : ''}>Diploma Student</option>
+            <option value="MSc Student" ${savedValues.par_sub_type === 'MSc Student' ? 'selected' : ''}>MSc Student</option>
+            <option value="PhD Student" ${savedValues.par_sub_type === 'PhD Student' ? 'selected' : ''}>PhD Student</option>
         `;
     } else if (type === "Staff") {
         select.innerHTML = `
-            <option value="" disabled selected>Select Staff Position</option>
-            <option value="Teaching Assistant">Teaching Assistant</option>
-            <option value="Assistant Professor">Assistant Professor</option>
-            <option value="Associate Professor">Associate Professor</option>
-            <option value="Professor">Professor</option>
+            <option value="" disabled ${!savedValues.par_sub_type ? 'selected' : ''}>Select Staff Position</option>
+            <option value="Teaching Assistant" ${savedValues.par_sub_type === 'Teaching Assistant' ? 'selected' : ''}>Teaching Assistant</option>
+            <option value="Assistant Professor" ${savedValues.par_sub_type === 'Assistant Professor' ? 'selected' : ''}>Assistant Professor</option>
+            <option value="Associate Professor" ${savedValues.par_sub_type === 'Associate Professor' ? 'selected' : ''}>Associate Professor</option>
+            <option value="Professor" ${savedValues.par_sub_type === 'Professor' ? 'selected' : ''}>Professor</option>
         `;
+    }
+
+    // If there's a saved value and checkbox is not checked, disable the field
+    const enableEditCheckbox = document.getElementById('enableEditCheckbox');
+    if (savedValues.par_sub_type && !enableEditCheckbox.checked) {
+        select.disabled = true;
+        select.style.backgroundColor = '#e9ecef';
     }
 
     let errorSpan = document.createElement("small");
@@ -304,6 +519,20 @@ function validateForm(event) {
         isValid = false;
     }
 
+    // Validate University
+    const university = document.getElementById('university');
+    if (!university.value) {
+        showError('university', 'This field is required');
+        isValid = false;
+    }
+
+    // Validate Faculty
+    const faculty = document.getElementById('faculty');
+    if (!faculty.value) {
+        showError('faculty', 'This field is required');
+        isValid = false;
+    }
+
     // Validate Participant Type
     const partType = document.getElementById('partType');
     if (!partType.value) {
@@ -329,7 +558,6 @@ function validateForm(event) {
             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
-    // Always return false to prevent default form submission
     return false;
 }
 
@@ -361,21 +589,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (phoneInput) {
         phoneInput.addEventListener('input', function(e) {
-            // Only allow numbers
             this.value = this.value.replace(/[^0-9]/g, '');
         });
-    }
-    // Restore subtype on page load if there was a validation error
-    const partType = document.getElementById('partType').value;
-    if (partType) {
-        updateSubType();
     }
 });
 
 const form = document.getElementById('registrationForm');
-    if (form) {
-        form.addEventListener('submit', validateForm);
-    }
+if (form) {
+    form.addEventListener('submit', validateForm);
+}
 </script>
 
 <style>
@@ -431,6 +653,24 @@ const form = document.getElementById('registrationForm');
 
 .error-message:empty {
     display: none;
+}
+
+/* Disabled field styling */
+.form-control:disabled,
+.form-select:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Checkbox styling */
+.form-check-input {
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
 }
 </style>
 @endsection

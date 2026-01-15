@@ -134,7 +134,7 @@
                             <a href="{{ route('userworkshop', ['workshop_id' => $workshop->id]) }}" 
                             class="btn btn-success rounded-pill px-4 d-flex align-items-center gap-2">
                                 <i class="fas fa-calendar-check"></i>
-                                <span>Reserve Now</span>
+                                <span>Apply</span>
                             </a>
                         @endif
                     </div>
