@@ -271,8 +271,22 @@
         }
 
         function normalizeDate(dateString) {
-            const d = new Date(dateString);
-            return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            // Parse the date string and create a date in local timezone
+            const parts = dateString.split(/[-\s:]/);
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1; // Month is 0-indexed
+            const day = parseInt(parts[2]);
+            return new Date(year, month, day);
+        }
+
+        function formatDate(dateString) {
+            // Format date in local timezone to avoid shifts
+            const parts = dateString.split(/[-\s:]/);
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+            const day = parseInt(parts[2]);
+            const date = new Date(year, month, day);
+            return date.toLocaleDateString();
         }
 
         function renderCalendar() {
@@ -438,10 +452,8 @@
             const badgeClass = event.type === 'news' ? 'bg-success' : 'bg-primary';
             const typeText = event.type === 'news' ? 'News' : 'Workshop';
 
-            const formattedStart = new Date(event.start).toLocaleDateString();
-            const formattedEnd = event.end
-                ? new Date(event.end).toLocaleDateString()
-                : formattedStart;
+            const formattedStart = formatDate(event.start);
+            const formattedEnd   = event.end ? formatDate(event.end) : formattedStart;
 
             let modalContent = `
                 <span class="modal-event-badge ${badgeClass}">${typeText}</span>
