@@ -26,7 +26,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-9 col-xl-8">
 
-                {{-- ✅ Flash Message --}}
+                {{-- Flash Message --}}
                 @if(session('message'))
                     <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" style="border-left: 4px solid #198754;">
                         <i class="bi bi-check-circle-fill me-2"></i>
@@ -35,7 +35,7 @@
                     </div>
                 @endif
 
-                {{-- ✅ Validation Errors --}}
+                {{-- Validation Errors --}}
                 @if ($errors->any())
                     <div class="alert alert-danger shadow-sm mb-4" style="border-left: 4px solid #dc3545;">
                         <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>There were some problems with your input:</strong>
@@ -76,7 +76,7 @@
                                         <div class="alert alert-info d-flex align-items-center mb-4" style="background-color: #e7f3ff; border-left: 4px solid #0d6efd;">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="enableEditCheckbox" style="cursor: pointer; width: 20px; height: 20px;">
-                                                    <label class="form-check-label ms-2" for="enableEditCheckbox" style="cursor: pointer; font-weight: 500; color: red;">
+                                                    <label class="form-check-label ms-2" for="enableEditCheckbox" style="cursor: pointer; font-weight: 500; color: red;font-size: 1.2rem;">
                                                         <i class="bi bi-pencil-square me-2"></i>
                                                         In case you want to update any of the data you registered with, check this box
                                                     </label>
@@ -167,50 +167,68 @@
                                             <small class="text-danger error-message" id="phone-error"></small>
                                         </div>
 
-                                        {{-- University and Faculty Dropdowns --}}
-                                        <div class="col-md-6">
-                                            <label for="university" class="form-label fw-semibold">
-                                                {{ __('University') }} <span class="text-danger">*</span>
-                                            </label>
-                                            @php
-                                                $unis = \App\Models\universitys::all();
-                                            @endphp
-                                            <select id="university" 
-                                                    class="form-select form-select-lg editable-field @error('uni_id') is-invalid @enderror" 
-                                                    name="uni_id"
-                                                    style="border-radius: 8px;"
-                                                    {{ $saved_uni_id ? 'disabled' : '' }}>
-                                                <option value="">Select Your University</option>
-                                                @foreach($unis as $uni)
-                                                    <option value="{{$uni->id}}" {{ old('uni_id', $saved_uni_id) == $uni->id ? 'selected' : '' }}>{{$uni->name}}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('uni_id')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                            <small class="text-danger error-message" id="university-error"></small>
-                                        </div>
+                                        @if(!empty($saved_institution_name))
+                                            {{-- Institution Name Field (shown when saved_institution_name exists) --}}
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold">
+                                                    Institution Name <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" 
+                                                       id="institution_name"
+                                                       name="institution_name" 
+                                                       class="form-control form-control-lg editable-field" 
+                                                       value="{{ old('institution_name', $saved_institution_name) }}"
+                                                       placeholder="Enter your institution name"
+                                                       style="border-radius: 8px;"
+                                                       disabled>
+                                                <small class="text-danger error-message" id="institution_name-error"></small>
+                                            </div>
+                                        @else
+                                            {{-- University and Faculty Dropdowns (shown when no saved_institution_name) --}}
+                                            <div class="col-md-6">
+                                                <label for="university" class="form-label fw-semibold">
+                                                    {{ __('University') }} <span class="text-danger">*</span>
+                                                </label>
+                                                @php
+                                                    $unis = \App\Models\universitys::all();
+                                                @endphp
+                                                <select id="university" 
+                                                        class="form-select form-select-lg editable-field @error('uni_id') is-invalid @enderror" 
+                                                        name="uni_id"
+                                                        style="border-radius: 8px;"
+                                                        {{ $saved_uni_id ? 'disabled' : '' }}>
+                                                    <option value="">Select Your University</option>
+                                                    @foreach($unis as $uni)
+                                                        <option value="{{$uni->id}}" {{ old('uni_id', $saved_uni_id) == $uni->id ? 'selected' : '' }}>{{$uni->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('uni_id')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                                @enderror
+                                                <small class="text-danger error-message" id="university-error"></small>
+                                            </div>
 
-                                        <div class="col-md-6">
-                                            <label for="faculty" class="form-label fw-semibold">
-                                                {{ __('Faculty') }} <span class="text-danger">*</span>
-                                            </label>
-                                            <select id="faculty" 
-                                                    class="form-select form-select-lg editable-field @error('fac_id') is-invalid @enderror" 
-                                                    name="fac_id"
-                                                    style="border-radius: 8px;"
-                                                    {{ $saved_fac_id ? 'disabled' : '' }}>
-                                                <option value="">Select Your Faculty</option>
-                                            </select>
-                                            @error('fac_id')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                            <small class="text-danger error-message" id="faculty-error"></small>
-                                        </div>
+                                            <div class="col-md-6">
+                                                <label for="faculty" class="form-label fw-semibold">
+                                                    {{ __('Faculty') }} <span class="text-danger">*</span>
+                                                </label>
+                                                <select id="faculty" 
+                                                        class="form-select form-select-lg editable-field @error('fac_id') is-invalid @enderror" 
+                                                        name="fac_id"
+                                                        style="border-radius: 8px;"
+                                                        {{ $saved_fac_id ? 'disabled' : '' }}>
+                                                    <option value="">Select Your Faculty</option>
+                                                </select>
+                                                @error('fac_id')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                                @enderror
+                                                <small class="text-danger error-message" id="faculty-error"></small>
+                                            </div>
+                                        @endif
 
 
                                         {{-- Participant Type --}}
@@ -263,8 +281,12 @@
 
 {{-- 🔹 JavaScript --}}
 <script>
+// Check if we have saved institution name
+const hasSavedInstitution = "{{ $saved_institution_name ?? '' }}" !== "";
 
-const facultySelect = document.getElementById('faculty');
+// Only run faculty/university logic if we DON'T have saved institution
+if (!hasSavedInstitution) {
+    const facultySelect = document.getElementById('faculty');
     const uniSelect = document.getElementById('university');
 
     const savedFacId = "{{ $saved_fac_id ?? '' }}";
@@ -324,6 +346,7 @@ const facultySelect = document.getElementById('faculty');
     uniSelect.addEventListener('change', function() {
         fetchAndSetFaculty(this.value, 'faculty');
     });
+}
 
 
 // Store initial saved values from backend
@@ -336,11 +359,13 @@ const savedValues = {
     par_type: "{{ $saved_par_type ?? '' }}",
     par_sub_type: "{{ $saved_par_sub_type ?? '' }}",
     gender: "{{ $saved_gender ?? '' }}",
-    phone: "{{ $saved_phone ?? '' }}"
+    phone: "{{ $saved_phone ?? '' }}",
+    institution_name: "{{ $saved_institution_name ?? '' }}"
 };
+
 // Restore subtype on page load if there was a saved value - IMMEDIATE
 if (savedValues.par_type) {
-        updateSubType();
+    updateSubType();
 }
 
 
@@ -348,42 +373,43 @@ const enableEditCheckbox = document.getElementById('enableEditCheckbox');
 const editableFields = document.querySelectorAll('.editable-field');
 const isUpdatedInput = document.getElementById('isUpdated');
 
-    enableEditCheckbox.addEventListener('change', function() {
-        editableFields.forEach(field => {
-            if (this.checked) {
-                // Enable all editable fields
-                field.disabled = false;
-                field.style.backgroundColor = '#ffffff';
-            } else {
-                // Disable only fields that had saved values
-                if (shouldBeDisabled(field)) {
-                    field.disabled = true;
-                    field.style.backgroundColor = '#e9ecef';
-                }
-            }
-        });
-       
-        isUpdatedInput.value = this.checked ? '1' : '0';
-
-        // Also handle parSubType field
-        const subTypeField = document.getElementById('parSubType');
-        if (subTypeField) {
-            if (this.checked) {
-                subTypeField.disabled = false;
-                subTypeField.style.backgroundColor = '#ffffff';
-            } else if (savedValues.par_sub_type) {
-                subTypeField.disabled = true;
-                subTypeField.style.backgroundColor = '#e9ecef';
-            }
-        }
-    });
-
-    // Set initial disabled styling
+enableEditCheckbox.addEventListener('change', function() {
     editableFields.forEach(field => {
-        if (field.disabled) {
-            field.style.backgroundColor = '#e9ecef';
+        if (this.checked) {
+            // Enable all editable fields
+            field.disabled = false;
+            field.style.backgroundColor = '#ffffff';
+        } else {
+            // Disable only fields that had saved values
+            if (shouldBeDisabled(field)) {
+                field.disabled = true;
+                field.style.backgroundColor = '#e9ecef';
+            }
         }
     });
+   
+    isUpdatedInput.value = this.checked ? '1' : '0';
+
+    // Also handle parSubType field
+    const subTypeField = document.getElementById('parSubType');
+    if (subTypeField) {
+        if (this.checked) {
+            subTypeField.disabled = false;
+            subTypeField.style.backgroundColor = '#ffffff';
+        } else if (savedValues.par_sub_type) {
+            subTypeField.disabled = true;
+            subTypeField.style.backgroundColor = '#e9ecef';
+        }
+    }
+});
+
+// Set initial disabled styling
+editableFields.forEach(field => {
+    if (field.disabled) {
+        field.style.backgroundColor = '#e9ecef';
+    }
+});
+
 function shouldBeDisabled(field) {
     const fieldId = field.id;
     
@@ -397,6 +423,7 @@ function shouldBeDisabled(field) {
     if (fieldId === 'partGender' && savedValues.gender) return true;
     if (fieldId === 'phone' && savedValues.phone) return true;
     if (fieldId === 'parSubType' && savedValues.par_sub_type) return true;
+    if (fieldId === 'institution_name' && savedValues.institution_name) return true;
 
     return false;
 }
@@ -519,18 +546,28 @@ function validateForm(event) {
         isValid = false;
     }
 
-    // Validate University
-    const university = document.getElementById('university');
-    if (!university.value) {
-        showError('university', 'This field is required');
-        isValid = false;
-    }
+    // Conditional validation: University/Faculty OR Institution Name
+    if (hasSavedInstitution) {
+        // Validate Institution Name
+        const institutionName = document.getElementById('institution_name');
+        if (institutionName && !institutionName.value.trim()) {
+            showError('institution_name', 'This field is required');
+            isValid = false;
+        }
+    } else {
+        // Validate University
+        const university = document.getElementById('university');
+        if (university && !university.value) {
+            showError('university', 'This field is required');
+            isValid = false;
+        }
 
-    // Validate Faculty
-    const faculty = document.getElementById('faculty');
-    if (!faculty.value) {
-        showError('faculty', 'This field is required');
-        isValid = false;
+        // Validate Faculty
+        const faculty = document.getElementById('faculty');
+        if (faculty && !faculty.value) {
+            showError('faculty', 'This field is required');
+            isValid = false;
+        }
     }
 
     // Validate Participant Type
@@ -599,6 +636,7 @@ if (form) {
     form.addEventListener('submit', validateForm);
 }
 </script>
+
 
 <style>
 .form-control:focus,
