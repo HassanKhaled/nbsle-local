@@ -88,12 +88,16 @@ class WorkshopsController extends Controller
     {
         $user = Auth()->user();
         if($user->hasRole('university')){
-             
-            $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
-                ->where('uni_id', $user->uni_id)
-                ->orderBy('id', 'desc')
-                ->paginate(15);
+               
+            $reservations = \App\Models\workReg::
+            Join('workshops_details', 'workshops_details.id', '=', 'workshop_reg.workshop_id')
+            ->where( 'workshops_details.Uni_id' , '=' , $user->uni_id)
+            ->select('workshop_reg.*') 
+            ->orderBy('id', 'desc')
+            ->paginate(15);
+
         }else{
+            
             $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
                 ->orderBy('id', 'desc')
                 ->paginate(15);
