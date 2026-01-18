@@ -122,11 +122,7 @@ Route::get('/', function () {
        $workshops = App\Models\workDetails::where('is_approved', 1)
                 ->where('end_date', '>=', Carbon\Carbon::now())
                 ->orderBy('st_date', 'desc')
-                ->get();
-
-    
-// dd($enrichedData);
-   
+                ->get();   
 
            $items = collect()
                     ->merge(
@@ -174,9 +170,30 @@ Route::get('/home', function () {
             $university ? $university->toArray() : []
         );
     })->toArray();
-    
+    $workshops = App\Models\workDetails::where('is_approved', 1)
+                ->where('end_date', '>=', Carbon\Carbon::now())
+                ->orderBy('st_date', 'desc')
+                ->get();   
+
+           $items = collect()
+                    ->merge(
+                        $news->map(function ($item) {
+                            $item->type = 'news';
+                            $item->row_date = $item->publish_date;
+                            return $item;
+                        })
+                    )
+                    ->merge(
+                        $workshops->map(function ($item) {
+                            $item->type = 'workshop';
+                            $item->row_date = $item->st_date;
+                            return $item;
+                        })
+                    )
+                    ->sortByDesc('row_date')
+                    ->values();
     //    $devices = \App\Models\devices::sum('num_units')+ \App\Models\UniDevices::sum('num_units');
-    return view('templ/index', compact('universitys', 'institutes', 'labs', 'devices', 'news', 'visitsCount', 'enrichedData'));
+    return view('templ/index', compact('universitys', 'institutes', 'labs', 'devices', 'news', 'visitsCount', 'enrichedData','items'));
 })->name('home');
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
