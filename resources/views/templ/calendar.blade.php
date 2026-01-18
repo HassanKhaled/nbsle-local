@@ -203,11 +203,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="eventModalTitle"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" onclick="closeEventModal()"></button>
                 </div>
                 <div class="modal-body" id="eventModalBody"></div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button"
+                        class="btn btn-secondary"
+                        onclick="closeEventModal()">
+                    Close
+                </button>
                 </div>
             </div>
         </div>
@@ -264,6 +268,11 @@
             } finally {
                 document.getElementById('loadingIndicator').style.display = 'none';
             }
+        }
+
+        function normalizeDate(dateString) {
+            const d = new Date(dateString);
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate());
         }
 
         function renderCalendar() {
@@ -333,34 +342,38 @@
 
         function renderEvents(dayElements) {
             eventsData.forEach(event => {
-                const startDate = new Date(event.start);
-                const endDate = event.end ? new Date(event.end) : new Date(event.start);
-                
+
+                const startDate = normalizeDate(event.start);
+                const endDate   = event.end ? normalizeDate(event.end) : startDate;
+
                 const startDay = startDate.getDate();
-                const endDay = endDate.getDate();
+                const endDay   = endDate.getDate();
                 const startMonth = startDate.getMonth();
-                const endMonth = endDate.getMonth();
-                
-                // Only render if event is in current month
-                if (startMonth === currentMonth || endMonth === currentMonth) {
-                    const daysDiff = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-                    
-                    if (daysDiff > 0 && event.end) {
-                        // Multi-day event - create spanning element
-                        renderSpanningEvent(event, startDay, endDay, dayElements);
-                    } else {
-                        // Single day event
-                        const dayIndex = calendarFirstDay + startDay - 1;
-                        if (dayElements[dayIndex]) {
-                            const eventEl = document.createElement('div');
-                            eventEl.className = 'event-item';
-                            const shortTitle = event.title.length > 20 ? event.title.substring(0, 20) + '...' : event.title;
-                            eventEl.style.backgroundColor = event.color;
-                            eventEl.textContent = shortTitle;
-                            eventEl.onclick = () => showEventDetails(event);
-                            dayElements[dayIndex].appendChild(eventEl);
-                        }
-                    }
+                const endMonth   = endDate.getMonth();
+
+                if (startMonth !== currentMonth && endMonth !== currentMonth) return;
+
+                const daysDiff = Math.round(
+                    (endDate - startDate) / (1000 * 60 * 60 * 24)
+                );
+
+                if (daysDiff > 0) {
+                    renderSpanningEvent(event, startDay, endDay, dayElements);
+                } else {
+                    const dayIndex = calendarFirstDay + startDay - 1;
+                    if (!dayElements[dayIndex]) return;
+
+                    const eventEl = document.createElement('div');
+                    eventEl.className = 'event-item';
+                    eventEl.style.backgroundColor = event.color;
+
+                    eventEl.textContent =
+                        event.title.length > 20
+                            ? event.title.substring(0, 20) + '...'
+                            : event.title;
+
+                    eventEl.onclick = () => showEventDetails(event);
+                    dayElements[dayIndex].appendChild(eventEl);
                 }
             });
         }
@@ -370,7 +383,7 @@
             const calendarRect = calendar.getBoundingClientRect();
 
             const startIndex = calendarFirstDay + startDay - 1;
-            const endIndex = calendarFirstDay + endDay - 1;
+            const endIndex   = calendarFirstDay + endDay - 1;
 
             let currentIndex = startIndex;
             let stackOffset = 0;
@@ -387,9 +400,8 @@
                 const endEl = dayElements[rowEndIndex];
                 if (!endEl) break;
 
-                // Calculate position
                 const startRect = startEl.getBoundingClientRect();
-                const endRect = endEl.getBoundingClientRect();
+                const endRect   = endEl.getBoundingClientRect();
 
                 const spanEl = document.createElement('div');
                 spanEl.className = 'event-span';
@@ -397,35 +409,44 @@
                 spanEl.textContent = event.title;
                 spanEl.onclick = () => showEventDetails(event);
 
-                // positioning
                 spanEl.style.left = `${startRect.left - calendarRect.left}px`;
                 spanEl.style.width = `${endRect.right - startRect.left - 6}px`;
-                const baseTop = startRect.top - calendarRect.top + 25;
-                spanEl.style.top = `${baseTop + stackOffset}px`;
+                spanEl.style.top =
+                    `${startRect.top - calendarRect.top + 26 + stackOffset}px`;
 
-                // append to calendar grid (not day cell)
                 calendar.appendChild(spanEl);
 
-                stackOffset += 22; // allow stacking if multiple spans overlap
+                stackOffset += 22;
                 currentIndex = rowEndIndex + 1;
             }
         }
+        
+        let eventModal;
 
         function showEventDetails(event) {
-            const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+
+            const modalEl = document.getElementById('eventModal');
+
+            if (!eventModal) {
+                eventModal = new bootstrap.Modal(modalEl);
+            }
+
             const title = event.title || '';
-            const shortTitle = title.length > 20 ? title.substring(0, 20) + '...' : title;
-            document.getElementById('eventModalTitle').textContent = shortTitle;
+            document.getElementById('eventModalTitle').textContent =
+                title.length > 20 ? title.substring(0, 20) + '...' : title;
 
             const badgeClass = event.type === 'news' ? 'bg-success' : 'bg-primary';
             const typeText = event.type === 'news' ? 'News' : 'Workshop';
 
             const formattedStart = new Date(event.start).toLocaleDateString();
-            const formattedEnd = event.end ? new Date(event.end).toLocaleDateString() : formattedStart;
+            const formattedEnd = event.end
+                ? new Date(event.end).toLocaleDateString()
+                : formattedStart;
 
             let modalContent = `
                 <span class="modal-event-badge ${badgeClass}">${typeText}</span>
-                <p><strong>Date:</strong> ${formattedStart}${event.end && formattedEnd !== formattedStart ? ' - ' + formattedEnd : ''}</p>
+                <p><strong>Date:</strong> ${formattedStart}
+                ${event.end && formattedEnd !== formattedStart ? ' - ' + formattedEnd : ''}</p>
             `;
 
             if (event.location) {
@@ -436,12 +457,10 @@
                 modalContent += `<p><strong>Time:</strong> ${event.time}</p>`;
             }
 
-            let detailsUrl = '#';
-            if (event.type === 'news') {
-                detailsUrl = `/news/public/details/${event.event_id}`;
-            } else if (event.type === 'workshop') {
-                detailsUrl = `/workshops/${event.event_id}`;
-            }
+            const detailsUrl =
+                event.type === 'news'
+                    ? `/news/public/details/${event.event_id}`
+                    : `/workshops/${event.event_id}`;
 
             modalContent += `
                 <div class="mt-3 text-start">
@@ -452,6 +471,16 @@
             `;
 
             document.getElementById('eventModalBody').innerHTML = modalContent;
-            modal.show();
-        }
+
+            eventModal.show(); // 👈 استخدم نفس الـ instance
+            }
+
+            function closeEventModal() {
+                if (eventModal) {
+                    eventModal.hide();
+                }
+            }
+
+
+        
     </script>
