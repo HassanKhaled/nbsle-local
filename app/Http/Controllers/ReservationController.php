@@ -105,6 +105,7 @@ class ReservationController extends Controller
    // Get reservations for all users / visitors
    public function adminReservation()   /// Faculty Admin View
    {
+
        $user = Auth()->user();
 
        if ($user->hasRole('faculty')) {
@@ -118,6 +119,7 @@ class ReservationController extends Controller
                     ->with(['user', 'service', 'device'])->get();
            // dd($reservations);
         } elseif ($user->hasRole('university')) {
+            
         // University sees all reservations for their university
         $universityId = $user->uni_id;
 

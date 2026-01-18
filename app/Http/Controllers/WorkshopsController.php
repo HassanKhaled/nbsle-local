@@ -20,8 +20,13 @@ class WorkshopsController extends Controller
   
     public function showAdminWorkshops(Request $request)
     {
-        // Base query with eager loads
-        $query = workDetails::with(['university', 'faculty']);
+        $query = \App\Models\WorkDetails::join('users', function($join) {
+            $join->on('workshops_details.Uni_id', '=', 'users.uni_id')
+                 ->on('workshops_details.Faculty_id', '=', 'users.fac_id');
+        })
+        ->where('users.id', Auth::user()->id)
+        ->select('workshops_details.*');
+
 
         // Search filter (title in Arabic or English)
         if ($request->filled('search')) {
@@ -83,14 +88,16 @@ class WorkshopsController extends Controller
     {
         $user = Auth()->user();
         if($user->hasRole('university')){
+             
             $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
-                        ->where('uni_id', $user->uni_id)
-                        ->orderBy('id', 'desc')
-                        ->paginate(15);
+                ->where('uni_id', $user->uni_id)
+                ->orderBy('id', 'desc')
+                ->paginate(15);
+        }else{
+            $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
+                ->orderBy('id', 'desc')
+                ->paginate(15);
         }
-        $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
-                        ->orderBy('id', 'desc')
-                        ->paginate(15);
 
         return view('Workshops.Admin.reservations', compact('reservations'));
     }
@@ -104,7 +111,7 @@ class WorkshopsController extends Controller
     public function showUnivWorkshops(Request $request)
     {
         $user = Auth()->user();
-        
+
         if($user->hasRole('university')){
              // Base query with eager loads
             $query = workDetails::with(['university', 'faculty'])->where('Uni_id', $user->uni_id);
