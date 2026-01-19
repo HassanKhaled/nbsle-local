@@ -20,8 +20,13 @@ class WorkshopsController extends Controller
   
     public function showAdminWorkshops(Request $request)
     {
-        // Base query with eager loads
-        $query = workDetails::with(['university', 'faculty']);
+        $query = \App\Models\WorkDetails::join('users', function($join) {
+            $join->on('workshops_details.Uni_id', '=', 'users.uni_id')
+                 ->on('workshops_details.Faculty_id', '=', 'users.fac_id');
+        })
+        ->where('users.id', Auth::user()->id)
+        ->select('workshops_details.*');
+
 
         // Search filter (title in Arabic or English)
         if ($request->filled('search')) {
@@ -83,14 +88,20 @@ class WorkshopsController extends Controller
     {
         $user = Auth()->user();
         if($user->hasRole('university')){
+               
+            $reservations = \App\Models\workReg::
+            Join('workshops_details', 'workshops_details.id', '=', 'workshop_reg.workshop_id')
+            ->where( 'workshops_details.Uni_id' , '=' , $user->uni_id)
+            ->select('workshop_reg.*') 
+            ->orderBy('id', 'desc')
+            ->paginate(15);
+
+        }else{
+            
             $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
-                        ->where('uni_id', $user->uni_id)
-                        ->orderBy('id', 'desc')
-                        ->paginate(15);
+                ->orderBy('id', 'desc')
+                ->paginate(15);
         }
-        $reservations = workReg::with(['workshop.university', 'workshop.faculty'])
-                        ->orderBy('id', 'desc')
-                        ->paginate(15);
 
         return view('Workshops.Admin.reservations', compact('reservations'));
     }
@@ -104,7 +115,7 @@ class WorkshopsController extends Controller
     public function showUnivWorkshops(Request $request)
     {
         $user = Auth()->user();
-        
+
         if($user->hasRole('university')){
              // Base query with eager loads
             $query = workDetails::with(['university', 'faculty'])->where('Uni_id', $user->uni_id);
@@ -748,13 +759,17 @@ class WorkshopsController extends Controller
             ? $participantRegistration->phone
             : $authUser->phone;
 
-       // dd( $saved_fac_id );
+        $saved_institution_name =  isset($participantRegistration) && isset($participantRegistration->institution_name)
+        ? $participantRegistration->institution_name
+        : $authUser->institution_name;
+
         return view('Users.PartregistrationForm', [
             'saved_name'        => $saved_name,
             'saved_email'       => $saved_email,
             'saved_national_id' => $saved_national_id,
             'saved_uni_id'      =>$saved_uni_id,
             'saved_fac_id'      =>$saved_fac_id,
+            'saved_institution_name' => $saved_institution_name ,
             'saved_par_type'     => $saved_par_type,
             'saved_par_sub_type' =>  $saved_par_sub_type,
             'saved_gender' =>  $saved_gender, 
@@ -781,34 +796,60 @@ class WorkshopsController extends Controller
             'partEmail'   => 'required|email|max:100',
             'partType'    => 'required|string|max:100',
             'parSubType'  => 'required|string|max:100',
-            'uni_id'      => 'required|integer',
-            'fac_id'      => 'required|integer',
+            'uni_id' => 'nullable|integer|required_without:institution_name',
+            'fac_id' => 'nullable|integer|required_without:institution_name',
+            'institution_name' => 'nullable|string|max:255|required_without:uni_id,fac_id',
             'national_id' => 'required|string|max:14',
             'phone'       => [
                 'required',
                 'regex:/^01(0|1|2|5)[0-9]{8}$/'
             ],
         ]);
+        /// in case national id is updated as it is diff from already stored national id then update it in both tables
+        /// we update national_id alone because it is mutable field we use it in updateOrCreate which might lead to duplicates
+        if (Auth::user()->national_id !== $data['national_id'] ) {
+           
+            \App\Models\User::where('national_id', Auth::user()->national_id)
+            ->update([
+                'national_id' => $data['national_id'],
+                'name'        => $data['PartName'],
+                'email'       => $data['partEmail'],
+                'uni_id'      => $data['uni_id'] ?? null ,
+                'fac_id' => $data['fac_id'] ?? null ,
+                'institution_name'=> $data['institution_name'] ?? null ,
+                'phone'=> $data['phone'] ,
+            ]);
+              
+                \App\Models\WorkReg::
+                  where('national_id', Auth::user()->national_id)
+                ->where('workshop_id' , $data['workshop_id'])
+                ->update([
+                    'national_id' => $data['national_id'],
+                ]);
+        }
+        
 
          WorkReg::updateOrCreate(
             [
                 'workshop_id' => $data['workshop_id'],
+                'national_id' => $data['national_id']
             ],
             [
-                'uni_id'       => $data['uni_id'],
-                'fac_id'       => $data['fac_id'],
-                'full_name'    => $data['PartName'],
-                'gender'       => $data['partGender'],
-                'email'        => $data['partEmail'],
-                'par_type'     => $data['partType'],
-                'par_sub_type' => $data['parSubType'],
-                'phone'        => $data['phone'],
-                'national_id'  => $data['national_id']
+                'uni_id'            => $data['uni_id'] ?? null,
+                'fac_id'            => $data['fac_id'] ?? null,
+                'institution_name'  => $data['institution_name'] ?? null,
+                'full_name'         => $data['PartName'],
+                'gender'            => $data['partGender'],
+                'email'             => $data['partEmail'],
+                'par_type'          => $data['partType'],
+                'par_sub_type'      => $data['parSubType'],
+                'phone'             => $data['phone'],
             ]
         );
-        
+       
         
     } else {
+
         if (
             $request->input('isUpdated') == '0' &&
             collect($request->keys())->diff(['_token' , 'workshop_id', 'isUpdated'])->isEmpty()
@@ -833,6 +874,7 @@ class WorkshopsController extends Controller
             'workshop_id'  => $data['workshop_id'],
             'uni_id'       => $authUser->uni_id ,
             'fac_id'       => $authUser->fac_id,
+            'institution_name' => $authUser->institution_name ,
             'full_name'    => $authUser->name,
             'gender'       => $data['partGender'],
             'email'        => $authUser->email,
@@ -860,7 +902,6 @@ class WorkshopsController extends Controller
                     'name'          => $data['PartName'],
                     'email'         => $data['partEmail'],
                     'log_email'     => $data['partEmail'],
-                    'national_id'   => $data['national_id'],
                 ]);
         }
         return back()->with('message', 'Participant registered successfully for this workshop.');
