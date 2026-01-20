@@ -46,7 +46,7 @@ class Reportcontroller extends Controller
             'stats'
         ));
     }
-    
+
     public function devices($type, $labId)
     {
         if ($type === 'lab') {
@@ -54,7 +54,7 @@ class Reportcontroller extends Controller
             $lab = labs::find($labId);
         } else {
             $devices = UniDevices::where('lab_id', $labId)->get();
-            $lab = labs::find($labId);
+            $lab = UniLabs::find($labId);
         }
         $uni_id   = $lab->uni_id;
         $uniname  = universitys::find($uni_id)->name ?? '';

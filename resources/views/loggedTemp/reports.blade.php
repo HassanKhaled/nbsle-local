@@ -497,6 +497,14 @@
         transform: translateY(-4px);
         transition: .3s ease;
     }
+      .lab-link {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .lab-link:hover {
+        text-decoration-thickness: 2px;
+    }
 </style>
 
 <div class="container-fluid py-4">
