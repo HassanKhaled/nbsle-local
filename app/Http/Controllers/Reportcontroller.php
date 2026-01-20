@@ -46,6 +46,56 @@ class Reportcontroller extends Controller
             'stats'
         ));
     }
+    
+    public function devices($type, $labId)
+    {
+        if ($type === 'lab') {
+            $devices = devices::where('lab_id', $labId)->get();
+            $lab = labs::find($labId);
+        } else {
+            $devices = UniDevices::where('lab_id', $labId)->get();
+            $lab = labs::find($labId);
+        }
+        $uni_id   = $lab->uni_id;
+        $uniname  = universitys::find($uni_id)->name ?? '';
+        $facID    = $lab->fac_id;
+        $facName  = facultys::find($facID)->name ?? '';
+
+        $devices = $devices->map(function ($device) use (
+            $type, $labId, $uni_id, $uniname, $facID, $facName
+        ) {
+
+            if ($type === 'uni') {
+                $url = route('browsedevice', [
+                    $device->id,
+                    $labId,
+                    '1',
+                    $uni_id,
+                    $uniname
+                ]);
+            } else {
+                $url = route('browsedevice', [
+                    $device->id,
+                    $labId,
+                    '0',
+                    $uni_id,
+                    $uniname,
+                    $facID,
+                    $facName
+                ]);
+            }
+
+            return [
+                'id'    => $device->id,
+                'name'  => $device->name ?? $device->Arabicname,
+                'image' => asset($device->ImagePath),
+                'url'   => $url
+            ];
+        });
+
+        return response()->json($devices);
+    }
+
 
     /**
      * Initialize filter parameters based on user role
@@ -108,8 +158,10 @@ class Reportcontroller extends Controller
      */
     private function getAllLabs()
     {
-        $uniLabs = $this->applyDeviceCountsQuery(UniLabs::query())->get();
-        $labs = $this->applyDeviceCountsQuery(Labs::query())->get();
+        $uniLabs = $this->applyDeviceCountsQuery(UniLabs::query()->select('*')
+              ->selectRaw("'uni' as lab_type"))->get();
+        $labs = $this->applyDeviceCountsQuery(Labs::query()->select('*')
+              ->selectRaw("'lab' as lab_type"))->get();
 
         return $uniLabs->merge($labs);
     }
@@ -121,6 +173,8 @@ class Reportcontroller extends Controller
     {
         return $this->applyDeviceCountsQuery(
             UniLabs::query()->where('uni_id', $universityId)
+               ->select('*')
+              ->selectRaw("'uni' as lab_type")
         )->get();
     }
 
@@ -130,11 +184,17 @@ class Reportcontroller extends Controller
     private function getAllUniversityLabs($universityId)
     {
         $uniLabs = $this->applyDeviceCountsQuery(
-            UniLabs::query()->where('uni_id', $universityId)
+            UniLabs::query()
+                ->where('uni_id', $universityId)
+                ->select('*')
+                ->selectRaw("'uni' as lab_type")
         )->get();
 
         $labs = $this->applyDeviceCountsQuery(
-            Labs::query()->where('uni_id', $universityId)
+            Labs::query()
+                ->where('uni_id', $universityId)
+                ->select('*')
+                ->selectRaw("'lab' as lab_type")
         )->get();
 
         return $labs->merge($uniLabs);
@@ -147,8 +207,10 @@ class Reportcontroller extends Controller
     {
         $query = Labs::query()
             ->where('uni_id', $universityId)
-            ->where('fac_id', $facultyId);
-
+            ->where('fac_id', $facultyId)
+            ->select('*')
+            ->selectRaw("'lab' as lab_type");
+   
         return $this->applyDeviceCountsQuery($query)->get();
     }
 
@@ -159,6 +221,8 @@ class Reportcontroller extends Controller
     {
         return $this->applyDeviceCountsQuery(
             Labs::query()->where('fac_id', $facultyId)
+              ->select('*')
+              ->selectRaw("'lab' as lab_type")
         )->get();
     }
 

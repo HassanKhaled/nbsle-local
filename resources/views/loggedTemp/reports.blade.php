@@ -336,139 +336,167 @@
     }
 
     @media (max-width: 768px) {
-        .header-row-container {
-            border-radius: 6px 6px 0 0;
+            .header-row-container {
+                border-radius: 6px 6px 0 0;
+            }
+
+            .column-group {
+                margin: 0 2px;
+            }
+
+            .column-group.active {
+                margin: 0;
+            }
+
+            .column-group-content {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+
+            .column-tab {
+                min-width: 80px;
+                font-size: 0.7rem;
+                padding: 8px 4px;
+                white-space: nowrap;
+            }
+
+            .main-table td {
+                padding: 8px 6px;
+                font-size: 0.85rem;
+            }
+
+            .pagination-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .pagination-controls button {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .quality-badge {
+                flex-direction: column;
+                padding: 4px 8px;
+                font-size: 0.75rem;
+            }
+
+            .quality-badge .score {
+                margin-right: 0;
+                margin-bottom: 2px;
+            }
         }
 
-        .column-group {
-            margin: 0 2px;
+        @media (max-width: 576px) {
+            .column-tab {
+                min-width: 70px;
+                font-size: 0.65rem;
+                padding: 8px 3px;
+            }
+
+            .lab-name-header, .lab-name-cell {
+                font-size: 0.85rem;
+                padding: 10px;
+            }
+
+            .main-table td {
+                padding: 6px 4px;
+                font-size: 0.75rem;
+            }
+
+            .stars i {
+                font-size: 0.7rem;
+            }
+
+            h2.fw-bold {
+                font-size: 1.5rem;
+            }
         }
 
-        .column-group.active {
-            margin: 0;
+        /* Improve scrollbar for horizontal scroll */
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
         }
 
-        .column-group-content {
-            flex-wrap: nowrap;
-            overflow-x: auto;
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
         }
 
-        .column-tab {
-            min-width: 80px;
-            font-size: 0.7rem;
-            padding: 8px 4px;
-            white-space: nowrap;
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #27ae60;
+            border-radius: 10px;
         }
 
-        .main-table td {
-            padding: 8px 6px;
-            font-size: 0.85rem;
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #229954;
         }
 
-        .pagination-controls {
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .pagination-controls button {
-            width: 100%;
-            max-width: 250px;
-        }
-
-        .quality-badge {
-            flex-direction: column;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-        }
-
-        .quality-badge .score {
-            margin-right: 0;
-            margin-bottom: 2px;
-        }
+        /* //////// */
+        .my-tooltip {
+        position: relative;
+        cursor: pointer;
     }
 
-    @media (max-width: 576px) {
-        .column-tab {
-            min-width: 70px;
-            font-size: 0.65rem;
-            padding: 8px 3px;
-        }
-
-        .lab-name-header, .lab-name-cell {
-            font-size: 0.85rem;
-            padding: 10px;
-        }
-
-        .main-table td {
-            padding: 6px 4px;
-            font-size: 0.75rem;
-        }
-
-        .stars i {
-            font-size: 0.7rem;
-        }
-
-        h2.fw-bold {
-            font-size: 1.5rem;
-        }
+    .my-tooltip .tooltip-box {
+        position: absolute;
+        top: -10px; /* adjust vertical position */
+        left: 80%; /* adjust horizontal position */
+        background: #1e4356;
+        color: white;
+        padding: 10px 14px;
+        border-radius: 8px;
+        width: 600px; /* customize size */
+        font-size: 0.75rem;
+        z-index: 9999;
+        display: none;
+        animation: fadeIn 0.2s ease-in-out;
     }
 
-    /* Improve scrollbar for horizontal scroll */
-    .table-responsive::-webkit-scrollbar {
-        height: 8px;
+    /* Tooltip arrow */
+    .my-tooltip .tooltip-box::after {
+        content: "";
+        position: absolute;
+        top: 12px;
+        left: -7px;
+        border-width: 7px;
+        border-style: solid;
+        border-color: transparent #1e4356 transparent transparent;
     }
 
-    .table-responsive::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-3px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
 
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #27ae60;
-        border-radius: 10px;
+</style>
+<style>
+    /* Full width modal */
+    #labDevicesModal .modal-dialog {
+        max-width: 90%;
+        width: 90%;
+        margin: 15;
     }
 
-    .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: #229954;
+    #labDevicesModal .modal-content {
+        max-height: 100vh;
+        border-radius: 0;
     }
 
-    /* //////// */
-    .my-tooltip {
-    position: relative;
-    cursor: pointer;
-}
+    #labDevicesModal .modal-body {
+        padding: 1.5rem;
+        background: #f8f9fa;
+    }
 
-.my-tooltip .tooltip-box {
-    position: absolute;
-    top: -10px; /* adjust vertical position */
-    left: 80%; /* adjust horizontal position */
-    background: #1e4356;
-    color: white;
-    padding: 10px 14px;
-    border-radius: 8px;
-    width: 600px; /* customize size */
-    font-size: 0.75rem;
-    z-index: 9999;
-    display: none;
-    animation: fadeIn 0.2s ease-in-out;
-}
+      .device-card img {
+        height: 180px;
+        object-fit: cover;
+    }
 
-/* Tooltip arrow */
-.my-tooltip .tooltip-box::after {
-    content: "";
-    position: absolute;
-    top: 12px;
-    left: -7px;
-    border-width: 7px;
-    border-style: solid;
-    border-color: transparent #1e4356 transparent transparent;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-3px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
+    .device-card:hover {
+        transform: translateY(-4px);
+        transition: .3s ease;
+    }
 </style>
 
 <div class="container-fluid py-4">
@@ -608,7 +636,16 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td class="lab-name-cell">{{ $lab->name }}</td>
+                                    <td class="lab-name-cell">
+                                        <a href="javascript:void(0)"
+                                        class="lab-link text-white"
+                                        data-lab-id="{{ $lab->id }}"
+                                         data-lab-type="{{ $lab->lab_type }}"
+                                        data-lab-name="{{ $lab->name }}">
+                                            {{ $lab->name }}
+                                        </a>
+                                    </td>
+
                                     <td>
                                         <div class="quality-badge quality">
                                             <span class="score">{{ number_format($lab->data_quality_index, 1) }}</span>
@@ -659,7 +696,16 @@
                         <tbody>
                             @foreach($labs as $lab)
                                 <tr>
-                                    <td class="lab-name-cell">{{ $lab->name }}</td>
+                                   <td class="lab-name-cell">
+                                        <a href="javascript:void(0)"
+                                        class="lab-link text-white"
+                                        data-lab-id="{{ $lab->id }}"
+                                         data-lab-type="{{ $lab->lab_type }}"
+                                        data-lab-name="{{ $lab->name }}">
+                                            {{ $lab->name }}
+                                        </a>
+                                    </td>
+
                                     <td>{{ number_format($lab->kpi_update, 2) }}%</td>
                                     <td>{{ $lab->devices_count }}</td>
                                     <td>{{ $lab->devices_with_name_count }}</td>
@@ -684,7 +730,16 @@
                         <tbody>
                             @foreach($labs as $lab)
                                 <tr>
-                                    <td class="lab-name-cell">{{ $lab->name }}</td>
+                                    <td class="lab-name-cell">
+                                        <a href="javascript:void(0)"
+                                        class="lab-link text-white"
+                                         data-lab-type="{{ $lab->lab_type }}"
+                                        data-lab-id="{{ $lab->id }}"
+                                        data-lab-name="{{ $lab->name }}">
+                                            {{ $lab->name }}
+                                        </a>
+                                    </td>
+
                                     <td>{{ $lab->devices_with_description_count }}</td>
                                     <td>{{ $lab->devices_with_manufacturer_count }}</td>
                                     <td>{{ $lab->devices_with_manufacture_year_count }}</td>
@@ -716,7 +771,36 @@
     @endif
 
 </div>
+<!-- Lab Devices Modal -->
+<div class="modal fade w-100" id="labDevicesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    🧪 Lab Devices - <span id="modalLabName"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">X</button>
+            </div>
+
+            <div class="modal-body">
+
+                <div id="devicesLoading" class="text-center my-3">
+                    <div class="spinner-border text-primary"></div>
+                </div>
+
+                <div class="row d-none" id="devicesCardsWrapper"></div>
+
+                <div id="noDevices" class="alert alert-warning d-none">
+                    No devices found for this lab
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
 // Enhanced Pagination System
@@ -865,5 +949,79 @@ document.addEventListener('DOMContentLoaded', () => {
     FormManager.init();
 });
 </script>
+<script>
+document.querySelectorAll('.lab-link').forEach(link => {
+    link.addEventListener('click', function () {
+
+        const labId   = this.dataset.labId;
+        const labType = this.dataset.labType;
+        const labName = this.dataset.labName;
+
+        document.getElementById('modalLabName').textContent = labName;
+
+        const cardsWrapper = document.getElementById('devicesCardsWrapper');
+        cardsWrapper.innerHTML = '';
+
+        document.getElementById('devicesLoading').classList.remove('d-none');
+        cardsWrapper.classList.add('d-none');
+        document.getElementById('noDevices').classList.add('d-none');
+
+        const modal = new bootstrap.Modal(
+            document.getElementById('labDevicesModal')
+        );
+        modal.show();
+
+        fetch(`/reports/${labType}/${labId}/devices`)
+            .then(res => res.json())
+            .then(devices => {
+
+                document.getElementById('devicesLoading').classList.add('d-none');
+
+                if (!devices.length) {
+                    document.getElementById('noDevices').classList.remove('d-none');
+                    return;
+                }
+
+                let html = '';
+
+                devices.forEach(device => {
+                    html += `
+                        <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="card h-100 border-0 shadow-sm device-card">
+
+                                <a href="${device.url}" class="text-decoration-none">
+                                    <img src="${device.image}"
+                                        class="card-img-top rounded-top"
+                                        alt="${device.name}">
+                                </a>
+
+                                <div class="card-body text-center p-2">
+                                    <h6 class="fw-semibold text-truncate">
+                                        ${device.name}
+                                    </h6>
+
+                                    <a href="${device.url}"
+                                    class="btn btn-outline-primary btn-sm w-100 mt-2">
+                                        Show Details
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    `;
+                });
+
+                cardsWrapper.innerHTML = html;
+                cardsWrapper.classList.remove('d-none');
+            })
+            .catch(() => {
+                document.getElementById('devicesLoading').classList.add('d-none');
+                document.getElementById('noDevices').classList.remove('d-none');
+            });
+    });
+});
+</script>
+
 
 @endsection

@@ -258,6 +258,7 @@ Route::group(['middleware' => ['auth', 'role:admin|university']], function () {
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/university-ranks', [ReportController::class, 'calculateUniversityRanks'])
         ->name('university.ranks');
+    Route::get('/reports/{type}/{id}/devices', [ReportController::class, 'devices']);
 
     Route::get('/university-ranks/export', [ReportController::class, 'exportToExcel'])->name('university.ranks.export');
     //News 
