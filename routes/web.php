@@ -19,6 +19,8 @@ use App\Http\Controllers\FacUniController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+
 use App\Models\User;
 use App\Http\Controllers\DeviceRatingController;
 use App\Http\Controllers\Reportcontroller;
@@ -210,6 +212,10 @@ Route::post('/news/{id}/like', [NewsController::class, 'addLike'])->name('news.l
 // all devices
 Route::get('/all-devices', [DeviceLabController::class, 'getAllDevices'])->name('allDevices');
 
+
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetPassword'])->name('sendResetPassword');
 
 Auth::routes(['register' => true]);
 Auth::routes();

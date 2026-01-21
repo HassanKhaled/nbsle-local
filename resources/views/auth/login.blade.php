@@ -33,8 +33,6 @@
     overflow: hidden;
 }
 
-
-
 .lab-card-body {
     padding: 40px;
     background: rgba(248, 249, 250, 0.5);
@@ -81,6 +79,7 @@
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 .lab-btn-login:hover {
@@ -163,6 +162,69 @@
     font-size: 14px;
 }
 
+/* Footer Links Styling */
+.lab-footer-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.lab-footer-link {
+    font-size: 13px;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.lab-footer-link:hover {
+    color: #4caf50;
+    text-decoration: none;
+    transform: translateX(2px);
+}
+
+.lab-footer-link.primary {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+.lab-footer-link.primary:hover {
+    color: #2e7d32;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #e0e0e0;
+    border-top: 5px solid #4caf50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .login-section {
@@ -176,8 +238,20 @@
     .lab-title {
         font-size: 24px;
     }
+    
+    .lab-footer-links {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
 }
 
+@media (max-width: 576px) {
+    .lab-footer-links {
+        flex-direction: column;
+        text-align: center;
+    }
+}
 </style>
 
 <main id="main">
@@ -199,7 +273,9 @@
                                 @csrf
                                 
                                 <div class="form-group-enhanced">
-                                    <label for="username" class="lab-form-label">{{ __('Username') }}</label>
+                                    <label for="username" class="lab-form-label">
+                                        {{ __('Username') }} <span class="text-danger">*</span>
+                                    </label>
                                     <div class="position-relative">
                                         <i class='bx bx-user input-icon'></i>
                                         <input id="username" 
@@ -216,11 +292,14 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                         @enderror
+                                        <small class="text-danger" id="username-error" style="display: none; font-weight: 600;"></small>
                                     </div>
                                 </div>
 
                                 <div class="form-group-enhanced">
-                                    <label for="password" class="lab-form-label">{{ __('Password') }}</label>
+                                    <label for="password" class="lab-form-label">
+                                        {{ __('Password') }} <span class="text-danger">*</span>
+                                    </label>
                                     <div class="d-flex align-items-center">
                                         <div class="position-relative flex-grow-1">
                                             <i class='bx bx-lock-alt input-icon'></i>
@@ -236,6 +315,7 @@
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                             @enderror
+                                            <small class="text-danger" id="password-error" style="display: none; font-weight: 600;"></small>
                                         </div>
                                         <i class='bx bxs-hide bx-sm password-toggle' id="togglePassword" onclick="myFunction()"></i>
                                     </div>
@@ -247,9 +327,39 @@
                                         {{ __('Login') }}
                                     </button>
                                 </div>
+
+                                <!-- Footer Links -->
+                                <div class="lab-footer-links">
+                                        <div>
+                                            <span style="
+                                                font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+                                                color: black;
+                                                font-weight: bold;
+                                            ">
+                                                Don't have an account?
+                                            </span>
+
+                                            <a href="{{ route('register') }}"
+                                            class="lab-footer-link primary"
+                                            style="font-size: clamp(0.9rem, 1.3vw, 1rem);">
+                                                Create Account
+                                            </a>
+                                        </div>
+
+                                        <div>
+                                            <a href="{{ route('password.request') }}"
+                                            class="lab-footer-link"
+                                            style="
+                                                font-size: clamp(0.9rem, 1.3vw, 1rem);
+                                                font-weight: bold;
+                                                color: black;
+                                            ">
+                                                Forgot Password?
+                                            </a>
+                                        </div>
+                                    </div>
+
                             </form>
-                            
-                          
                         </div>
                     </div>
                 </div>
@@ -277,10 +387,71 @@
         }
     }
 
-    // Enhanced form submission with loading animation
+    // Enhanced form submission with loading animation and validation
     $(document).ready(function() {
-        $('#loginForm').on('submit', function() {
-            $('#loadingOverlay').css('display', 'flex');
+        
+        // Clear all error messages
+        function clearErrors() {
+            $('.text-danger').hide();
+            $('.lab-form-control').removeClass('is-invalid');
+            $('.invalid-feedback').hide();
+        }
+        
+        // Show error message
+        function showError(fieldId, message) {
+            const field = $(`#${fieldId}`);
+            const errorElement = $(`#${fieldId}-error`);
+            
+            if (errorElement.length) {
+                errorElement.text(message).show();
+            } else {
+                field.after(`<small class="text-danger d-block mt-1" id="${fieldId}-error" style="font-weight: 600;">${message}</small>`);
+            }
+            field.addClass('is-invalid');
+        }
+        
+        // Validate form
+        function validateForm() {
+            clearErrors();
+            let isValid = true;
+            
+            // Validate Username
+            const username = $('#username').val().trim();
+            if (username === '') {
+                showError('username', 'Username is required');
+                isValid = false;
+            }
+            
+            // Validate Password
+            const password = $('#password').val();
+            if (password === '') {
+                showError('password', 'Password is required');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Clear error on input
+        $('#username, #password').on('input', function() {
+            const fieldId = $(this).attr('id');
+            $(`#${fieldId}-error`).hide();
+            $(this).removeClass('is-invalid');
+        });
+        
+        // Form submission with validation
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                $('#loadingOverlay').css('display', 'flex');
+                this.submit();
+            } else {
+                // Scroll to first error
+                $('html, body').animate({
+                    scrollTop: $('.is-invalid:first').offset().top - 100
+                }, 500);
+            }
         });
 
         // Add focus animations
@@ -293,7 +464,5 @@
         });
     });
 </script>
-
-
 
 @endsection

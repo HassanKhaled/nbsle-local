@@ -716,16 +716,16 @@ class WorkshopsController extends Controller
 
         $authUser = Auth::user();
 
-        // Try to find a participant data in for this user by name and email
-        $participantRegistration = WorkReg::where('national_id', $authUser->national_id)
+        // Try to find a participant data in for this user by natioanl id and workshop
+        $participantRegistration = WorkReg
+        ::where('national_id', $authUser->national_id)
         ->where('workshop_id', $workshopId)
         ->first();
-    
-        // take values from Users table already registered with in case nothing
-        // in workshop_reg data else take workshop_reg data
-       $saved_name = isset($participantRegistration) && isset($participantRegistration->name)
-    ? $participantRegistration->name
-    : $authUser->name;
+        // take values from workshop reg table already registered for updating 
+        // else take what user already registered with
+       $saved_name = isset($participantRegistration) && isset($participantRegistration->full_name)
+            ? $participantRegistration->full_name
+            : $authUser->name;
 
         $saved_email = isset($participantRegistration) && isset($participantRegistration->email)
             ? $participantRegistration->email
@@ -785,54 +785,31 @@ class WorkshopsController extends Controller
      */
     public function storeRegistrationDetails(Request $request)
     {
-       // dd($request->all());
-         // it means the box is
-    if ($request->input('isUpdated') == '1') {
+       //dd($request->all());
+        if ($request->input('isUpdated') == '1') {
         // Full validation if user wants to edit
-        $data = $request->validate([
-            'workshop_id' => 'required|exists:workshops_details,id',
-            'PartName'    => 'required|string|max:300',
-            'partGender'  => 'required|string|max:100',
-            'partEmail'   => 'required|email|max:100',
-            'partType'    => 'required|string|max:100',
-            'parSubType'  => 'required|string|max:100',
-            'uni_id' => 'nullable|integer|required_without:institution_name',
-            'fac_id' => 'nullable|integer|required_without:institution_name',
-            'institution_name' => 'nullable|string|max:255|required_without:uni_id,fac_id',
-            'national_id' => 'required|string|max:14',
-            'phone'       => [
-                'required',
-                'regex:/^01(0|1|2|5)[0-9]{8}$/'
-            ],
-        ]);
-        /// in case national id is updated as it is diff from already stored national id then update it in both tables
-        /// we update national_id alone because it is mutable field we use it in updateOrCreate which might lead to duplicates
-        if (Auth::user()->national_id !== $data['national_id'] ) {
-           
-            \App\Models\User::where('national_id', Auth::user()->national_id)
-            ->update([
-                'national_id' => $data['national_id'],
-                'name'        => $data['PartName'],
-                'email'       => $data['partEmail'],
-                'uni_id'      => $data['uni_id'] ?? null ,
-                'fac_id' => $data['fac_id'] ?? null ,
-                'institution_name'=> $data['institution_name'] ?? null ,
-                'phone'=> $data['phone'] ,
+            $data = $request->validate([
+                'workshop_id' => 'required|exists:workshops_details,id',
+                'PartName'    => 'required|string|max:300',
+                'partGender'  => 'required|string|max:100',
+                'partEmail'   => 'required|email|max:100',
+                'partType'    => 'required|string|max:100',
+                'parSubType'  => 'required|string|max:100',
+                'uni_id' => 'nullable|integer|required_without:institution_name',
+                'fac_id' => 'nullable|integer|required_without:institution_name',
+                'institution_name' => 'nullable|string|max:255|required_without:uni_id,fac_id',
+                'national_id' => 'required|string|max:14',
+                'phone'       => [
+                    'required',
+                    'regex:/^01(0|1|2|5)[0-9]{8}$/'
+                ],
             ]);
-              
-                \App\Models\WorkReg::
-                  where('national_id', Auth::user()->national_id)
-                ->where('workshop_id' , $data['workshop_id'])
-                ->update([
-                    'national_id' => $data['national_id'],
-                ]);
-        }
-        
 
-         WorkReg::updateOrCreate(
+
+        WorkReg::updateOrCreate(
             [
-                'workshop_id' => $data['workshop_id'],
-                'national_id' => $data['national_id']
+                'workshop_id'       => $data['workshop_id'],
+                'national_id'       => $data['national_id']
             ],
             [
                 'uni_id'            => $data['uni_id'] ?? null,
@@ -849,14 +826,12 @@ class WorkshopsController extends Controller
        
         
     } else {
-
-        if (
-            $request->input('isUpdated') == '0' &&
-            collect($request->keys())->diff(['_token' , 'workshop_id', 'isUpdated'])->isEmpty()
-        ) {
-            return back()->with('message', 'Participant registered successfully for this workshop.');
+        // if user have all dropdown disabled 
+        if ($request->except('_token', 'workshop_id', 'isUpdated') === []) {
+            return back();
         }
-        // Only validate essential fields if no edit in the workshop
+        
+ 
         $data = $request->validate([
             'workshop_id' => 'required|exists:workshops_details,id',
             'partGender'  => 'required|string|max:100',
@@ -867,43 +842,27 @@ class WorkshopsController extends Controller
             'partType'    => 'required|string|max:100',
             'parSubType'  => 'required|string|max:100',
         ]);
+
         $authUser = auth::User() ;
-        /// data that are taken from authUser are already validated in Registeration phase 
-        /// i dont need to validate them again
+        //dd($data);
         WorkReg::create([
-            'workshop_id'  => $data['workshop_id'],
-            'uni_id'       => $authUser->uni_id ,
-            'fac_id'       => $authUser->fac_id,
+            'workshop_id'      => $data['workshop_id'],
+            'uni_id'           => $authUser->uni_id ,
+            'fac_id'           => $authUser->fac_id,
             'institution_name' => $authUser->institution_name ,
-            'full_name'    => $authUser->name,
-            'gender'       => $data['partGender'],
-            'email'        => $authUser->email,
-            'par_type'     => $data['partType'],
-            'par_sub_type' => $data['parSubType'],
-            'phone'        => $data['phone'],
-            'national_id'  => $authUser->national_id
+            'full_name'        => $authUser->name,
+            'gender'           => $data['partGender'],
+            'email'            => $authUser->email,
+            'par_type'         => $data['partType'],
+            'par_sub_type'     => $data['parSubType'],
+            'phone'            => $data['phone'],
+            'national_id'      => $data['national_id'] ?? $authUser->national_id
         ]);
         
     }
-
-        if ($data['partType'] === 'Employee') {
-                $data['parSubType'] = 'Employee';
-        }
-   
-     
-        // Only update User table if critical fields (name, email, national_id, uni_id, fac_id) are present and changed
-        if (!empty($data['PartName']) && !empty($data['partEmail']) && !empty($data['national_id']) && !empty($data['uni_id']) && !empty($data['fac_id'])) {
-            
-            /// validate uni , fac , name , email , national id
-            User::where('national_id', $data['national_id'])
-                ->update([
-                    'uni_id'        => $data['uni_id'],
-                    'fac_id'        => $data['fac_id'],
-                    'name'          => $data['PartName'],
-                    'email'         => $data['partEmail'],
-                    'log_email'     => $data['partEmail'],
-                ]);
-        }
+    if ($data['partType'] === 'Employee') {
+            $data['parSubType'] = 'Employee';
+    } 
         return back()->with('message', 'Participant registered successfully for this workshop.');
     }
 }
