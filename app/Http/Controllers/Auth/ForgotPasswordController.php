@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
-use App\Mail\CredentialsMail;
-
+        
 class ForgotPasswordController extends Controller
 {
     /**
@@ -60,16 +59,8 @@ class ForgotPasswordController extends Controller
 
     try {
         // Send email directly without Mailable
-        Mail::send([], [], function ($message) use ($user) {
-            $message->to($user->email)
-                ->subject('Your Account Credentials')
-                ->setBody(
-                    '<h3>Your account credentials:</h3>
-                     <p>Username: ' . $user->email . '</p>
-                     <p>Password: ' . $user->password_hashed . '</p>',
-                    'text/html'
-                );
-        });
+        \Mail::to($user->email)->send(new \App\Mail\SendCredentials($user));
+
 
         // Store the request time in session
         session(['last_password_request_time' => $currentTime]);
