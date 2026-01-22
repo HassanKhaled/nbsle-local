@@ -18,58 +18,53 @@ class WorkshopsController extends Controller
 {
     // Show all workshops pending approval for Admin
   
+   
+
     public function showAdminWorkshops(Request $request)
     {
-        $query = \App\Models\WorkDetails::join('users', function($join) {
-            $join->on('workshops_details.Uni_id', '=', 'users.uni_id')
-                 ->on('workshops_details.Faculty_id', '=', 'users.fac_id');
-        })
-        ->where('users.id', Auth::user()->id)
-        ->select('workshops_details.*');
+        $user = Auth::user();
 
+        $query = \App\Models\WorkDetails::query();
 
-        // Search filter (title in Arabic or English)
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('workshop_ar_title', 'like', "%{$search}%")
-                  ->orWhere('workshop_en_title', 'like', "%{$search}%");
-            });
+        
+        if ($user->hasRole('university')) {
+            $query->where('Uni_id', $user->uni_id);
         }
 
-        // University filter
+        if ($user->hasRole('faculty')) {
+            $query->where('Faculty_id', $user->fac_id);
+        }
+
+     
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('workshop_ar_title', 'like', "%{$search}%")
+                ->orWhere('workshop_en_title', 'like', "%{$search}%");
+            });
+        }
         if ($request->filled('university')) {
-            // NOTE: column name in DB is "Uni_id", not "university_id"
             $query->where('Uni_id', $request->input('university'));
         }
 
-        // Faculty filter
         if ($request->filled('faculty')) {
-            // NOTE: DB column is "Faculty_id"
             $query->where('Faculty_id', $request->input('faculty'));
         }
-
-        // Status filter (is_approved boolean)
         if ($request->filled('status')) {
-            if ($request->input('status') === 'approved') {
-                $query->where('is_approved', 1);
-            } elseif ($request->input('status') === 'pending') {
-                $query->where('is_approved', 0);
-            }
+            $query->where(
+                'is_approved',
+                $request->input('status') === 'approved' ? 1 : 0
+            );
         }
-
-        // Sorting and pagination — withQueryString preserves filters on pagination links
-        $workshops = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
-
-        // Dropdown values
+        $workshops = $query
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
         $universities = universitys::orderBy('name')->get();
 
-        // If a university is selected, restrict faculties to that university
-        if ($request->filled('university')) {
-            $faculties = fac_uni::where('uni_id', $request->input('university'))->orderBy('name')->get();
-        } else {
-            $faculties = fac_uni::orderBy('name')->get();
-        }
+        $faculties = $request->filled('university')
+            ? fac_uni::where('uni_id', $request->input('university'))->orderBy('name')->get()
+            : fac_uni::orderBy('name')->get();
 
         return view('Workshops.Admin.index', compact('workshops', 'universities', 'faculties'));
     }
