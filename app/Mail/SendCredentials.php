@@ -21,6 +21,6 @@ class SendCredentials extends Mailable
     {
         return $this->from(config('mail.from.address'), config('mail.from.name'))
                     ->subject('Your Account Credentials')
-                    ->view('emails.credentials'); // Create this Blade file
+                    ->view('emails.credentials'); 
     }
 }
