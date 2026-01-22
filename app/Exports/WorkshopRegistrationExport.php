@@ -38,8 +38,8 @@ class WorkshopRegistrationExport implements FromCollection, WithHeadings
                     'Phone'          => $item->phone,
                     'Type'           => $item->par_type,
                     'Sub Type'       => $item->par_sub_type,
-                    'University ID'  => $item->uni_id,
-                    'Faculty ID'     => $item->fac_id,
+                    'University'       => optional($item->university)->name,
+                     'Faculty'          => optional($item->faculty)->name,
                     'Registered At'  => $item->created_at,
                 ];
             });
