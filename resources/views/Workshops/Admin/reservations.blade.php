@@ -45,8 +45,8 @@
                                     {{$res->workshop->workshop_en_title}}
                                 @endif
                             </td>
-                            <td>{{ $res->workshop->university->name ?? '—' }}</td>
-                            <td>{{ $res->workshop->faculty->name ?? '—' }}</td>
+                            <td>{{ $res->university->name ?? '—' }}</td>
+                            <td>{{ $res->faculty->name ?? '—' }}</td>
                             <td>{{ $res->full_name }}</td>
                             <td>
                                 @if(strtolower($res->gender) === 'male')
