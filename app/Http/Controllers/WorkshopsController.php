@@ -682,7 +682,7 @@ class WorkshopsController extends Controller
     //Show single workshop details
     public function showWorkshop($id)
     {
-        $workshop = workDetails::where('is_approved', 1)->findOrFail($id);
+        $workshop = workDetails::where('is_approved', 1)->withCount('registrations')->findOrFail($id);
 
         // increment views counter
         $workshop->increment('views');
