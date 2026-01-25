@@ -683,12 +683,29 @@ class WorkshopsController extends Controller
     public function showWorkshop($id)
     {
         $workshop = workDetails::where('is_approved', 1)->withCount('registrations')->findOrFail($id);
+        
+        if ($workshop->registrations_count >= 800) {
 
+            $nextWorkshop = workDetails::whereDate(
+                'st_date',
+                '>',
+                Carbon::parse($workshop->st_date)->toDateString()
+            )
+            ->orderBy('st_date', 'asc')
+            ->first();
+            // if ($nextWorkshop) {
+            //     return redirect()->route('userworkshop', [
+            //         'workshop_id' => $nextWorkshop->id
+            //     ])->with('info', 'تم تحويلك إلى الورشة القادمة');
+            // }
+
+            //     return back()->with('error', 'لا توجد ورش قادمة حالياً');
+        }
         // increment views counter
         $workshop->increment('views');
         //$workshop->refresh();
 
-        return view('templ.workshop_details', compact('workshop'));
+        return view('templ.workshop_details', compact('workshop', 'nextWorkshop'));
     }
 
     // Handle like AJAX

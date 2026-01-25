@@ -11,7 +11,11 @@
 
       </div>
     </section>
-
+    @if(session('info'))
+        <div class="alert alert-info">
+            {{ session('info') }}
+        </div>
+    @endif
     <section id="workshops" class="py-5">
         <div class="container">
             {{-- Flash messages --}}

@@ -195,9 +195,12 @@
 
                         @if ($endDate->gte($today))
                             @if ($workshop->registrations_count >= 800)
-                                <button class="btn btn-secondary rounded-pill px-4" disabled>
-                                عذراً اكتمل العدد وسيتم تحديد موعد آخر لاحقاً
-                                </button>
+                                <a href="{{ route('userworkshop', ['workshop_id' => $nextWorkshop->id]) }}"
+                                class="btn btn-success rounded-pill px-4 d-flex align-items-center gap-2">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>عذراً اكتمل العدد يمكنك التسجيل فى الورشة القادمة     
+                                    </span>
+                                </a>
                             @else
                                 <a href="{{ route('userworkshop', ['workshop_id' => $workshop->id]) }}"
                                 class="btn btn-success rounded-pill px-4 d-flex align-items-center gap-2">
