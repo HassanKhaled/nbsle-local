@@ -342,10 +342,12 @@
 
                                     {{-- Payment Info --}}
                                     <div class="alert alert-warning mt-3">
-                                        ⚠️ Your previous request was rejected.  
-                                        Please upload a <strong>new payment receipt</strong>.
+                                      The previous request has been rejected for one of the following possible reasons:
+                                        - Full name   - Email address  - Receipt
                                         <br>
-                                        Cost: 100 EGP per day + 7 EGP service.
+                                        Please review these details and resubmit the request.
+                                        <br>
+                                        The certificate costs 100 Egyptian pounds per day, plus an additional 7 Egyptian pounds for services.
                                     </div>
 
                                     {{-- Total Cost --}}
