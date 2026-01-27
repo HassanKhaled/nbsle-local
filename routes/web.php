@@ -25,11 +25,11 @@ use App\Models\User;
 use App\Http\Controllers\DeviceRatingController;
 use App\Http\Controllers\Reportcontroller;
 use App\Http\Controllers\WorkshopsController;
+use  App\Http\Controllers\RequestController;
 use App\Models\universitys;
 use Illuminate\Support\Collection;
 
 /*
-|--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 |
@@ -301,6 +301,10 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     // Workshops for Admin
     Route::get('/adminworkshops', [WorkshopsController::class, 'showAdminWorkshops'])->name('admin.workshops.index');
     Route::post('/adminworkshops/{id}/approve', [WorkshopsController::class, 'approve'])->name('admin.workshops.approve');
+    Route::get('/certificate-requests', [RequestController::class, 'index'])->name('certificate.requests');
+   
+    Route::put('/certificate/confirm/{id}', [RequestController::class, 'confirm'])->name('certificate.confirm');
+
 });
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
@@ -329,6 +333,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/ratings', [DeviceRatingController::class, 'store'])->name('ratings.store');
     Route::put('/ratings/{rating}', [DeviceRatingController::class, 'update'])->name('ratings.update');
 
+    Route::get('/my-workshops', [WorkshopsController::class, 'myWorkshops'])->name('user.workshops');
+    Route::post('/certificate-request', [RequestController::class, 'store'])
+    ->name('certificate.request');
+     Route::post('/certificate/request/{id}/update', [RequestController::class, 'update'])
+    ->name('certificate.request.update');
+    
+    Route::get('/importAttendance/{id}', [RequestController::class, 'importAttendance'])->name('importAttendance');
+    Route::post('/workshop/{workshop}/attendance/import', 
+        [RequestController::class, 'import']
+    )->name('attendance.import');
+    Route::get('/attendance/template', 
+        [RequestController::class, 'downloadTemplate']
+    )->name('attendance.template');
 
     //services    
     Route::get('/getServices', [loggedHomeController::class, 'getServices'])->name('getServices');

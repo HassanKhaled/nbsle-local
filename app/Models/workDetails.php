@@ -82,5 +82,16 @@ class WorkDetails extends Model
         'is_approved'    => 'boolean',
 
     ];
+
+    public function requests()
+
+    {
+        return $this->hasMany(Request::class, 'workshop_id');
+    }
+    // Workshop model
+    public function attendances()
+    {
+        return $this->hasMany(WorkshopAttendance::class, 'workshop_id');
+    }
 }
 

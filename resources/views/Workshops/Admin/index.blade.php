@@ -129,7 +129,11 @@
                                         </button>
                                     </form>
                                 @else
-                                    <span class="text-muted"><i class="fas fa-lock me-1"></i> Confirmed</span>
+                                    <!-- <span class="text-muted"><i class="fas fa-lock me-1"></i> Confirmed</span> -->
+                                    <a href="{{ route('importAttendance', $workshop->id) }}" 
+                                    class="btn btn-sm btn-primary">
+                                        Workshop attendance import
+                                    </a>
                                 @endif
                             </td>
                             @if(!$workshop->is_approved)

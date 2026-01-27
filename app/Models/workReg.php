@@ -43,5 +43,6 @@ class WorkReg extends Model
     {
         return $this->belongsTo(fac_uni::class, 'fac_id');
     }
+    
 }
 

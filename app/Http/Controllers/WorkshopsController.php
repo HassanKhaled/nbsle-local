@@ -13,6 +13,8 @@ use Carbon\Carbon;
  use App\Exports\WorkshopRegistrationExport;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\CertificateRequest;
+
 
 class WorkshopsController extends Controller
 {
@@ -877,4 +879,22 @@ class WorkshopsController extends Controller
     } 
         return back()->with('message', 'Participant registered successfully for this workshop.');
     }
+
+
+    public function myWorkshops()
+    {
+        $user = Auth::user();
+
+        $workshops = WorkReg::with('workshop')
+            ->where('national_id', $user->national_id)
+            ->whereHas('workshop.attendances', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->get();
+
+        // طلبات الشهادات
+        $requests = CertificateRequest::where('user_id', $user->id)->get();
+        return view('templ.userReservationData', compact('workshops', 'requests'));
+    }
+
 }
