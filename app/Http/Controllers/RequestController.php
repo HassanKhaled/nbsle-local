@@ -73,9 +73,9 @@ class RequestController extends Controller
             'user_id'     => $user->id,
             'days'        => $request->days,
             'cert_count'  => $request->cert_count,
-            'cost'        => $cost * $request->cert_count,
+            'cost'        => $cost * $request->cert_count + 7,
             'status'      => 'pending',
-             'image_receipt' => $path,
+            'image_receipt' => $path,
         ]);
 
         return back()->with('message', 'Certificate request submitted successfully.');

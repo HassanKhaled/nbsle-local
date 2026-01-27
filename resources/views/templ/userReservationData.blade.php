@@ -62,7 +62,7 @@
                                     ✏️ Edit Request
                                 </button>
 
-                            @elseif($hasRequest->status === 'confirmed')
+                            @elseif($hasRequest->status === 'pending')
                                 <!-- <button class="btn btn-primary w-100 mt-3"
                                     data-bs-toggle="modal"
                                     data-bs-target="#newCertificateModal{{ $reg->id }}">
