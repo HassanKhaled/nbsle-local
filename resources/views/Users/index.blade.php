@@ -35,6 +35,7 @@
                                                     <th>No</th>
                                                     <th>Name</th>
                                                     <th>Phone</th>
+                                                    <th>National ID</th>
                                                     <th >Role</th>
                                                 @if($user_logged->hasRole('faculty'))    
                                                     <th >Department</th>
@@ -55,6 +56,8 @@
                                                         </div>
                                                     </td>
                                                     <td style="">{{$user->phone}}</td>
+                                                    <td>{{ $user->national_id }}</td>
+
                                                         @if($user_logged->hasRole('admin'))
                                                         <td class="text-center align-middle">
                                                             <div class="d-flex flex-column justify-content-center align-items-center">

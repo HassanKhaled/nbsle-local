@@ -10,6 +10,7 @@ use App\Models\WorkReg;
 use App\Models\WorkshopAttendance;
 use App\Models\workDetails;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CertificateRequestsExport;
 
 class RequestController extends Controller
 {
@@ -206,5 +207,23 @@ class RequestController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+   public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'request_ids' => 'required|array',
+            'status' => 'required|in:confirmed,rejected',
+        ]);
 
+        CertificateRequest::whereIn('id', $request->request_ids)
+            ->update(['status' => $request->status]);
+
+        return back()->with('info', 'Requests updated successfully');
+    }
+    public function export()
+    {
+        return Excel::download(
+            new CertificateRequestsExport,
+            'certificate_requests.xlsx'
+        );
+    }
 }

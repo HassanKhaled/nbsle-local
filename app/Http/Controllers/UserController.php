@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Spatie\Permission\Models\Role;
 use function Sodium\add;
+use App\Models\WorkReg;
 
 class UserController extends Controller
 {
@@ -97,6 +98,7 @@ class UserController extends Controller
             'fac_id'=>'required_if:role_id,=,3',
             'dept_id'=>'required_if:role_id,=,4',
             'lab_id'=>'nullable',
+            'national_id'=>'nullable',
             'ImagePath'=>'nullable',
         ]);
         $input = $request->all();
@@ -188,6 +190,7 @@ class UserController extends Controller
             'fac_id'=>'nullable',
             'dept_id'=>'nullable',
             'lab_id'=>'nullable',
+            'national_id'=>'nullable',
             'ImagePath'=>'nullable',
         ]);
 
@@ -228,6 +231,17 @@ class UserController extends Controller
         if ($user->role->name == 'department') {
             $update_depts = dept_fac::where('uni_id',$input['uni_id'])->where('fac_id', $input['fac_id'])->where('dept_id',$input['dept_id']);
             $update_depts->update(['coor_id'=>$user->id]);}
+
+         $oldNationalId = $oldNationalId ?? null;
+        
+        WorkReg::where(function ($q) use ($user, $oldNationalId) {
+                $q->whereNull('national_id') // national_id فاضي
+                ->orWhere('national_id', $oldNationalId) // أو يساوي القديم لو موجود
+                ->orWhere('email', $user->email); // أو email يساوي email المستخدم
+            })
+            ->update([
+                'national_id' => $user->national_id
+            ]);
         return redirect()->route('Users.index')
             ->with('success','User updated successfully');
     }
@@ -235,6 +249,7 @@ class UserController extends Controller
     {
         abort_unless(Gate::allows('user') , 403);
         $user = User::find($id);
+         $oldNationalId = $user->national_id;
         // update (Uni, FacUni, DeptFac) row with null when their coordinator is deleted
         if ($user->hasRole('admin')){
             $user->delete();

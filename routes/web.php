@@ -305,6 +305,11 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('/certificate-requests', [RequestController::class, 'index'])->name('certificate.requests');
    
     Route::put('/certificate/confirm/{id}', [RequestController::class, 'confirm'])->name('certificate.confirm');
+    Route::put('/certificate/bulk-action', [RequestController::class, 'bulkAction'])
+    ->name('certificate.bulkAction');
+
+   Route::get('/certificate/export', [RequestController::class, 'export'])
+    ->name('certificate.export');
 
 });
 Route::group(['middleware' => ['auth']], function () {

@@ -54,6 +54,11 @@
                                             <label class="float-label">Phone <span class="text-c-red">*</span></label>
                                         </div>
                                         <div class="form-group form-primary">
+                                            <input type="text" name="national_id" class="form-control" value="{{old('national_id',$user->national_id)}}">
+                                            <span class="form-bar"></span>
+                                            <label class="float-label">National ID </label>
+                                        </div>
+                                        <div class="form-group form-primary">
                                             <label class="float">Role<span class="text-c-red">*</span></label>
                                             @role('admin')
                                             <select id="roles" name="role_id">
@@ -61,6 +66,7 @@
                                                 <option  value="{{$roles['admin']}}" {{$userRole->name == 'admin'?'selected':''}} >Administrator</option>
                                                 <option  value="{{$roles['university']}}" {{$userRole->name == 'university'?'selected':''}}>University Coordinator</option>
                                                 <option  value="{{$roles['faculty']}}" {{$userRole->name == 'faculty'?'selected':''}}>Faculty Coordinator</option>
+                                                <option  value="{{$roles['visitor']}}" {{$userRole->name == 'visitor'?'selected':''}}>Visitor</option>
                                             </select>
                                             @endrole
                                             @role('university')

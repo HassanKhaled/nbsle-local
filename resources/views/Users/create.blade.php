@@ -52,6 +52,13 @@
                                             <span class="form-bar"></span>
                                             <label class="float-label">Phone <span class="text-c-red">*</span></label>
                                         </div>
+
+                                        <div>
+                                        <div class="form-group form-primary">
+                                            <input type="text" name="national_id" class="form-control" value="{{old('national_id')}}">
+                                            <span class="form-bar"></span>
+                                            <label class="float-label">National ID </label>
+                                        </div>
 {{--                                            Roles--}}
                                         <div class="form-group form-primary">
                                             <label class="float">Role <span class="text-c-red">*</span></label>
@@ -61,6 +68,7 @@
                                                     <option  value="{{$roles['admin']}}" >Administrator</option>
                                                     <option  value="{{$roles['university']}}" >University Coordinator</option>
                                                     <option  value="{{$roles['faculty']}}"  >Faculty Coordinator</option>
+                                                     <option  value="{{$roles['visitor']}}"  >Visitor</option>
                                                 </select>
                                             @endrole
                                             @role('university')
