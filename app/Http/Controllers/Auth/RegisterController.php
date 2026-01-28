@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 use \App\Models\fac_uni;
-
+use Illuminate\Support\Facades\Auth;
 class RegisterController extends Controller
 {
     /*
@@ -97,5 +97,8 @@ class RegisterController extends Controller
         $user->assignRole($role->name);
         return $user;
     }
+    
+   
+
 
 }

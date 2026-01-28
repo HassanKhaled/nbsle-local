@@ -62,7 +62,7 @@
                                     ✏️ Edit Request
                                 </button>
 
-                            @elseif($hasRequest->status === 'pending')
+                            @elseif($hasRequest->status !== 'rejected')
                                 <!-- <button class="btn btn-primary w-100 mt-3"
                                     data-bs-toggle="modal"
                                     data-bs-target="#newCertificateModal{{ $reg->id }}">
@@ -142,7 +142,7 @@
                                                 value="{{ $day }}"
                                                 id="day{{ $reg->id }}_{{ $day }}"
                                                 data-target="totalCost{{ $reg->id }}"
-                                                data-cert="certCount{{ $reg->id }}" required>
+                                                data-cert="certCount{{ $reg->id }}">
                                             <label class="form-check-label"
                                                 for="day{{ $reg->id }}_{{ $day }}">
                                                 Day {{ $day }}
@@ -235,7 +235,7 @@
                                                 value="{{ $day }}"
                                                 id="day{{ $reg->id }}_{{ $day }}"
                                                 data-target="totalCost{{ $reg->id }}"
-                                                data-cert="certCount{{ $reg->id }}" required>
+                                                data-cert="certCount{{ $reg->id }}" >
                                             <label class="form-check-label"
                                                 for="day{{ $reg->id }}_{{ $day }}">
                                                 Day {{ $day }}
@@ -331,7 +331,7 @@
                                                     id="editDay{{ $reg->id }}_{{ $day }}"
                                                     data-target="totalCostEdit{{ $reg->id }}"
                                                     data-cert="certCountEdit{{ $reg->id }}"
-                                                    {{ in_array($day, $hasRequest->days ?? []) ? 'checked' : '' }} required>
+                                                    {{ in_array($day, $hasRequest->days ?? []) ? 'checked' : '' }} >
                                                 <label class="form-check-label"
                                                     for="editDay{{ $reg->id }}_{{ $day }}">
                                                     Day {{ $day }}
@@ -525,7 +525,22 @@ document.querySelectorAll('.cert-count').forEach(input => {
         calculateCost(this.dataset.target, this.id);
     });
 });
+
 </script>
 
+<script>
+document.querySelectorAll('form').forEach(function(form) {
+    form.addEventListener('submit', function (e) {
+
+        const days = form.querySelectorAll('.attendance-day');
+        const checked = [...days].some(cb => cb.checked);
+
+        if (!checked) {
+            e.preventDefault();
+            alert('Please select at least one attendance day');
+        }
+    });
+});
+</script>
 
 @endsection

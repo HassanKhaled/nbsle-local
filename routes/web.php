@@ -28,6 +28,7 @@ use App\Http\Controllers\WorkshopsController;
 use  App\Http\Controllers\RequestController;
 use App\Models\universitys;
 use Illuminate\Support\Collection;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 | Web Routes
@@ -346,6 +347,25 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/attendance/template', 
         [RequestController::class, 'downloadTemplate']
     )->name('attendance.template');
+
+    Route::get('/profile/edit/', [function () {
+        $user = Auth::user();
+       $unis = universitys::all();
+        $faculties = App\Models\fac_uni::all();
+
+        return view('templ.profile_update', compact(
+            'user',
+            'unis',
+            'faculties'
+        ));
+    }])
+    ->name('profile.edit');
+
+    Route::post('/profile/update/', [WorkshopsController::class, 'updateProfile'])
+    ->name('profile.update');
+    
+    
+
 
     //services    
     Route::get('/getServices', [loggedHomeController::class, 'getServices'])->name('getServices');

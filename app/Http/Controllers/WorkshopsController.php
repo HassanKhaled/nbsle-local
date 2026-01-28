@@ -892,9 +892,62 @@ class WorkshopsController extends Controller
             })
             ->get();
 
+            
+
         // طلبات الشهادات
         $requests = CertificateRequest::where('user_id', $user->id)->get();
         return view('templ.userReservationData', compact('workshops', 'requests'));
     }
+
+     public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        $oldNationalId = $user->national_id;
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'national_id' => 'required|string|max:14|unique:users,national_id,' . $user->id,
+
+            'affiliation' => 'required|in:university,others',
+
+            'uni_id' => 'required_if:affiliation,university|nullable|integer',
+            'fac_id' => 'required_if:affiliation,university|nullable|integer',
+
+            'institution_name' => 'required_if:affiliation,others|nullable|string|max:255',
+
+        ]);
+
+        // تحديث البيانات الأساسية
+        $user->name = $request->name;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->national_id = $request->national_id;
+
+        if ($request->affiliation === 'university') {
+            $user->uni_id = $request->uni_id;
+            $user->fac_id = $request->fac_id;
+            $user->institution_name = null;
+        } else {
+            $user->institution_name = $request->institution_name;
+            $user->uni_id = null;
+            $user->fac_id = null;
+        }
+
+        $user->save();
+        $oldNationalId = $oldNationalId ?? null;
+        
+        WorkReg::where(function ($q) use ($user, $oldNationalId) {
+                $q->whereNull('national_id') // national_id فاضي
+                ->orWhere('national_id', $oldNationalId) // أو يساوي القديم لو موجود
+                ->orWhere('email', $user->email); // أو email يساوي email المستخدم
+            })
+            ->update([
+                'national_id' => $user->national_id
+            ]);
+        return redirect()->back()->with('info', 'Profile updated successfully ✅');
+    }
+
 
 }

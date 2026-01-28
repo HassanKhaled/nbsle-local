@@ -336,6 +336,7 @@
                             <ul class="dropdown-menu" aria-labelledby="visitorDropdown">
                                 <!-- <li><a class="dropdown-item" href="/uniHome">Reservations</a></li> -->
                                  <li><a class="dropdown-item" href="/my-workshops">my-workshops</a></li>
+                                <li><a class="dropdown-item" href="/profile/edit">Edit Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </li>
