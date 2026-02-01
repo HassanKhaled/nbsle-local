@@ -684,6 +684,7 @@ class WorkshopsController extends Controller
     //Show single workshop details
     public function showWorkshop($id)
     {
+        $nextWorkshop = '';
         $workshop = workDetails::where('is_approved', 1)->withCount('registrations')->findOrFail($id);
         
         if ($workshop->registrations_count >= 800) {
@@ -707,7 +708,7 @@ class WorkshopsController extends Controller
         $workshop->increment('views');
         //$workshop->refresh();
 
-        return view('templ.workshop_details', compact('workshop', 'nextWorkshop'));
+        return view('templ.workshop_details', compact('workshop','nextWorkshop'));
     }
 
     // Handle like AJAX

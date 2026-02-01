@@ -347,6 +347,7 @@
                                 {{ Auth()->user()->username }}
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                <li><a class="dropdown-item" href="/my-workshops">my-workshops</a></li>
                                 <li><a class="dropdown-item" href="/uniHome">Dashboard</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
