@@ -14,7 +14,8 @@ use Carbon\Carbon;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\CertificateRequest;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendCredentials;
 
 class WorkshopsController extends Controller
 {
@@ -951,4 +952,65 @@ class WorkshopsController extends Controller
     }
 
 
+    public function showMailNotificationForm($workshopId)
+    {
+        $workshop = workDetails::findOrFail($workshopId);
+    
+        return view('Workshops.Admin.MailNotificationForm', compact('workshop'));
+    }
+
+public function sendMailNotificationForWorkShopUsers(Request $request, $workshop_id)
+{
+    $data = $request->validate([
+        'title' => 'required|string|max:255',
+        'body'  => 'required|string',
+        'attachments.*' => 'file|mimes:pdf,jpg,png,docx|max:2048',
+    ]);
+
+    try {
+        $users = workReg::where('workshop_id', $workshop_id)->get();
+
+        if ($users->isEmpty()) {
+            return back()->with('error', 'No users found for this workshop.');
+        }
+
+        foreach ($users as $user) {
+            Mail::send([], [], function ($message) use ($user, $data, $request) {
+                $message->to($user->email)
+                        ->subject($data['title'])
+                        ->setBody($data['body'], 'text/html');
+
+                if ($request->hasFile('attachments')) {
+                    foreach ($request->file('attachments') as $file) {
+                        $message->attach(
+                            $file->getRealPath(),
+                            [
+                                'as' => $file->getClientOriginalName(),
+                                'mime' => $file->getMimeType(),
+                            ]
+                        );
+                    }
+                }
+            });
+        }
+
+    return back()->with('success', 'All workshop members are notified successfully!');
+
+    } catch (\Exception $e) {
+        \Log::error('Mail sending failed', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return back()
+            ->with('error', 'Failed to send email. Please try again later.')
+            ->withInput();
+    }
+}
+
+
+
+        
+     public function sendMailNotificationForAllUsers(Request $request){
+          /// extract mail 
+    }
 }

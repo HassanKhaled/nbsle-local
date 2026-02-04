@@ -308,8 +308,18 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::put('/certificate/bulk-action', [RequestController::class, 'bulkAction'])
     ->name('certificate.bulkAction');
 
-   Route::get('/certificate/export', [RequestController::class, 'export'])
+    Route::get('/certificate/export', [RequestController::class, 'export'])
     ->name('certificate.export');
+
+    Route::get('/adminworkshops/{id}/show-MailNotification', [WorkshopsController::class, 'showMailNotificationForm'])
+    ->name('show-MailNotification');
+
+    Route::post('/adminworkshops/{id}/send-MailNotificationForWorkshopMembers', [WorkshopsController::class, 'sendMailNotificationForWorkShopUsers'])
+    ->name('send-MailNotificationForMembers');
+
+    
+    Route::post('/adminworkshops/{id}/send-MailNotificationForAllUsers', [WorkshopController::class, 'sendMailNotificationForAllUsers'])
+    ->name('send-MailNotificationForUsers');
 
 });
 Route::group(['middleware' => ['auth']], function () {

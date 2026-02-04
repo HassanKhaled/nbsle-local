@@ -121,6 +121,10 @@
                                 @endif
                             </td>
                             <td>
+                                <a href="{{ route('show-MailNotification', $workshop->id) }}" 
+                                    class="btn btn-sm btn-primary">
+                                    notify by mail
+                                </a>
                                 @if(!$workshop->is_approved)
                                     <form method="POST" action="{{ route('admin.workshops.approve',$workshop->id) }}">
                                         @csrf
