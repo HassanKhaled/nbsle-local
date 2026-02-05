@@ -967,19 +967,22 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
         'attachments.*' => 'file|mimes:pdf,jpg,png,docx|max:2048',
     ]);
 
-    try {
-        $users = workReg::where('workshop_id', $workshop_id)->get();
+    $users = workReg::where('workshop_id', $workshop_id)->get();
 
-        if ($users->isEmpty()) {
-            return back()->with('error', 'No users found for this workshop.');
-        }
-
-        foreach ($users as $user) {
+    if ($users->isEmpty()) {
+        return back()->with('error', 'No users found for this workshop.');
+    }
+    
+    $failed = [];
+    $sentCount = 0;
+    
+    foreach ($users as $user) {
+        try {
             Mail::send([], [], function ($message) use ($user, $data, $request) {
                 $message->to($user->email)
                         ->subject($data['title'])
                         ->setBody($data['body'], 'text/html');
-
+    
                 if ($request->hasFile('attachments')) {
                     foreach ($request->file('attachments') as $file) {
                         $message->attach(
@@ -992,23 +995,26 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
                     }
                 }
             });
+    
+            $sentCount++;
+    
+        } catch (\Exception $e) {
+            // Log and CONTINUE
+            \Log::error('Mail failed for user', [
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+    
+            $failed[] = $user->email;
+            continue;
         }
-
-    return back()->with('success', 'All workshop members are notified successfully!');
-
-    } catch (\Exception $e) {
-        \Log::error('Mail sending failed', [
-            'error' => $e->getMessage(),
-        ]);
-
-        return back()
-            ->with('error', 'Failed to send email. Please try again later.')
-            ->withInput();
     }
+    
+    return back()->with(
+        'success',
+        "Number of emails sent successfully: {$sentCount}. Number of failures: " . count($failed)
+    );  
 }
-
-
-
         
      public function sendMailNotificationForAllUsers(Request $request){
           /// extract mail 

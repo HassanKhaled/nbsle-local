@@ -113,41 +113,39 @@
                             <td>{{ $workshop->faculty->name ?? 'N/A' }}</td>
                             <td><span class="badge bg-info">{{ \Carbon\Carbon::parse($workshop->st_date)->format('d M Y') }}</span></td>
                             <td><span class="badge bg-warning">{{ \Carbon\Carbon::parse($workshop->end_date)->format('d M Y') }}</span></td>
-                            <td>
-                                @if($workshop->is_approved)
-                                    <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Yes</span>
-                                @else
-                                    <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i>No</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('show-MailNotification', $workshop->id) }}" 
-                                    class="btn btn-sm btn-primary">
-                                    notify by mail
-                                </a>
-                                @if(!$workshop->is_approved)
-                                    <form method="POST" action="{{ route('admin.workshops.approve',$workshop->id) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-success">
-                                           <i class="fas fa-check me-1"></i> Confirm
-                                        </button>
-                                    </form>
-                                @else
-                                    <!-- <span class="text-muted"><i class="fas fa-lock me-1"></i> Confirmed</span> -->
-                                    <a href="{{ route('importAttendance', $workshop->id) }}" 
-                                    class="btn btn-sm btn-primary">
-                                        Workshop attendance import
+                            <td class="text-center">
+                            <td class="text-center">
+                                <div class="d-grid gap-1">
+
+                                    <a href="{{ route('show-MailNotification', $workshop->id) }}"
+                                    class="btn btn-sm btn-primary rounded-pill w-30">
+                                        notify by mail
                                     </a>
-                                @endif
+
+                                    @if(!$workshop->is_approved)
+                                        <form method="POST" action="{{ route('admin.workshops.approve',$workshop->id) }}">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-success rounded-pill w-30">
+                                                Confirm
+                                            </button>
+                                        </form>
+                                    @else
+                                        <a href="{{ route('importAttendance', $workshop->id) }}"
+                                        class="btn btn-sm btn-warning rounded-pill w-30 text-dark">
+                                            Workshop attendance import
+                                        </a>
+                                    @endif
+
+                                    @if(!$workshop->is_approved)
+                                        <a href="{{ route('editWorkshop', ['uniID' => $workshop->Uni_id, 'id' => $workshop->id]) }}"
+                                        class="btn btn-sm btn-outline-secondary rounded-pill w-30">
+                                            Edit Workshop
+                                        </a>
+                                    @endif
+
+                                </div>
                             </td>
-                            @if(!$workshop->is_approved)
-                                <td>
-                                <a href="{{ route('editWorkshop', ['uniID' => $workshop->Uni_id, 'id' => $workshop->id]) }}" 
-                                    class="btn btn-sm btn-primary">
-                                        Edit Workshop
-                                    </a>
-                                </td>
-                            @endif
                         </tr>
                     @empty
                         <tr>

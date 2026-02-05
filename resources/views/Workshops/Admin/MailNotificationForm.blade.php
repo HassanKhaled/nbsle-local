@@ -20,7 +20,7 @@
     padding:10px 12px;
     margin-bottom:16px;
     border-radius:10px;
-    border:1px solid #d0d4d9;
+    border:1px solid #000000;
   }
 
   .toolbar {
@@ -47,7 +47,7 @@
 
   .editor {
     min-height:240px;
-    border:1px solid #d0d4d9;
+    border:1px solid #000000;
     border-radius:12px;
     padding:14px;
     margin-top:10px;
@@ -155,7 +155,7 @@
       <div class="attachments-preview" id="attachmentsPreview"></div>
 
       <textarea name="body" id="bodyTextarea" hidden></textarea>
-      <div class="editor" id="editor" contenteditable="true"></div>
+      <div class="editor" id="editor" contenteditable="true" style="color: #000000;"></div>
 
       <button type="submit" class="send">Send Email</button>
     </form>
