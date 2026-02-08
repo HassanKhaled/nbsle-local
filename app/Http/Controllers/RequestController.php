@@ -155,13 +155,36 @@ class RequestController extends Controller
             }
 
             // 2️⃣ check registration
-            $registered = WorkReg::where('workshop_id', $workshopId)
+            $workReg = WorkReg::where('workshop_id', $workshopId)
                 ->where('national_id', $nationalId)
                 ->exists();
 
-            if (!$registered) {
-                $skipped[] = "Row ".($index+1).": User not registered in workshop ($nationalId)";
-                continue;
+            // if (!$registered) {
+            //     $skipped[] = "Row ".($index+1).": User not registered in workshop ($nationalId)";
+            //     continue;
+            // }
+
+            if (!$workReg) {
+                if (!empty($user->uni_id) && !empty($user->fac_id)) {
+                    $institutionName = null;
+                } else {
+                    // غير تابع لجامعة (جهة خارجية)
+                    $institutionName = $user->institution_name ?? 'External Participant';
+                }
+
+                $workReg = WorkReg::create([
+                    'workshop_id'       => $workshopId,
+                    'uni_id'            => $user->uni_id ?? null,
+                    'fac_id'            => $user->fac_id ?? null,
+                    'full_name'         => $user->name,
+                    'gender'            => $user->gender ?? null,
+                    'email'             => $user->email,
+                    'par_type'          => $user->par_type ?? null,
+                    'par_sub_type'      => $user->par_sub_type ?? null,
+                    'national_id'       => $nationalId,
+                    'phone'             => $user->phone ?? null,
+                    'institution_name'  => $institutionName,
+                ]);
             }
 
             // 3️⃣ insert attendance (prevent duplicates)
