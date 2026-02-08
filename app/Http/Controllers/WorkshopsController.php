@@ -731,7 +731,13 @@ class WorkshopsController extends Controller
         $workshop = WorkDetails::findOrFail($workshopId);
 
         $authUser = Auth::user();
-
+      
+        if ($authUser->role_id != 5) {
+            return redirect()
+                ->back()
+                ->with('Sessionmsg', 'Visitors only can access workshop registeration page');
+        }
+        
         // Try to find a participant data in for this user by natioanl id and workshop
         $participantRegistration = WorkReg
         ::where('national_id', $authUser->national_id)

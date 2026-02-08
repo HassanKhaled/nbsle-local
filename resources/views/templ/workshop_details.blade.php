@@ -3,6 +3,15 @@
 @section('tmplt-contnt')
 
 <main id="main">
+
+    @if(session('Sessionmsg'))
+        <div class="alert alert-danger alert-dismissible fade show text-center rounded-4 shadow-sm mb-4 fs-5 fw-semibold" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ session('Sessionmsg') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <section class="breadcrumbs bg-color shadow-lg">
       <div class="container">
 
