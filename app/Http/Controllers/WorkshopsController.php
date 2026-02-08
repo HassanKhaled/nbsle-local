@@ -798,13 +798,10 @@ class WorkshopsController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'national_id' => 'required|string|max:14|unique:users,national_id,' . $user->id,
-
+            'national_id' => 'required|string|max:14',
             'affiliation' => 'required|in:university,others',
-
             'uni_id' => 'required_if:affiliation,university|nullable|integer',
             'fac_id' => 'required_if:affiliation,university|nullable|integer',
-
             'institution_name' => 'required_if:affiliation,others|nullable|string|max:255',
 
         ]);
