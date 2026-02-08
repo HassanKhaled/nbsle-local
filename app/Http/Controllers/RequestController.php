@@ -159,10 +159,10 @@ class RequestController extends Controller
                 ->where('national_id', $nationalId)
                 ->exists();
 
-            if (!$registered) {
-                $skipped[] = "Row ".($index+1).": User not registered in workshop ($nationalId)";
-                continue;
-            }
+            // if (!$registered) {
+            //     $skipped[] = "Row ".($index+1).": User not registered in workshop ($nationalId)";
+            //     continue;
+            // }
 
             // 3️⃣ insert attendance (prevent duplicates)
             $created = WorkshopAttendance::firstOrCreate([
