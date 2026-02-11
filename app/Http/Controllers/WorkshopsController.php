@@ -7,6 +7,7 @@ use App\Models\fac_uni;
 use App\Models\workDetails;
 use App\Models\workReg;
 use App\Models\universitys;
+use App\Models\MailLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -880,20 +881,36 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
                     }
                 }
             });
-    
             $sentCount++;
-    
-        } catch (\Exception $e) {
-            // Log and CONTINUE
-            \Log::error('Mail failed for user', [
-                'email' => $user->email,
-                'error' => $e->getMessage(),
+            MailLog::create([
+                'workshop_id'   => $workshop_id ?? null,       
+                'from_email'    => config('mail.from.address'),   // or your sending email
+                'to_email'      => $user->email,
+                'subject'       => $data['title'] ?? 'No Subject',     // replace with actual subject variable
+                'status'        => 'success',
+                'error_message' => null,
             ]);
-    
-            $failed[] = $user->email;
-            continue;
-        }
+    } catch (\Exception $e) {
+        // Log and CONTINUE
+        \Log::error('Mail failed for user', [
+            'email' => $user->email,
+            'error' => $e->getMessage(),
+        ]);
+
+        MailLog::create([
+            'workshop_id'   => $workshop_id ?? null,       
+            'from_email'    => config('mail.from.address'),
+            'to_email'      => $user->email,
+            'subject'       => $data['title'] ?? 'No Subject',    
+            'status'        => 'failed',
+            'error_message' => $e->getMessage(),
+        ]);
+
+        $failed[] = $user->email;
+        continue;
     }
+
+}
     
     return back()->with(
         'success',

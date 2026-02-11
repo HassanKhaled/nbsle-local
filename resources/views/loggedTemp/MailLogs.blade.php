@@ -13,7 +13,7 @@
     </div>
 
     <!-- Filters and Search -->
-    <<!-- Filters -->
+    <!-- Filters -->
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -165,11 +165,11 @@
                             <td class="text-center">
                                 @if($log->status == 'success')
                                     <span class="badge bg-success">
-                                        <i class="fas fa-check-circle me-1"></i>Success
+                                     Success
                                     </span>
                                 @else
                                     <span class="badge bg-danger">
-                                        <i class="fas fa-times-circle me-1"></i>Failed
+                                        Failed
                                     </span>
                                 @endif
                             </td>
