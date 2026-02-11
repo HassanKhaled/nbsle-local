@@ -845,7 +845,7 @@ class WorkshopsController extends Controller
         return view('Workshops.Admin.MailNotificationForm', compact('workshop'));
     }
 
-public function sendMailNotificationForWorkShopUsers(Request $request, $workshop_id)
+/*public function sendMailNotificationForWorkShopUsers(Request $request, $workshop_id)
 {
     $data = $request->validate([
         'title' => 'required|string|max:255',
@@ -916,9 +916,44 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
         'success',
         "Number of emails sent successfully: {$sentCount}. Number of failures: " . count($failed)
     );  
-}
-        
-     public function sendMailNotificationForAllUsers(Request $request){
-          /// extract mail 
+}*/
+
+public function sendMailNotificationForWorkShopUsers(Request $request, $workshop_id)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'body'  => 'required|string',
+            'attachments.*' => 'file|mimes:pdf,jpg,png,docx|max:2048',
+        ]);
+
+        $users = WorkReg::where('workshop_id', $workshop_id)->get();
+
+        if ($users->isEmpty()) {
+            return back()->with('error', 'No users found for this workshop.');
+        }
+
+        // Store attachments permanently
+        $attachmentPaths = [];
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $path = $file->store('workshop_attachments/' . $workshop_id, 'local');
+                $attachmentPaths[] = $path;
+            }
+        }
+
+        // Queue all emails (they'll be added to `jobs` table)
+        foreach ($users as $user) {
+            QueueWorkshopEmails     ::dispatch(
+                $user->email,
+                $workshop_id,
+                $data['title'],
+                $data['body'],
+                $attachmentPaths
+            )->onQueue('workshop-emails');
+        }
+
+        return back()->with('success', "Queued {$users->count()} emails! Worker is processing them.");
     }
+        
+
 }

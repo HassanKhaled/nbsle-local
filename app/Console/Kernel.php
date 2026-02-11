@@ -12,9 +12,9 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [
-        //
-    ];
+  protected $commands = [
+    \App\Console\Commands\QueueWorkshopEmails::class,
+];
 
     /**
      * Define the application's command schedule.
@@ -22,16 +22,24 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
-    {
-        // $schedule->command('inspire')->hourly();
-    }
 
     /**
      * Register the commands for the application.
      *
      * @return void
      */
+
+
+
+    protected function schedule(Schedule $schedule)
+    {
+        // Run every minute - queue 25 emails
+        $schedule->command('emails:queue-pending --limit=25')
+                 ->everyMinute()
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/cron.log'));
+    }
+
     protected function commands()
     {
         $this->load(__DIR__.'/Commands');
