@@ -34,14 +34,14 @@ class UserController extends Controller
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         }
         elseif ($user_logged->hasRole('university')){
-            $users = User::where('uni_id','=',$user_logged->uni_id)->where('id','!=',$user_logged->id)->get();
+            $users = User::where('uni_id','=',$user_logged->uni_id)->where('id','!=',$user_logged->id)->where('role_id', '!=', 5)->get();
             $faculty = fac_uni::where('uni_id','=',$user_logged->uni_id);
-//            dd($faculty);
+        //   dd($faculty);
             return view('users.index',compact('users','faculty','user_logged'))
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         }
         elseif ($user_logged->hasRole('faculty')){
-            $users = User::where('uni_id','=',$user_logged->uni_id)->where('fac_id','=',$user_logged->fac_id)->where('id','!=',$user_logged->id)->get();
+            $users = User::where('uni_id','=',$user_logged->uni_id)->where('fac_id','=',$user_logged->fac_id)->where('id','!=',$user_logged->id)->where('role_id', '!=', 5)->get();
             $department = dept_fac::all();
             return view('users.index',compact('users','department','user_logged'))->with('i', ($request->input('page', 1) - 1) * 5);
         }
