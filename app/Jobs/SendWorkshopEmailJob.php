@@ -10,10 +10,11 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\WorkshopNotificationMail;
 use App\Models\WorkReg;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Bus\Dispatchable;
 
 class SendWorkshopEmailJob implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable , InteractsWithQueue, Queueable, SerializesModels;
 
     public $email;
     public $workshop_id;
@@ -42,16 +43,28 @@ class SendWorkshopEmailJob implements ShouldQueue
                     $message->attach(storage_path('app/' . $filePath));
                 }
             });
-
-            // Optional: mark as sent in DB
+            
             WorkReg::where('email', $this->email)
                    ->where('workshop_id', $this->workshop_id)
                    ->update(['email_sent' => true]);
 
-            Log::info("Email sent to {$this->email}");
-
+            MailLog::create([
+                'workshop_id'   => $this->workshop_id,       
+                'from_email'    => config('mail.from.address'),
+                'to_email'      => $this->email,
+                'subject'       => "WorkShop ".$this->workshop_id. "email",    
+                'status'        => 'success',
+                'error_message' => null,
+            ]);
         } catch (\Exception $e) {
-            Log::error("Failed to send email to {$this->email}: " . $e->getMessage());
+              MailLog::create([
+                'workshop_id'   => $this->workshop_id,       
+                'from_email'    => config('mail.from.address'),
+                'to_email'      => $this->email, 
+                'subject'       => "WorkShop " . $this->workshop_id . " email",    
+                'status'        => 'failed',
+                'error_message' => $e->getMessage(),
+            ]);        
         }
     }
 }

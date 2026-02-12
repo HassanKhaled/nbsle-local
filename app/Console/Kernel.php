@@ -13,8 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
   protected $commands = [
-    \App\Console\Commands\QueueWorkshopEmails::class,
-];
+    ];
 
     /**
      * Define the application's command schedule.
@@ -33,11 +32,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        // Run every minute - queue 25 emails
-        $schedule->command('emails:queue-pending --limit=25')
-                 ->everyMinute()
-                 ->withoutOverlapping()
-                 ->appendOutputTo(storage_path('logs/cron.log'));
+        
     }
 
     protected function commands()

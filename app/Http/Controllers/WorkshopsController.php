@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+
 use Illuminate\Support\Facades\Auth; 
 use App\Models\fac_uni;
 use App\Models\workDetails;
@@ -17,7 +20,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\CertificateRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendCredentials;
-
+use App\Console\Commands\QueueWorkshopEmails;
+use App\Jobs\SendWorkshopEmailJob;
 class WorkshopsController extends Controller
 {
     // Show all workshops pending approval for Admin
@@ -932,7 +936,7 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
             return back()->with('error', 'No users found for this workshop.');
         }
 
-        // Store attachments permanently
+        // Store attachments if an
         $attachmentPaths = [];
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
@@ -941,18 +945,26 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
             }
         }
 
-        // Queue all emails (they'll be added to `jobs` table)
-        foreach ($users as $user) {
-            QueueWorkshopEmails     ::dispatch(
-                $user->email,
-                $workshop_id,
-                $data['title'],
-                $data['body'],
-                $attachmentPaths
-            )->onQueue('workshop-emails');
-        }
+    $batchSize = 50; // 50 emails per batch
+    $delaySeconds = 2; // 2-second delay between batches
 
-        return back()->with('success', "Queued {$users->count()} emails! Worker is processing them.");
+    WorkReg::where('workshop_id', $workshop_id)
+        ->chunk($batchSize, function ($usersChunk) use ($data, $workshop_id, $attachmentPaths, $delaySeconds) {
+            foreach ($usersChunk as $key => $user) {
+                SendWorkshopEmailJob::dispatch(
+                    $user->email,
+                    $workshop_id,
+                    $data['title'],
+                    $data['body'],
+                    $attachmentPaths
+                )->delay(now()->addSeconds($key * $delaySeconds))
+                 ->onQueue('workshop-emails');
+            }
+        });
+
+
+
+        return back()->with('success', "Email notfication for workshop id #{$workshop_id} has been sent successfully");
     }
         
 
