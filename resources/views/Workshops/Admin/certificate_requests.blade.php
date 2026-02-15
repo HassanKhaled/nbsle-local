@@ -40,7 +40,9 @@
                                 <input type="checkbox" id="selectAll">
                             </th>
                             <th>#</th>
-                            <th>Workshop</th>
+                            <th>Workshop name</th>
+                            <th>Workshop id</th>
+                            <th>Workshop starting date</th>
                             <th>User Name</th>
                             <th>Email</th>
                             <th>Days</th>
@@ -63,6 +65,8 @@
 
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $req->workshop->workshop_ar_title ?? $req->workshop->workshop_en_title }}</td>
+                                <td>{{ $req->workshop->id }}</td>
+                                <td>{{ $req->workshop->st_date }}</td>
                                 <td>{{ $req->name }}</td>
                                 <td>{{ $req->email }}</td>
                                 <td>

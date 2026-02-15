@@ -11,7 +11,9 @@ class CertificateRequestsExport implements FromCollection, WithHeadings
     {
         return CertificateRequest::with('workshop')->get()->map(function ($r) {
             return [
-                'Workshop' => $r->workshop->workshop_ar_title ?? $r->workshop->workshop_en_title,
+                'Workshop name' => $r->workshop->workshop_ar_title ?? $r->workshop->workshop_en_title,
+                'workshop id'  => $r->workshop->id,
+                'workshop starting date' => $r->workshop->st_date,
                 'Name' => $r->name,
                 'Email' => $r->email,
                 'Days' => is_array($r->days) ? implode(',', $r->days) : $r->days,
@@ -26,7 +28,9 @@ class CertificateRequestsExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'Workshop',
+            'Workshop name',
+            'workshop id',
+            'workshop starting date',
             'Name',
             'Email',
             'Days',
