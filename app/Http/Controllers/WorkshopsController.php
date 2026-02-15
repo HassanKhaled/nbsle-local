@@ -944,26 +944,21 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
                 $attachmentPaths[] = $path;
             }
         }
-
-    $batchSize = 50; // 50 emails per batch
-    $delaySeconds = 2; // 2-second delay between batches
-
-    WorkReg::where('workshop_id', $workshop_id)
-        ->chunk($batchSize, function ($usersChunk) use ($data, $workshop_id, $attachmentPaths, $delaySeconds) {
-            foreach ($usersChunk as $key => $user) {
+       $batchSize = 50 ; 
+        WorkReg::where('workshop_id', $workshop_id)
+        ->chunk($batchSize, function ($users) use ($data, $workshop_id, $attachmentPaths) {
+            foreach ($users as $user) {
                 SendWorkshopEmailJob::dispatch(
                     $user->email,
                     $workshop_id,
                     $data['title'],
                     $data['body'],
                     $attachmentPaths
-                )->delay(now()->addSeconds($key * $delaySeconds))
-                 ->onQueue('workshop-emails');
+                );
+                sleep(1); // Avoid Being Flagged as Spam
             }
         });
-
-
-
+    
         return back()->with('success', "Email notfication for workshop id #{$workshop_id} has been sent successfully");
     }
         
