@@ -115,37 +115,37 @@
                             <td><span class="badge bg-warning">{{ \Carbon\Carbon::parse($workshop->end_date)->format('d M Y') }}</span></td>
                             <td class="text-center">
                             <td class="text-center">
-                                <div class="d-grid gap-1">
+                            <div class="d-flex gap-3 justify-content-center flex-wrap">
 
-                                    <a href="{{ route('show-MailNotification', $workshop->id) }}"
-                                    class="btn btn-sm btn-primary rounded-pill w-30">
-                                        notify by mail
+                                <a href="{{ route('show-MailNotification', $workshop->id) }}"
+                                class="btn btn-sm btn-primary rounded-pill">
+                                     Notify users
+                                </a>
+
+                                @if(!$workshop->is_approved)
+                                    <form method="POST" action="{{ route('admin.workshops.approve',$workshop->id) }}" class="m-0">
+                                        @csrf
+                                        <button type="submit"
+                                                class="btn btn-sm btn-success rounded-pill">
+                                            Confirm
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('importAttendance', $workshop->id) }}"
+                                    class="btn btn-sm btn-warning rounded-pill text-dark">
+                                       Import Attendance
                                     </a>
+                                @endif
 
-                                    @if(!$workshop->is_approved)
-                                        <form method="POST" action="{{ route('admin.workshops.approve',$workshop->id) }}">
-                                            @csrf
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-success rounded-pill w-30">
-                                                Confirm
-                                            </button>
-                                        </form>
-                                    @else
-                                        <a href="{{ route('importAttendance', $workshop->id) }}"
-                                        class="btn btn-sm btn-warning rounded-pill w-30 text-dark">
-                                            Workshop attendance import
-                                        </a>
-                                    @endif
+                                @if(!$workshop->is_approved)
+                                    <a href="{{ route('editWorkshop', ['uniID' => $workshop->Uni_id, 'id' => $workshop->id]) }}"
+                                    class="btn btn-sm btn-info rounded-pill">
+                                        Edit Workshop
+                                    </a>
+                                @endif
 
-                                    @if(!$workshop->is_approved)
-                                        <a href="{{ route('editWorkshop', ['uniID' => $workshop->Uni_id, 'id' => $workshop->id]) }}"
-                                        class="btn btn-sm btn-outline-secondary rounded-pill w-30">
-                                            Edit Workshop
-                                        </a>
-                                    @endif
-
-                                </div>
-                            </td>
+                            </div>
+                        </td>
                         </tr>
                     @empty
                         <tr>
