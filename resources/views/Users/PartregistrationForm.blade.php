@@ -85,7 +85,7 @@
                                         {{-- Full Name --}}
                                         <div class="col-12">
                                             <label class="form-label fw-semibold">
-                                                Full Name <span class="text-danger">*</span>
+                                                Full Name (English) <span class="text-danger">*</span>
                                             </label>
                                             <input type="text" 
                                                    id="PartName"
@@ -507,10 +507,16 @@ function validateForm(event) {
 
     // Validate Full Name
     const partName = document.getElementById('PartName');
-    if (!partName.value.trim()) {
+    const nameValue = partName.value.trim();
+    const englishRegex = /^[A-Za-z\s]+$/;
+
+    if (!nameValue) {
         showError('PartName', 'This field is required');
         isValid = false;
-    }
+    } else if (!englishRegex.test(nameValue)) {
+    showError('PartName', 'the name should be in English only');
+    isValid = false;
+} 
 
     // Validate Gender
     const partGender = document.getElementById('partGender');
