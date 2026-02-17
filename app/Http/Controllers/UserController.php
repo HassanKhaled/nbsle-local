@@ -34,9 +34,19 @@ class UserController extends Controller
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         }
         elseif ($user_logged->hasRole('university')){
-            $users = User::where('uni_id','=',$user_logged->uni_id)->where('id','!=',$user_logged->id)->where('role_id', '!=', 5)->get();
-            $faculty = fac_uni::where('uni_id','=',$user_logged->uni_id);
-        //   dd($faculty);
+           $facultyIds = fac_uni::where('uni_id', $user_logged->uni_id)
+                    ->pluck('id');
+
+            $users = User::where(function($q) use ($user_logged, $facultyIds) {
+                    $q->where('uni_id', $user_logged->uni_id)
+                      ->orWhereIn('fac_id', $facultyIds);
+                })
+                ->where('id', '!=', $user_logged->id)
+                ->where('role_id', '!=', 5)
+                ->get();
+
+            $faculty = fac_uni::where('uni_id', $user_logged->uni_id)->get();
+
             return view('users.index',compact('users','faculty','user_logged'))
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         }

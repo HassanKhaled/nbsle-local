@@ -36,7 +36,7 @@
                                                     <th>Name</th>
                                                     <th>Phone</th>
                                                     <th>National ID</th>
-                                                    <th >Role</th>
+                                                    <th>Role</th>
                                                 @if($user_logged->hasRole('faculty'))    
                                                     <th >Department</th>
                                                 @endif   
@@ -63,8 +63,7 @@
                                                             <div class="d-flex flex-column justify-content-center align-items-center">
 
                                                                 @if($user->role->name == "visitor")
-                                                                    <h6 class="fw-bold mb-1"
-                                                                        style="word-wrap: break-word; white-space: pre-wrap; word-break: break-word;">
+                                                                    <h6 class="fw-bold mb-1">
                                                                         Visitor
                                                                     </h6>
                                                                 @endif
@@ -81,6 +80,12 @@
                                                                     </h6>
                                                                     <div class="text-muted small">
                                                                         {{ $uni->name }}
+                                                                    </div>
+                                                                    <h6 class="fw-bold mb-1">
+                                                                        Faculty
+                                                                    </h6>
+                                                                    <div class="text-muted small">
+                                                                        {{ $fac->name }}
                                                                     </div>
                                                                 @endif
 

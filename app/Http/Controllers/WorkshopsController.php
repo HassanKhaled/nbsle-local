@@ -858,9 +858,7 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
         return back()->with('error', 'No users found for this workshop.');
     }
     
-    $failed = [];
-    $sentCount = 0;
-    
+    $failed = []; 
     foreach ($users as $user) {
         try {
             Mail::send([], [], function ($message) use ($user, $data, $request) {
