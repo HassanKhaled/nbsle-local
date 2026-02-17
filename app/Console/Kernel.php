@@ -30,10 +30,14 @@ class Kernel extends ConsoleKernel
 
 
 
-    protected function schedule(Schedule $schedule)
-    {
-        
-    }
+     protected function schedule(Schedule $schedule)
+     {
+         $schedule->command('queue:work --stop-when-empty --tries=1 --timeout=90')
+                  ->everyMinute()
+                  ->withoutOverlapping();
+                      
+     }
+     
 
     protected function commands()
     {

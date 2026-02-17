@@ -849,7 +849,7 @@ class WorkshopsController extends Controller
         return view('Workshops.Admin.MailNotificationForm', compact('workshop'));
     }
 
-/*public function sendMailNotificationForWorkShopUsers(Request $request, $workshop_id)
+public function sendMailNotificationForWorkShopUsers(Request $request, $workshop_id)
 {
     $data = $request->validate([
         'title' => 'required|string|max:255',
@@ -857,96 +857,27 @@ class WorkshopsController extends Controller
         'attachments.*' => 'file|mimes:pdf,jpg,png,docx|max:2048',
     ]);
 
-    $users = workReg::where('workshop_id', $workshop_id)->get();
+    $users = WorkReg::where('workshop_id', $workshop_id)->get();
 
     if ($users->isEmpty()) {
         return back()->with('error', 'No users found for this workshop.');
     }
-    
-    $failed = [];
-    $sentCount = 0;
-    
-    foreach ($users as $user) {
-        try {
-            Mail::send([], [], function ($message) use ($user, $data, $request) {
-                $message->to($user->email)
-                        ->subject($data['title'])
-                        ->setBody($data['body'], 'text/html');
-    
-                if ($request->hasFile('attachments')) {
-                    foreach ($request->file('attachments') as $file) {
-                        $message->attach(
-                            $file->getRealPath(),
-                            [
-                                'as' => $file->getClientOriginalName(),
-                                'mime' => $file->getMimeType(),
-                            ]
-                        );
-                    }
-                }
-            });
-            $sentCount++;
-            MailLog::create([
-                'workshop_id'   => $workshop_id ?? null,       
-                'from_email'    => config('mail.from.address'),   // or your sending email
-                'to_email'      => $user->email,
-                'subject'       => $data['title'] ?? 'No Subject',     // replace with actual subject variable
-                'status'        => 'success',
-                'error_message' => null,
-            ]);
-    } catch (\Exception $e) {
-        // Log and CONTINUE
-        \Log::error('Mail failed for user', [
-            'email' => $user->email,
-            'error' => $e->getMessage(),
-        ]);
 
-        MailLog::create([
-            'workshop_id'   => $workshop_id ?? null,       
-            'from_email'    => config('mail.from.address'),
-            'to_email'      => $user->email,
-            'subject'       => $data['title'] ?? 'No Subject',    
-            'status'        => 'failed',
-            'error_message' => $e->getMessage(),
-        ]);
-
-        $failed[] = $user->email;
-        continue;
+    // Store attachments if any
+    $attachmentPaths = [];
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $file) {
+            $path = $file->store('workshop_attachments/' . $workshop_id, 'local');
+            $attachmentPaths[] = $path;
+        }
     }
 
-}
-    
-    return back()->with(
-        'success',
-        "Number of emails sent successfully: {$sentCount}. Number of failures: " . count($failed)
-    );  
-}*/
+    // Set batch size
+    $batchSize = 40;
+    $delaySeconds = 0;
 
-public function sendMailNotificationForWorkShopUsers(Request $request, $workshop_id)
-    {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'body'  => 'required|string',
-            'attachments.*' => 'file|mimes:pdf,jpg,png,docx|max:2048',
-        ]);
-
-        $users = WorkReg::where('workshop_id', $workshop_id)->get();
-
-        if ($users->isEmpty()) {
-            return back()->with('error', 'No users found for this workshop.');
-        }
-
-        // Store attachments if an
-        $attachmentPaths = [];
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $path = $file->store('workshop_attachments/' . $workshop_id, 'local');
-                $attachmentPaths[] = $path;
-            }
-        }
-       $batchSize = 50 ; 
-        WorkReg::where('workshop_id', $workshop_id)
-        ->chunk($batchSize, function ($users) use ($data, $workshop_id, $attachmentPaths) {
+    WorkReg::where('workshop_id', $workshop_id)
+        ->chunk($batchSize, function ($users) use ($data, $workshop_id, $attachmentPaths, &$delaySeconds) {
             foreach ($users as $user) {
                 SendWorkshopEmailJob::dispatch(
                     $user->email,
@@ -954,13 +885,14 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
                     $data['title'],
                     $data['body'],
                     $attachmentPaths
-                );
-                sleep(1); // Avoid Being Flagged as Spam
+                )->delay(now()->addSeconds($delaySeconds));
+
+                $delaySeconds += 2; // 1 email every 2 seconds
             }
         });
-    
-        return back()->with('success', "Email notfication for workshop id #{$workshop_id} has been sent successfully");
-    }
-        
+
+    return back()->with('success', 'Emails have been queued successfully.');
+}
+
 
 }
