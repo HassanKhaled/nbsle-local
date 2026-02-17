@@ -81,12 +81,16 @@
                                                                     <div class="text-muted small">
                                                                         {{ $uni->name }}
                                                                     </div>
-                                                                    <h6 class="fw-bold mb-1">
+                                                                  
+                                                                    @if($user->role->name == "university" && $user->fac_id)
+                                                                      <h6 class="fw-bold mb-1">
                                                                         Faculty
                                                                     </h6>
                                                                     <div class="text-muted small">
-                                                                        {{ $fac->name }}
+                                                                      {{ $user->faculty->name ?? '-' }}
                                                                     </div>
+                                                                   
+                                                                    @endif
                                                                 @endif
 
                                                                 @if($user->role->name == "faculty" && $fac)
