@@ -20,6 +20,7 @@ use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Admin\MailLogController;
 
 use App\Models\User;
 use App\Http\Controllers\DeviceRatingController;
@@ -311,13 +312,15 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('/certificate/export', [RequestController::class, 'export'])
     ->name('certificate.export');
 
+    Route::get('/mail-logs', [MailLogController::class, 'index'])
+    ->name('mail-logs');
+
     Route::get('/adminworkshops/{id}/show-MailNotification', [WorkshopsController::class, 'showMailNotificationForm'])
     ->name('show-MailNotification');
 
     Route::post('/adminworkshops/{id}/send-MailNotificationForWorkshopMembers', [WorkshopsController::class, 'sendMailNotificationForWorkShopUsers'])
     ->name('send-MailNotificationForMembers');
 
-    
     Route::post('/adminworkshops/{id}/send-MailNotificationForAllUsers', [WorkshopController::class, 'sendMailNotificationForAllUsers'])
     ->name('send-MailNotificationForUsers');
 

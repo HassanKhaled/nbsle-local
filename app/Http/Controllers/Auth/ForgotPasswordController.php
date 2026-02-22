@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
+use App\Models\MailLog;
+
         
 class ForgotPasswordController extends Controller
 {
@@ -61,14 +63,31 @@ class ForgotPasswordController extends Controller
         // Send email directly without Mailable
         \Mail::to($user->email)->send(new \App\Mail\SendCredentials($user));
 
-
         // Store the request time in session
         session(['last_password_request_time' => $currentTime]);
 
-        return redirect()->back()
-            ->with('success', 'Username and password have been sent to your email successfully!');
+         MailLog::create([
+            'workshop_id'   => null,       
+            'from_email'    => config('mail.from.address'),
+            'to_email'      => $user->email,
+            'subject'       => "forget password",    
+            'status'        => 'success',
+            'error_message' => null,
+        ]);
 
+        return redirect()->back()
+            ->with('success', 'Username and password have been sent to your email successfully!');            
     } catch (\Exception $e) {
+
+
+      MailLog::create([
+            'workshop_id'   =>  null,       
+            'from_email'    => config('mail.from.address'),
+            'to_email'      => $user->email,
+            'subject'       => "forget password",    
+            'status'        => 'failed',
+            'error_message' => $e->getMessage(),
+        ]);
         return redirect()->back()
             ->with('error', 'Failed to send email. Please try again later.')
             ->withInput();

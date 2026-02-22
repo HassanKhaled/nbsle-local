@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+
 use Illuminate\Support\Facades\Auth; 
 use App\Models\fac_uni;
 use App\Models\workDetails;
 use App\Models\workReg;
 use App\Models\universitys;
+use App\Models\MailLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -16,7 +20,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\CertificateRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendCredentials;
-
+use App\Console\Commands\QueueWorkshopEmails;
+use App\Jobs\SendWorkshopEmailJob;
 class WorkshopsController extends Controller
 {
     // Show all workshops pending approval for Admin
@@ -852,54 +857,42 @@ public function sendMailNotificationForWorkShopUsers(Request $request, $workshop
         'attachments.*' => 'file|mimes:pdf,jpg,png,docx|max:2048',
     ]);
 
-    $users = workReg::where('workshop_id', $workshop_id)->get();
+    $users = WorkReg::where('workshop_id', $workshop_id)->get();
 
     if ($users->isEmpty()) {
         return back()->with('error', 'No users found for this workshop.');
     }
-    
-    $failed = []; 
-    foreach ($users as $user) {
-        try {
-            Mail::send([], [], function ($message) use ($user, $data, $request) {
-                $message->to($user->email)
-                        ->subject($data['title'])
-                        ->setBody($data['body'], 'text/html');
-    
-                if ($request->hasFile('attachments')) {
-                    foreach ($request->file('attachments') as $file) {
-                        $message->attach(
-                            $file->getRealPath(),
-                            [
-                                'as' => $file->getClientOriginalName(),
-                                'mime' => $file->getMimeType(),
-                            ]
-                        );
-                    }
-                }
-            });
-    
-            $sentCount++;
-    
-        } catch (\Exception $e) {
-            // Log and CONTINUE
-            \Log::error('Mail failed for user', [
-                'email' => $user->email,
-                'error' => $e->getMessage(),
-            ]);
-    
-            $failed[] = $user->email;
-            continue;
+
+    // Store attachments if any
+    $attachmentPaths = [];
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $file) {
+            $path = $file->store('workshop_attachments/' . $workshop_id, 'local');
+            $attachmentPaths[] = $path;
         }
     }
-    
-    return back()->with(
-        'success',
-        "Number of emails sent successfully: {$sentCount}. Number of failures: " . count($failed)
-    );  
+
+    // Set batch size
+    $batchSize = 40;
+    $delaySeconds = 0;
+
+    WorkReg::where('workshop_id', $workshop_id)
+        ->chunk($batchSize, function ($users) use ($data, $workshop_id, $attachmentPaths, &$delaySeconds) {
+            foreach ($users as $user) {
+                SendWorkshopEmailJob::dispatch(
+                    $user->email,
+                    $workshop_id,
+                    $data['title'],
+                    $data['body'],
+                    $attachmentPaths
+                )->delay(now()->addSeconds($delaySeconds));
+
+                $delaySeconds += 2; // 1 email every 2 seconds
+            }
+        });
+
+    return back()->with('success', 'Emails have been queued successfully.');
 }
-        
-     public function sendMailNotificationForAllUsers(Request $request){
-          /// extract mail 
-    }
+
+
 }
