@@ -138,6 +138,7 @@
                             <th style="width: 25%">Subject</th>
                             <th style="width: 10%" class="text-center">Status</th>
                             <th style="width: 15%">Date</th>
+                            <th style="width: 30%">error message</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -178,6 +179,9 @@
                                     {{ $log->created_at->format('Y-m-d') }}<br>
                                     <span class="text-muted">{{ $log->created_at->format('H:i:s') }}</span>
                                 </small>
+                            </td>
+                            <td>
+                                {{$log->error_message}}
                             </td>
                         </tr>
 
