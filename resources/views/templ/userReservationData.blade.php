@@ -280,7 +280,7 @@
             </div>
             @endif
 
-            @if($hasRequest && $hasRequest->status === 'rejected')
+            @if($hasRequest && $hasRequest->status === 'rejected' && $hasRequest->reason_rejection )
                 <div class="modal fade" id="editRequestModal{{ $reg->id }}">
                     <div class="modal-dialog">
                        <form method="POST"
@@ -299,7 +299,7 @@
                                     <div class="mb-3">
                                     <label>Name</label>
                                     <input type="text" name="name" class="form-control" value="{{ $hasRequest->name }}" required>
-                                </div>
+                                    </div>
 
                                 <div class="mb-3">
                                     <label>Email</label>
@@ -369,6 +369,15 @@
                                             accept="image/*"
                                             required>
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="fw-bold"> Rejection Reason  :</label>
+                                        <textarea type="text"
+                                            class="form-control"
+                                            readonly
+                                            value="{{ $hasRequest->reason_rejection }}">
+                                            </textarea>
+                                    </div>
+
 
                                 </div>
 
