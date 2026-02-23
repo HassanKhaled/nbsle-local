@@ -8,7 +8,6 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4>Certificate Requests</h4>
 
-            {{-- Download Excel --}}
             <a href="{{ route('certificate.export') }}" class="btn btn-success">
                 ⬇ Download Excel
             </a>
@@ -16,96 +15,122 @@
 
         <div class="card-body">
 
-            {{-- Bulk Action Form --}}
-            <form method="POST" action="{{ route('certificate.bulkAction') }}">
-                @csrf
-                @method('PUT')
-
-                <div class="mb-3 d-flex gap-2">
-                    <select name="status" class="form-control w-auto" required>
-                        <option value="">-- Bulk Action --</option>
-                        <option value="confirmed">Confirm Selected</option>
-                        <option value="rejected">Reject Selected</option>
-                    </select>
-
-                    <button type="submit" class="btn btn-primary">
-                        Apply
-                    </button>
+            @if(session('info'))
+                <div class="alert alert-success">
+                    {{ session('info') }}
                 </div>
+            @endif
 
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                <input type="checkbox" id="selectAll">
-                            </th>
-                            <th>#</th>
-                            <th>Workshop name</th>
-                            <th>Workshop id</th>
-                            <th>Workshop starting date</th>
-                            <th>User Name</th>
-                            <th>Email</th>
-                            <th>Days</th>
-                            <th>Certificates</th>
-                            <th>Cost</th>
-                            <th>Status</th>
-                            <th>Image</th>
-                        </tr>
-                    </thead>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Workshop</th>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Cost</th>
+                        <th>Status</th>
+                        <th>Receipt</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
 
-                    <tbody>
-                        @forelse($requests as $req)
-                            <tr>
-                                <td>
-                                    <input type="checkbox" 
-                                           name="request_ids[]" 
-                                           value="{{ $req->id }}"
-                                           class="row-checkbox">
-                                </td>
+                <tbody>
+                @forelse($requests as $req)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $req->workshop->workshop_ar_title ?? $req->workshop->workshop_en_title }}</td>
+                        <td>{{ $req->name }}</td>
+                        <td>{{ $req->email }}</td>
+                        <td>{{ $req->cost }} EGP</td>
 
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $req->workshop->workshop_ar_title ?? $req->workshop->workshop_en_title }}</td>
-                                <td>{{ $req->workshop->id }}</td>
-                                <td>{{ $req->workshop->st_date }}</td>
-                                <td>{{ $req->name }}</td>
-                                <td>{{ $req->email }}</td>
-                                <td>
-                                    {{ is_array($req->days) ? implode(', ', $req->days) : $req->days }}
-                                </td>
-                                <td>{{ $req->cert_count }}</td>
-                                <td>{{ $req->cost }} EGP</td>
-                                <td>
-                                    <span class="badge bg-info">{{ ucfirst($req->status) }}</span>
-                                </td>
-                                <td>
-                                    <a href="{{ asset('storage/' . $req->image_receipt) }}" target="_blank">
-                                        View
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="10" class="text-center">
-                                    No requests found
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </form>
+                        <td>
+                            <span class="badge 
+                                @if($req->status == 'confirmed') bg-success
+                                @elseif($req->status == 'rejected') bg-danger
+                                @else bg-info
+                                @endif">
+                                {{ ucfirst($req->status) }}
+                            </span>
+
+                            @if($req->status == 'rejected' && $req->reason_rejection)
+                                <div class="text-danger small mt-1">
+                                    Reason: {{ $req->reason_rejection }}
+                                </div>
+                            @endif
+                        </td>
+
+                        <td>
+                            <a href="{{ asset('storage/' . $req->image_receipt) }}" target="_blank">
+                                View
+                            </a>
+                        </td>
+                        @if($req->status == 'pending')
+                        <td>
+
+                            {{-- Confirm --}}
+                            <form action="{{ route('certificate.bulkAction', $req->id) }}" 
+                                  method="POST" 
+                                  class="d-inline">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="status" value="confirmed">
+                                <button class="btn btn-sm btn-success">
+                                    Confirm
+                                </button>
+                            </form>
+
+                            {{-- Reject --}}
+                            <button type="button"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="toggleReject({{ $req->id }})">
+                                Reject
+                            </button>
+
+                            {{-- Reject Form --}}
+                            <form id="rejectForm{{ $req->id }}"
+                                  action="{{ route('certificate.bulkAction', $req->id) }}"
+                                  method="POST"
+                                  class="mt-2 d-none">
+                                @csrf
+                                @method('PUT')
+
+                                <input type="hidden" name="status" value="rejected">
+
+                                <input type="text"
+                                       name="reason_rejection"
+                                       class="form-control mb-2"
+                                       placeholder="Enter rejection reason"
+                                       required>
+
+                                <button class="btn btn-sm btn-danger">
+                                    Save
+                                </button>
+                            </form>
+
+                        </td>
+                        @endif
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            No requests found
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
 
         </div>
     </div>
 
 </div>
 
-{{-- Select All Script --}}
 <script>
-    document.getElementById('selectAll').addEventListener('change', function () {
-        document.querySelectorAll('.row-checkbox').forEach(cb => {
-            cb.checked = this.checked;
-        });
-    });
+function toggleReject(id) {
+    let form = document.getElementById('rejectForm' + id);
+    form.classList.toggle('d-none');
+}
 </script>
 
 @endsection

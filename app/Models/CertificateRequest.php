@@ -17,7 +17,8 @@ class CertificateRequest  extends Model
         'cert_count',
         'cost',
         'status',
-        'image_receipt'
+        'image_receipt',
+        'reason_rejection',
     ];
 
     protected $casts = [

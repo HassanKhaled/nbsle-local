@@ -26,11 +26,13 @@ class RequestController extends Controller
         $certificateRequest = CertificateRequest::findOrFail($id);
 
         $request->validate([
-            'status' => 'required|in:confirmed,rejected'
+            'status' => 'required|in:confirmed,rejected',
+            'reason_rejection' => 'required_if:status,rejected|string|max:255'
         ]);
 
         $certificateRequest->update([
-            'status' => $request->status
+            'status' => $request->status,
+            'reason_rejection' => $request->reason_rejection
         ]);
 
         $message = $request->status === 'confirmed'
@@ -91,6 +93,8 @@ class RequestController extends Controller
         }
 
         $request->validate([
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email',
             'cert_count' => 'required|integer|min:1',
             'days' => 'required|array|min:1',
             'image_receipt' => 'required|image|max:2048'
@@ -103,6 +107,8 @@ class RequestController extends Controller
         $cost = ($daysCount * 100 * $request->cert_count) + 7;
 
         $certRequest->update([
+            'name'        => $request->name,
+            'email'       => $request->email,
             'cert_count'    => $request->cert_count,
             'days'          => $request->days,
             'cost'          => $cost,
@@ -230,17 +236,23 @@ class RequestController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
-   public function bulkAction(Request $request)
+    public function bulkAction(Request $request, $id)
     {
         $request->validate([
-            'request_ids' => 'required|array',
             'status' => 'required|in:confirmed,rejected',
+            'reason_rejection' => 'required_if:status,rejected|string|max:255'
         ]);
 
-        CertificateRequest::whereIn('id', $request->request_ids)
-            ->update(['status' => $request->status]);
+        $certificate = CertificateRequest::findOrFail($id);
 
-        return back()->with('info', 'Requests updated successfully');
+        $certificate->status = $request->status;
+        $certificate->reason_rejection = $request->status == 'rejected'
+            ? $request->reason_rejection
+            : null;
+
+        $certificate->save();
+
+        return back()->with('info', 'Request updated successfully');
     }
     public function export()
     {
