@@ -107,7 +107,7 @@ Route::get('/', function () {
 
     // Call the function
     $controller = new \App\Http\Controllers\Reportcontroller();
-    $universityRanks = array_slice($controller->calculateUniversityRanksHome(), 0, 8);
+    $universityRanks = array_slice($controller->calculateUniversityRanksHome(), 0, 10);
 
     // dd($universityRanks);
 
@@ -115,7 +115,9 @@ Route::get('/', function () {
     $ids = collect($universityRanks)->pluck('university_id')->toArray();
     $universities = universitys::whereIn('id', $ids)->get()->keyBy('id');
 
-    $enrichedData = collect($universityRanks)->map(function ($rank) use ($universities) {
+
+
+       $enrichedData = collect($universityRanks)->map(function ($rank) use ($universities) {
         $university = $universities->get($rank['university_id']);
         return array_merge(
             (array) $rank,
