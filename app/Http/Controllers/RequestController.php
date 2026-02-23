@@ -14,7 +14,7 @@ use App\Exports\CertificateRequestsExport;
 
 class RequestController extends Controller
 {
-    public function index()
+    public function index1()
     {
         $requests = CertificateRequest::with('workshop')->get();
         return view('Workshops.Admin.certificate_requests', ['requests' => $requests]);
@@ -261,4 +261,35 @@ class RequestController extends Controller
             'certificate_requests.xlsx'
         );
     }
+
+
+    public function index(Request $request)
+{
+    $query = CertificateRequest::with('workshop');
+
+    // Filter by status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    // Filter by email
+    if ($request->filled('email')) {
+        $query->where('email', 'like', '%' . $request->email . '%');
+    }
+
+    // Filter by user name
+    if ($request->filled('name')) {
+        $query->where('name', 'like', '%' . $request->name . '%');
+    }
+
+    // Filter by workshop
+    if ($request->filled('workshop_id')) {
+        $query->where('workshop_id', $request->workshop_id);
+    }
+
+    $requests = $query->latest()->get();
+    $workshops = WorkDetails::all();
+
+    return view('Workshops.Admin.certificate_requests', compact('requests','workshops'));
+}
 }

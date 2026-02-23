@@ -20,7 +20,62 @@
                     {{ session('info') }}
                 </div>
             @endif
+<form method="GET" action="{{ route('certificate.requests') }}" class="mb-4">
 
+    <div class="row g-2">
+
+        <div class="col-md-2">
+            <select name="status" class="form-control">
+                <option value="">All Status</option>
+                <option value="pending" {{ request('status')=='pending'?'selected':'' }}>Pending</option>
+                <option value="confirmed" {{ request('status')=='confirmed'?'selected':'' }}>Confirmed</option>
+                <option value="rejected" {{ request('status')=='rejected'?'selected':'' }}>Rejected</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <input type="text" 
+                   name="email" 
+                   class="form-control"
+                   placeholder="Search Email"
+                   value="{{ request('email') }}">
+        </div>
+
+        <div class="col-md-2">
+            <input type="text" 
+                   name="name" 
+                   class="form-control"
+                   placeholder="Search User"
+                   value="{{ request('name') }}">
+        </div>
+
+        <div class="col-md-3">
+            <select name="workshop_id" class="form-control">
+                <option value="">All Workshops</option>
+                @foreach($workshops as $workshop)
+                    <option value="{{ $workshop->id }}"
+                        {{ request('workshop_id') == $workshop->id ? 'selected' : '' }}>
+                        {{ $workshop->workshop_ar_title ?? $workshop->workshop_en_title }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">
+                Filter
+            </button>
+        </div>
+
+        <div class="col-md-1">
+            <a href="{{ route('certificate.requests') }}" class="btn btn-secondary w-100">
+                Reset
+            </a>
+        </div>
+
+    </div>
+
+</form>
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
