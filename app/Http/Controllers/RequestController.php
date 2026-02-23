@@ -287,7 +287,7 @@ class RequestController extends Controller
         $query->where('workshop_id', $request->workshop_id);
     }
 
-    $requests = $query->latest()->get();
+    $requests = $query->get();
     $workshops = WorkDetails::all();
 
     return view('Workshops.Admin.certificate_requests', compact('requests','workshops'));
