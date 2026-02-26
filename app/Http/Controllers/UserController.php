@@ -46,7 +46,7 @@ class UserController extends Controller
                 ->get();
 
             $faculty = fac_uni::where('uni_id', $user_logged->uni_id)->get();
-
+            
             return view('users.index',compact('users','faculty','user_logged'))
                 ->with('i', ($request->input('page', 1) - 1) * 5);
         }

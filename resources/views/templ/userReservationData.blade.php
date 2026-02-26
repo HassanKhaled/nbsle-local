@@ -371,11 +371,10 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="fw-bold"> Rejection Reason  :</label>
-                                        <textarea type="text"
-                                            class="form-control"
-                                            readonly
-                                            value="{{ $hasRequest->reason_rejection }}">
-                                            </textarea>
+                                       <textarea 
+                                        class="form-control" 
+                                        rows="4" 
+                                        readonly>{{ old('reason_rejection', $hasRequest->reason_rejection) }}</textarea>
                                     </div>
 
 
