@@ -30,6 +30,7 @@ use  App\Http\Controllers\RequestController;
 use App\Models\universitys;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\HomeController;
 
 /*
 | Web Routes
@@ -62,6 +63,8 @@ Route::get('/strategy', function () {
     return view('templ/strategy');
 });
 
+
+Route::get('/home',[HomeController::class,'index'])->name('home');
 ///////////// Homepage Statistics
 ///  number of universities - institutes - all labs  - all devices
 Route::get('/', function () {
