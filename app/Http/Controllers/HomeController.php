@@ -17,7 +17,7 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index (Request $reqeuest){
+    public function index (){
 
 
         return ("this is the inext  of the home contoller");
