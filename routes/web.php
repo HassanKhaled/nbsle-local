@@ -31,6 +31,7 @@ use App\Models\universitys;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IndexContoller;
 
 /*
 | Web Routes
@@ -64,7 +65,7 @@ Route::get('/strategy', function () {
 });
 
 
-Route::get('/home',[HomeController::class,'index'])->name('home');
+Route::get('/homy',[IndexContoller::class,'index'])->name('homy');
 ///////////// Homepage Statistics
 ///  number of universities - institutes - all labs  - all devices
 Route::get('/', function () {

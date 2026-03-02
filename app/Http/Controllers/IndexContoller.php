@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Collection;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Models\labs;
+use App\Models\universitys;
 class IndexContoller extends Controller
 {
     /**
@@ -13,7 +16,12 @@ class IndexContoller extends Controller
      */
     public function index()
     {
-        //
+        $uniqueUniIds = labs::distinct()->pluck('uni_id');
+
+        $universitiesCount = 
+
+        dd($uniqueUniIds);
+        return "this is home and index of your website";
     }
 
     /**
