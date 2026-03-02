@@ -18,7 +18,9 @@ class IndexContoller extends Controller
     {
         $uniqueUniIds = labs::distinct()->pluck('uni_id');
 
-        $universitiesCount = 
+        $universitiesCount = universitys::whereIn('id',$uniqueUniIds)
+        ->where('type','!=','Institution')
+        ->count();
 
         dd($uniqueUniIds);
         return "this is home and index of your website";
