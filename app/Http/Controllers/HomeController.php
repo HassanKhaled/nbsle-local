@@ -17,15 +17,20 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+    public function index (Request $reqeuest){
+
+
+        return ("this is the inext  of the home contoller");
+    }
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
-    {
-        return view('home');
-    }
+    // public function index()
+    // {
+    //     return view('home');
+    // }
 
 
     public function visits()
