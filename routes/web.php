@@ -165,7 +165,7 @@ Route::get('/home', function () {
 
     // Call the function
     $controller = new \App\Http\Controllers\Reportcontroller();
-    $universityRanks = array_slice($controller->calculateUniversityRanksHome(), 0, 8);
+    $universityRanks = array_slice($controller->calculateUniversityRanksHome(), 0, 10);
     $ids = collect($universityRanks)->pluck('university_id')->toArray();
     $universities = universitys::whereIn('id', $ids)->get()->keyBy('id');
 
